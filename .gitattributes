@@ -1,0 +1,17 @@
+# Forteaza LF pentru fisiere care ruleaza pe FreeBSD/Linux
+*.sh        text eol=lf
+CONFIG      text eol=lf
+conf.txt    text eol=lf
+*.txt       text eol=lf
+*.sql       text eol=lf
+*.lua       text eol=lf
+*.py        text eol=lf
+*.cpp       text eol=lf
+*.h         text eol=lf
+Makefile    text eol=lf
+
+# Binare - fara conversie
+*.so        binary
+*.a         binary
+server/share/bin/game   binary
+server/share/bin/db     binary

@@ -1,0 +1,26 @@
+# Runtime files generate de server
+cores/
+log/
+mark/
+
+# Binare compilate server
+server/share/bin/
+
+# Arhive dependente externe (instaleaza via pkg install pe FreeBSD)
+src/extern/*.tar.gz
+src/extern/*.zip
+src/extern/*.tar
+
+# Librarii pre-compilate (generate la compilare)
+src/extern/lib/
+src/server/libgame/lib/
+src/server/liblua/lib/
+src/server/libpoly/libpoly.a
+src/server/libserverkey/libserverkey.a
+src/server/libsql/libsql.a
+src/server/libthecore/lib/
+
+# Build artifacts
+*.o
+*.a
+*.d
