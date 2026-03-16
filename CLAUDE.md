@@ -26,6 +26,59 @@ clean       # cd /usr/metin2/server && sh clean.sh
 backup      # cd /usr/metin2/server && sh backup.sh
 ```
 
+## Setup de la zero (server nou)
+
+1. **Instalezi pachetele necesare** (FreeBSD 32-bit):
+```sh
+pkg install llvm-devel gmake makedepend python27 mariadb106-client mariadb106-server git
+```
+
+2. **Pornesti MariaDB:**
+```sh
+echo 'mysql_enable="yes"' >> /etc/rc.conf
+service mysql-server start
+```
+
+3. **Copiezi my.cnf:**
+```sh
+cp /usr/metin2/sql/my.cnf /usr/local/etc/mysql/my.cnf
+service mysql-server restart
+```
+
+4. **Clonezi repo-ul:**
+```sh
+cd /usr && git clone https://github.com/Tiberiu96/metin2-server.git metin2
+```
+
+5. **Importi bazele de date:**
+```sh
+mysql -u root < /usr/metin2/sql/account.sql
+mysql -u root < /usr/metin2/sql/common.sql
+mysql -u root < /usr/metin2/sql/player.sql
+mysql -u root < /usr/metin2/sql/log.sql
+```
+
+6. **Compilezi binarele:**
+```sh
+cd /usr/metin2/src/server/db/src && gmake dep && gmake -j9
+cd /usr/metin2/src/server/game/src && gmake dep && gmake -j9
+```
+
+7. **Copiezi binarele:**
+```sh
+cp /usr/metin2/src/server/db/src/db /usr/metin2/server/share/bin/
+cp /usr/metin2/src/server/game/src/game /usr/metin2/server/share/bin/
+```
+
+8. **Configurezi IP-urile** in toate fisierele CONFIG (vezi sectiunea Configuratie IP)
+
+9. **Pornesti serverul:**
+```sh
+cd /usr/metin2/server && sh start.sh
+```
+
+---
+
 ## Compilare sursa
 
 Compilarea este posibila **doar pe FreeBSD 32-bit**. Pachete necesare:
@@ -72,6 +125,31 @@ pkg install mariadb106-client mariadb106-server
 echo 'mysql_enable="yes"' >> /etc/rc.conf
 service mysql-server start
 ```
+
+## Migratii baza de date
+
+Orice modificare la schema sau datele MySQL se adauga ca fisier incremental in `sql/migrations/`.
+
+**Conventie de denumire:**
+```
+sql/migrations/001_descriere_scurta.sql
+sql/migrations/002_alta_modificare.sql
+```
+
+**Reguli:**
+- Numerotare secventiala cu 3 cifre: `001`, `002`, `003`...
+- Numele descrie ce face modificarea (ex: `001_add_skill_table.sql`, `002_update_player_exp.sql`)
+- Fiecare fisier trebuie sa fie idempotent unde e posibil (`IF NOT EXISTS`, `IF EXISTS`)
+- Nu modifica niciodata un fisier de migratie deja aplicat — adauga unul nou
+
+**Aplicare migratie pe server:**
+```sh
+mysql -u root player < /usr/metin2/sql/migrations/001_add_skill_table.sql
+```
+
+**Urmareste ce migratii au fost aplicate** — noteaza in commit message si in numele fisierului ordinea.
+
+---
 
 ## Limbi disponibile
 
