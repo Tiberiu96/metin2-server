@@ -171,6 +171,18 @@ Pentru schimbare limba (ex: DE):
 | MySQL | root | 123456789 |
 | Ingame GM | admin | 123456789 |
 
+## Database Schema
+
+For full verified schema of all tables and columns, see:
+**`.claude/references/db_schema.md`**
+
+Key facts to remember:
+- `account.account` (NOT `accounts`) — login, password, email, status, availDt (camelCase), empire (unreliable default 0)
+- `player.player` — NO empire column
+- `player.player_index` — authoritative empire; `id` = account_id, `pid1–4` = character slots
+- To get empire: `LEFT JOIN player_index ON player_index.id = player.account_id`
+- `common.gmlist` — GM accounts with mAuthority level
+
 ## Troubleshooting
 
 - **Connection refused**: verifica `log/syserr` in db, auth si channels
