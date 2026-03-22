@@ -431,6 +431,7 @@ void CClientManager::ItemAward(CPeer * peer,char* login)
 char* CClientManager::GetCommand(char* str)
 {
 	static char command[20] = "";
+	command[0] = '\0';
 	char* tok;
 
 	if( str[0] == '[' )

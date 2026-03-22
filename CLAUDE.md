@@ -185,7 +185,11 @@ Key facts to remember:
 
 ## Troubleshooting
 
-- **Connection refused**: verifica `log/syserr` in db, auth si channels
+- **Connection refused**: verifica syserr in db, auth si channels
+- **Path-uri syserr** (fara /log/ !):
+  - DB: `/usr/metin2/server/db/syserr`
+  - Auth: `/usr/metin2/server/auth/syserr`
+  - Game: `/usr/metin2/server/channel1/game1/syserr`
 - **Eroare frecventa**: db nu se poate conecta la MySQL → `socket_connect: HOST 127.0.0.1:15000`
 - **Jucatori kickati dupa charselect**: BIND_IP/PROXY_IP neconfigurat corect
 - **Compilare pe x64**: foloseste jail 32-bit
