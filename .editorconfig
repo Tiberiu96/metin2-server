@@ -1,0 +1,13 @@
+root = true
+
+# Server C++ source files are EUC-KR encoded (Korean strings for LC_TEXT)
+[src/server/*/src/*.{cpp,h}]
+charset = euc-kr
+end_of_line = lf
+indent_style = tab
+trim_trailing_whitespace = false
+
+# Other files (configs, scripts, docs)
+[*.{md,json,txt,cfg}]
+charset = utf-8
+end_of_line = lf

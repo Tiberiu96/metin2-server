@@ -183,6 +183,17 @@ Key facts to remember:
 - To get empire: `LEFT JOIN player_index ON player_index.id = player.account_id`
 - `common.gmlist` — GM accounts with mAuthority level
 
+## ATENTIE: Encoding sursa C++ (EUC-KR)
+
+Fisierele `.cpp` si `.h` din `src/server/` contin stringuri Korean (EUC-KR) folosite de `LC_TEXT()` pentru sistemul de traduceri. **NU deschide aceste fisiere in editoare care salveaza automat ca UTF-8** (ex: VS Code cu auto-save) — se corup toti bytes Korean si traducerile nu mai functioneaza (textul apare garbled in joc).
+
+**Reguli:**
+- Foloseste `.editorconfig` (deja configurat) care forteaza encoding EUC-KR
+- In VS Code: verifica in dreapta-jos ca scrie `EUC-KR`, nu `UTF-8`
+- Daca ai modificat un fisier si vezi diff-uri pe linii cu Korean (comentarii/LC_TEXT) pe care **nu** le-ai atins → ai corupt encoding-ul. Fa `git checkout` pe acel fisier
+- `LC_TEXT("korean")` cauta traducerea in `server/share/locale/english/locale_string.txt`
+- Daca traducerea lipseste, serverul trimite `@0949` + textul Korean → apare garbled la client
+
 ## Troubleshooting
 
 - **Connection refused**: verifica syserr in db, auth si channels
