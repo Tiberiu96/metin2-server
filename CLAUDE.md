@@ -171,6 +171,14 @@ Pentru schimbare limba (ex: DE):
 | MySQL | root | 123456789 |
 | Ingame GM | admin | 123456789 |
 
+## GM Commands
+
+Pentru orice comanda GM ceruta, consulta intai:
+**`.claude/references/commands_gm.md`**
+
+Contine toate comenzile organizate pe categorii cu sintaxa, nivel GM necesar si descriere.
+Comanda corecta pentru spawn mob este `/mob <vnum>` (nu `/spawn`).
+
 ## Database Schema
 
 For full verified schema of all tables and columns, see:
