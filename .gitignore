@@ -27,3 +27,6 @@ src/server/libthecore/lib/
 
 # MCP config (contine tokeni)
 .mcp.json
+
+# Setari locale Claude Code
+.claude/settings.local.json
