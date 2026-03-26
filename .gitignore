@@ -24,3 +24,6 @@ src/server/libthecore/lib/
 *.o
 *.a
 *.d
+
+# MCP config (contine tokeni)
+.mcp.json
