@@ -663,7 +663,7 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 				// if (version > date)
 				if (version != date) // Fix
 				{
-					ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("클라이언트 버전이 틀려 로그아웃 됩니다. 정상적으로 패치 후 접속하세요."));
+					ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("클라이언트 버전이 틀려 로그아웃 됩니다. 정상적으로 패치 후 접속하세요."), ch->GetLanguage()));
 					d->DelayedDisconnect(10);
 					LogManager::instance().HackLog("VERSION_CONFLICT", ch);
 
@@ -803,9 +803,9 @@ void CInputLogin::Entergame(LPDESC d, const char * data)
 	{
 		if (FN_is_battle_zone(ch))
 		{
-			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("이 맵에선 강제적인 대전이 있을수 도 있습니다."));
-			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("이 조항에 동의하지 않을시"));
-			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT("본인의 주성 및 부성으로 돌아가시기 바랍니다."));
+			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("이 맵에선 강제적인 대전이 있을수 도 있습니다."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("이 조항에 동의하지 않을시"), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("본인의 주성 및 부성으로 돌아가시기 바랍니다."), ch->GetLanguage()));
 		}
 	}
 }

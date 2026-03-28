@@ -155,11 +155,11 @@ bool COXEventManager::ShowQuizList(LPCHARACTER pkChar)
 	{
 		for (size_t j = 0; j < m_vec_quiz[i].size(); ++j, ++c)
 		{
-			pkChar->ChatPacket(CHAT_TYPE_INFO, "%d %s %s", m_vec_quiz[i][j].level, m_vec_quiz[i][j].Quiz, m_vec_quiz[i][j].answer ? LC_TEXT("Âü") : LC_TEXT("°ÅÁþ"));
+			pkChar->ChatPacket(CHAT_TYPE_INFO, "%d %s %s", m_vec_quiz[i][j].level, m_vec_quiz[i][j].Quiz, m_vec_quiz[i][j].answer ? LC_TEXT_LANG(LC_TEXT("Âü"), pkChar->GetLanguage()) : LC_TEXT_LANG(LC_TEXT("°ÅÁþ"), pkChar->GetLanguage()));
 		}
 	}
 
-	pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("ÃÑ ÄûÁî ¼ö: %d"), c);	
+	pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÃÑ ÄûÁî ¼ö: %d"), pkChar->GetLanguage()), c);	
 	return true;
 }
 
@@ -312,7 +312,7 @@ bool COXEventManager::CheckAnswer(bool answer)
 			}
 			else
 			{
-				pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("Á¤´äÀÔ´Ï´Ù!"));
+				pkChar->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Á¤´äÀÔ´Ï´Ù!"), pkChar->GetLanguage()));
 				// pkChar->CreateFly(number(FLY_FIREWORK1, FLY_FIREWORK6), pkChar);
 				char chatbuf[256];
 				int len = snprintf(chatbuf, sizeof(chatbuf), 

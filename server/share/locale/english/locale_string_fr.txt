@@ -413,7 +413,7 @@
 "Une gemme a disparu de %s.";
 
 "<±æµå> ±æµå ÀÌ¸§ÀÌ ÀûÇÕÇÏÁö ¾Ê½À´Ï´Ù.";
-"[Guild] The Guildname is invalid.";
+"[Guilde] Ce nom de guilde est invalide.";
 
 "<±æµå> ÀÌ¹Ì °°Àº ÀÌ¸§ÀÇ ±æµå°¡ ÀÖ½À´Ï´Ù.";
 "[Guilde] Ce nom de Guilde est déjà pris.";
@@ -2198,7 +2198,7 @@
 "Vous ne pouvez pas équiper cet objet sur votre ceinture-inventaire.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"Vous ne pouvez pas combiner ces améliorations.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "Vous avez investi %d Yangs.";
@@ -2270,16 +2270,16 @@
 "Si vous inhalez la fumée rouge s'échappant de la boîte, vous serez plus rapide!";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"Aucun bonus supplémentaire ne peut être ajouté.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bonus ajouté avec succès.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"Vous ne pouvez pas modifier les bonus.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s requis.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";

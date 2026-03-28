@@ -382,7 +382,7 @@ int CShop::Buy(LPCHARACTER ch, BYTE pos)
 		m_pkPC->PointChange(POINT_GOLD, dwPrice, false);
 
 		if (iVal > 0)
-			m_pkPC->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("판매금액의 %d %% 가 세금으로 나가게됩니다"), iVal);
+			m_pkPC->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("판매금액의 %d %% 가 세금으로 나가게됩니다"), m_pkPC->GetLanguage()), iVal);
 
 		CMonarch::instance().SendtoDBAddMoney(dwTax, m_pkPC->GetEmpire(), m_pkPC);
 	}

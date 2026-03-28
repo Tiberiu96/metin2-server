@@ -2198,7 +2198,7 @@
 "Diesen Gegenstand kannst du nicht in deinem Gürtel-Inventar ausrüsten.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"Gleiche Verbesserungsbücher können nicht kombiniert werden.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "Du hast %d Yang investiert.";
@@ -2270,16 +2270,16 @@
 "Wenn du den roten Rauch aus der Kiste einatmest, steigert sich deine Schnelligkeit!";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"Kein weiterer Bonus kann hinzugefügt werden.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bonus erfolgreich hinzugefügt.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"Die Boni können nicht geändert werden.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s benötigt.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";

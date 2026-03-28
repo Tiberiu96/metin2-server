@@ -2198,7 +2198,7 @@
 "L'equipaggiamento di questo oggetto nell'inventario della tua Cintura non è consentito.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"Non è possibile combinare questi oggetti.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "Hai investito %d Yang.";
@@ -2270,16 +2270,16 @@
 "Se respiri il fumo rosso che esce dal forziere aumenti la tua velocità!";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"Non è possibile aggiungere altri bonus.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bonus aggiunto con successo.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"Non è possibile modificare i bonus.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s necessario.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";

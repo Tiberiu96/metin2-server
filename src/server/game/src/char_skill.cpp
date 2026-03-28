@@ -268,7 +268,7 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 
 	if (!IsLearnableSkill(dwSkillVnum))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련할 수 없는 스킬입니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("수련할 수 없는 스킬입니다."), GetLanguage()));
 		return false;
 	}
 
@@ -283,7 +283,7 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	   {
 	// 주안술서 사용중에는 시간 제한 무시
 	RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("주안술서를 통해 주화입마에서 빠져나왔습니다."));
+	ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("주안술서를 통해 주화입마에서 빠져나왔습니다."), GetLanguage()));
 	}
 	else 	    
 	{
@@ -297,16 +297,16 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 	// bType이 0이면 처음부터 책으로 수련 가능
 	if (pkSk->dwType == 0)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("그랜드 마스터 수련을 할 수 없는 스킬입니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("그랜드 마스터 수련을 할 수 없는 스킬입니다."), GetLanguage()));
 		return false;
 	}
 
 	if (GetSkillMasterType(dwSkillVnum) != SKILL_GRAND_MASTER)
 	{
 		if (GetSkillMasterType(dwSkillVnum) > SKILL_GRAND_MASTER)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("퍼펙트 마스터된 스킬입니다. 더 이상 수련 할 수 없습니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("퍼펙트 마스터된 스킬입니다. 더 이상 수련 할 수 없습니다."), GetLanguage()));
 		else
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 스킬은 아직 그랜드 마스터 수련을 할 경지에 이르지 않았습니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("이 스킬은 아직 그랜드 마스터 수련을 할 경지에 이르지 않았습니다."), GetLanguage()));
 		return false;
 	}
 
@@ -387,15 +387,15 @@ bool CHARACTER::LearnGrandMasterSkill(DWORD dwSkillVnum)
 
 	if (bLastLevel == GetSkillLevel(dwSkillVnum))
 	{
-		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("크윽, 기가 역류하고 있어! 이거 설마 주화입마인가!? 젠장!"));
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다."));
+		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("크윽, 기가 역류하고 있어! 이거 설마 주화입마인가!? 젠장!"), GetLanguage()));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다."), GetLanguage()));
 		LogManager::instance().CharLog(this, dwSkillVnum, "GM_READ_FAIL", "");
 		return false;
 	}
 
-	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("몸에서 뭔가 힘이 터져 나오는 기분이야!"));
-	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("뜨거운 무엇이 계속 용솟음치고 있어! 이건, 이것은!"));
-	ChatPacket(CHAT_TYPE_INFO, LC_TEXT("더 높은 경지의 수련을 성공적으로 끝내셨습니다."));
+	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("몸에서 뭔가 힘이 터져 나오는 기분이야!"), GetLanguage()));
+	ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("뜨거운 무엇이 계속 용솟음치고 있어! 이건, 이것은!"), GetLanguage()));
+	ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("더 높은 경지의 수련을 성공적으로 끝내셨습니다."), GetLanguage()));
 	LogManager::instance().CharLog(this, dwSkillVnum, "GM_READ_SUCCESS", "");
 	return true;
 }
@@ -422,7 +422,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 	if (!IsLearnableSkill(dwSkillVnum))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련할 수 없는 스킬입니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("수련할 수 없는 스킬입니다."), GetLanguage()));
 		return false;
 	}
 
@@ -434,7 +434,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 		if ( GetExp() < need_exp )
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("경험치가 부족하여 책을 읽을 수 없습니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("경험치가 부족하여 책을 읽을 수 없습니다."), GetLanguage()));
 			return false;
 		}
 	}
@@ -445,9 +445,9 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 		if (GetSkillMasterType(dwSkillVnum) != SKILL_MASTER)
 		{
 			if (GetSkillMasterType(dwSkillVnum) > SKILL_MASTER)
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 스킬은 책으로 더이상 수련할 수 없습니다."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("이 스킬은 책으로 더이상 수련할 수 없습니다."), GetLanguage()));
 			else
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이 스킬은 아직 책으로 수련할 경지에 이르지 않았습니다."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("이 스킬은 아직 책으로 수련할 경지에 이르지 않았습니다."), GetLanguage()));
 			return false;
 		}
 	}
@@ -460,7 +460,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 			{
 				// 주안술서 사용중에는 시간 제한 무시
 				RemoveAffect(AFFECT_SKILL_NO_BOOK_DELAY);
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("주안술서를 통해 주화입마에서 빠져나왔습니다."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("주안술서를 통해 주화입마에서 빠져나왔습니다."), GetLanguage()));
 			}
 			else 	    
 			{
@@ -536,7 +536,7 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 						SkillLevelUp(dwSkillVnum, SKILL_UP_BY_BOOK);
 						pPC->SetFlag(flag, 0);
 
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다."));
+						ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다."), GetLanguage()));
 						LogManager::instance().CharLog(this, dwSkillVnum, "READ_SUCCESS", "");
 						return true;
 					}
@@ -547,20 +547,20 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 						switch (number(1, 3))
 						{
 							case 1:
-								ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("어느정도 이 기술에 대해 이해가 되었지만 조금 부족한듯 한데.."));
+								ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("어느정도 이 기술에 대해 이해가 되었지만 조금 부족한듯 한데.."), GetLanguage()));
 								break;
 											
 							case 2:
-								ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("드디어 끝이 보이는 건가...  이 기술은 이해하기가 너무 힘들어.."));
+								ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("드디어 끝이 보이는 건가...  이 기술은 이해하기가 너무 힘들어.."), GetLanguage()));
 								break;
 
 							case 3:
 							default:
-								ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("열심히 하는 배움을 가지는 것만이 기술을 배울수 있는 유일한 길이다.."));
+								ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("열심히 하는 배움을 가지는 것만이 기술을 배울수 있는 유일한 길이다.."), GetLanguage()));
 								break;
 						}
 
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 권을 더 읽어야 수련을 완료 할 수 있습니다."), need_bookcount - read_count);
+						ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d 권을 더 읽어야 수련을 완료 할 수 있습니다."), GetLanguage()), need_bookcount - read_count);
 						return true;
 					}
 				}
@@ -605,15 +605,15 @@ bool CHARACTER::LearnSkillByBook(DWORD dwSkillVnum, BYTE bProb)
 
 	if (bLastLevel != GetSkillLevel(dwSkillVnum))
 	{
-		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("몸에서 뭔가 힘이 터져 나오는 기분이야!"));
-		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("뜨거운 무엇이 계속 용솟음치고 있어! 이건, 이것은!"));
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다."));
+		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("몸에서 뭔가 힘이 터져 나오는 기분이야!"), GetLanguage()));
+		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("뜨거운 무엇이 계속 용솟음치고 있어! 이건, 이것은!"), GetLanguage()));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("책으로 더 높은 경지의 수련을 성공적으로 끝내셨습니다."), GetLanguage()));
 		LogManager::instance().CharLog(this, dwSkillVnum, "READ_SUCCESS", "");
 	}
 	else
 	{
-		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT("크윽, 기가 역류하고 있어! 이거 설마 주화입마인가!? 젠장!"));
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다."));
+		ChatPacket(CHAT_TYPE_TALKING, LC_TEXT_LANG(LC_TEXT("크윽, 기가 역류하고 있어! 이거 설마 주화입마인가!? 젠장!"), GetLanguage()));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("수련이 실패로 끝났습니다. 다시 도전해주시기 바랍니다."), GetLanguage()));
 		LogManager::instance().CharLog(this, dwSkillVnum, "READ_FAIL", "");
 	}
 
@@ -697,7 +697,7 @@ void CHARACTER::SkillLevelUp(DWORD dwVnum, BYTE bMethod)
 
 	if (IsPolymorphed())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("둔갑 중에는 능력을 올릴 수 없습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("둔갑 중에는 능력을 올릴 수 없습니다."), GetLanguage()));
 		return;
 	}
 
@@ -1653,7 +1653,7 @@ EVENTFUNC(skill_gwihwan_event)
 	else
 	{
 		//실패
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("귀환에 실패하였습니다."));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("귀환에 실패하였습니다."), ch->GetLanguage()));
 	}
 	return 0;
 }
@@ -2445,9 +2445,9 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 			return false;
 
 		if (GetHorseLevel() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말이 없습니다. 마굿간 경비병을 찾아가세요."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("말이 없습니다. 마굿간 경비병을 찾아가세요."), GetLanguage()));
 		else
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말 소환 아이템을 사용하세요."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("말 소환 아이템을 사용하세요."), GetLanguage()));
 
 		return true;
 	}
@@ -2584,7 +2584,7 @@ bool CHARACTER::UseSkill(DWORD dwVnum, LPCHARACTER pkVictim, bool bUseGrandMaste
 			return false;
 
 		if (test_server)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s SP소모: %d"), pkSk->szName, iNeededSP);
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s SP소모: %d"), GetLanguage()), pkSk->szName, iNeededSP);
 
 		PointChange(POINT_SP, -iNeededSP);
 	}
@@ -2770,41 +2770,41 @@ void CHARACTER::SkillLearnWaitMoreTimeMessage(DWORD ms)
 	//const char* str = "";
 	//
 	if (ms < 3 * 60)
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("몸 속이 뜨겁군. 하지만 아주 편안해. 이대로 기를 안정시키자."));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("몸 속이 뜨겁군. 하지만 아주 편안해. 이대로 기를 안정시키자."), GetLanguage()));
 	else if (ms < 5 * 60)
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("그래, 천천히. 좀더 천천히, 그러나 막힘 없이 빠르게!"));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("그래, 천천히. 좀더 천천히, 그러나 막힘 없이 빠르게!"), GetLanguage()));
 	else if (ms < 10 * 60) // 10분
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("그래, 이 느낌이야. 체내에 기가 아주 충만해."));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("그래, 이 느낌이야. 체내에 기가 아주 충만해."), GetLanguage()));
 	else if (ms < 30 * 60) // 30분
 	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("다 읽었다! 이제 비급에 적혀있는 대로 전신에 기를 돌리기만 하면,"));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("그것으로 수련은 끝난 거야!"));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("다 읽었다! 이제 비급에 적혀있는 대로 전신에 기를 돌리기만 하면,"), GetLanguage()));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("그것으로 수련은 끝난 거야!"), GetLanguage()));
 	}
 	else if (ms < 1 * 3600) // 1시간
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("이제 책의 마지막 장이야! 수련의 끝이 눈에 보이고 있어!"));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("이제 책의 마지막 장이야! 수련의 끝이 눈에 보이고 있어!"), GetLanguage()));
 	else if (ms < 2 * 3600) // 2시간
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("얼마 안 남았어! 조금만 더!"));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("얼마 안 남았어! 조금만 더!"), GetLanguage()));
 	else if (ms < 3 * 3600)
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("좋았어! 조금만 더 읽으면 끝이다!"));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("좋았어! 조금만 더 읽으면 끝이다!"), GetLanguage()));
 	else if (ms < 6 * 3600)
 	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("책장도 이제 얼마 남지 않았군."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("뭔가 몸 안에 힘이 생기는 기분인 걸."));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("책장도 이제 얼마 남지 않았군."), GetLanguage()));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("뭔가 몸 안에 힘이 생기는 기분인 걸."), GetLanguage()));
 	}
 	else if (ms < 12 * 3600)
 	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("이제 좀 슬슬 가닥이 잡히는 것 같은데."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("좋아, 이 기세로 계속 나간다!"));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("이제 좀 슬슬 가닥이 잡히는 것 같은데."), GetLanguage()));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("좋아, 이 기세로 계속 나간다!"), GetLanguage()));
 	}
 	else if (ms < 18 * 3600)
 	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("아니 어떻게 된 게 종일 읽어도 머리에 안 들어오냐."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("공부하기 싫어지네."));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("아니 어떻게 된 게 종일 읽어도 머리에 안 들어오냐."), GetLanguage()));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("공부하기 싫어지네."), GetLanguage()));
 	}
 	else //if (ms < 2 * 86400)
 	{
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("생각만큼 읽기가 쉽지가 않군. 이해도 어렵고 내용도 난해해."));
-		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT("이래서야 공부가 안된다구."));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("생각만큼 읽기가 쉽지가 않군. 이해도 어렵고 내용도 난해해."), GetLanguage()));
+		ChatPacket(CHAT_TYPE_TALKING, "%s", LC_TEXT_LANG(LC_TEXT("이래서야 공부가 안된다구."), GetLanguage()));
 	}
 	/*
 	   str = "30%";

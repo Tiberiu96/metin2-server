@@ -2198,7 +2198,7 @@
 "Nu poti tine acest obiect in inventarul curelei.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"Nu poşi combina aceleaºi pietre de îmbunatãşire.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "Ai investit %d Yang.";
@@ -2270,16 +2270,18 @@
 "Dacã inhalezi fumul roºu din cutie îşi creºte repeziciunea.";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"Nu poşi adãuga mai mult bonus.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bonus adãugat cu succes.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"Nu poşi schimba bonusurile.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s este necesar.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";
+"°î±ªÀÌ¸¦ ÀåÂøÇÏ¼¼¿ä.";
+"Ai nevoie de o Târnãcop pentru a extrage minereu!";

@@ -406,12 +406,12 @@ namespace quest
 			{
 				if (dwVnums[i] == 1)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈 %d 냥을 획득했습니다."), dwCounts[i]);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("돈 %d 냥을 획득했습니다."), ch->GetLanguage()), dwCounts[i]);
 				}
 				else if (dwVnums[i] == 2)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("나무에서 부터 신비한 빛이 나옵니다."));
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d의 경험치를 획득했습니다."), dwCounts[i]);
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("나무에서 부터 신비한 빛이 나옵니다."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d의 경험치를 획득했습니다."), ch->GetLanguage()), dwCounts[i]);
 				}
 			}
 		}

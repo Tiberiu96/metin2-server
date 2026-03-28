@@ -2198,7 +2198,7 @@
 "Bu eşyayı kemer envanterinde donanamazsın.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"Bunlar birleştirilemiyor.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "%d Yang yatırdın.";
@@ -2270,16 +2270,16 @@
 "Eğer kutudan gelen kırmızı dumanı solursan, hızın artar!";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"Daha fazla bonus eklenemez.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bonus başarıyla eklendi.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"Bonuslar değiştirilemiyor.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s gerekli.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";

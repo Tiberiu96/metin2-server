@@ -291,14 +291,14 @@ void CHARACTER::DeathPenalty(BYTE bTown)
 	if (GetLevel() < 10)
 	{
 		sys_log(0, "NO_DEATH_PENALTY_LESS_LV10(%s)", GetName());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."), GetLanguage()));
 		return;
 	}
 
    	if (number(0, 2))
 	{
 		sys_log(0, "NO_DEATH_PENALTY_LUCK(%s)", GetName());
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."), GetLanguage()));
 		return;
 	}
 
@@ -312,7 +312,7 @@ void CHARACTER::DeathPenalty(BYTE bTown)
 			if (FindAffect(AFFECT_NO_DEATH_PENALTY))
 			{
 				sys_log(0, "NO_DEATH_PENALTY_AFFECT(%s)", GetName());
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."), GetLanguage()));
 				RemoveAffect(AFFECT_NO_DEATH_PENALTY);
 				return;
 			}
@@ -322,7 +322,7 @@ void CHARACTER::DeathPenalty(BYTE bTown)
 			if (FindAffect(AFFECT_NO_DEATH_PENALTY))
 			{
 				sys_log(0, "NO_DEATH_PENALTY_AFFECT(%s)", GetName());
-				ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."));
+				ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("용신의 가호로 경험치가 떨어지지 않았습니다."), GetLanguage()));
 				RemoveAffect(AFFECT_NO_DEATH_PENALTY);
 				return;
 			}
@@ -1344,7 +1344,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 					}
 
 					if (number(1, 100) < iNoPenaltyProb)
-						pkKiller->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("용신의 보호로 아이템이 떨어지지 않았습니다."));
+						pkKiller->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("용신의 보호로 아이템이 떨어지지 않았습니다."), pkKiller->GetLanguage()));
 					else
 					{
 						if (g_iUseLocale && pkKiller->GetParty())
@@ -1428,7 +1428,7 @@ void CHARACTER::Dead(LPCHARACTER pkKiller, bool bImmediateDead)
 				if (pkKiller->m_dwUnderGuildWarInfoMessageTime < get_dword_time())
 				{
 					pkKiller->m_dwUnderGuildWarInfoMessageTime = get_dword_time() + 60000;
-					pkKiller->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드전중에는 사냥에 따른 이익이 없습니다."));
+					pkKiller->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드전중에는 사냥에 따른 이익이 없습니다."), pkKiller->GetLanguage()));
 				}
 			}
 		}
@@ -1783,7 +1783,7 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 					IsPenetrate = true;
 
 					if (test_server)
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("관통 추가 데미지 %d"), GetPoint(POINT_DEF_GRADE) * (100 + GetPoint(POINT_DEF_BONUS)) / 100);
+						ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("관통 추가 데미지 %d"), GetLanguage()), GetPoint(POINT_DEF_GRADE) * (100 + GetPoint(POINT_DEF_BONUS)) / 100);
 
 					dam += GetPoint(POINT_DEF_GRADE) * (100 + GetPoint(POINT_DEF_BONUS)) / 100;
 
@@ -1807,8 +1807,8 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 			{
 				if (test_server)
 				{
-					pAttacker->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 블럭! (%d%%)"), GetName(), GetPoint(POINT_BLOCK));
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 블럭! (%d%%)"), GetName(), GetPoint(POINT_BLOCK));
+					pAttacker->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 블럭! (%d%%)"), pAttacker->GetLanguage()), GetName(), GetPoint(POINT_BLOCK));
+					ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 블럭! (%d%%)"), GetLanguage()), GetName(), GetPoint(POINT_BLOCK));
 				}
 
 				SendDamagePacket(pAttacker, 0, DAMAGE_BLOCK);
@@ -1822,8 +1822,8 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 			{
 				if (test_server)
 				{
-					pAttacker->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 회피! (%d%%)"), GetName(), GetPoint(POINT_DODGE));
-					ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 회피! (%d%%)"), GetName(), GetPoint(POINT_DODGE));
+					pAttacker->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 회피! (%d%%)"), pAttacker->GetLanguage()), GetName(), GetPoint(POINT_DODGE));
+					ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 회피! (%d%%)"), GetLanguage()), GetName(), GetPoint(POINT_DODGE));
 				}
 
 				SendDamagePacket(pAttacker, 0, DAMAGE_DODGE);
@@ -1909,7 +1909,7 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 					IsPenetrate = true;
 
 					if (test_server)
-						ChatPacket(CHAT_TYPE_INFO, LC_TEXT("관통 추가 데미지 %d"), GetPoint(POINT_DEF_GRADE) * (100 + GetPoint(POINT_DEF_BONUS)) / 100);
+						ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("관통 추가 데미지 %d"), GetLanguage()), GetPoint(POINT_DEF_GRADE) * (100 + GetPoint(POINT_DEF_BONUS)) / 100);
 					dam += GetPoint(POINT_DEF_GRADE) * (100 + GetPoint(POINT_DEF_BONUS)) / 100;
 				}
 			}
@@ -2278,7 +2278,7 @@ bool CHARACTER::Damage(LPCHARACTER pAttacker, int dam, EDamageType type) // retu
 
 		if (m_bDetailLog)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s[%d]가 공격 위치: %d %d"), pAttacker->GetName(), (DWORD) pAttacker->GetVID(), pAttacker->GetX(), pAttacker->GetY());
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s[%d]가 공격 위치: %d %d"), GetLanguage()), pAttacker->GetName(), (DWORD) pAttacker->GetVID(), pAttacker->GetX(), pAttacker->GetY());
 		}
 	}
 

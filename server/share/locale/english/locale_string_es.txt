@@ -2198,7 +2198,7 @@
 "No puedes equipar este objeto en el inventario de tu cinturón.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"No puedes combinar estas mejoras.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "Has invertido %d Yang .";
@@ -2270,16 +2270,16 @@
 "Si inhalas el humo rojo que sale de la caja, ¡serás más rápido!";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"No se pueden añadir más bonus.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bonus añadido con éxito.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"No se pueden cambiar los bonus.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s necesario.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";

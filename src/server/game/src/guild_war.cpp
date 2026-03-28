@@ -43,7 +43,7 @@ void CGuild::GuildWarPacket(DWORD dwOppGID, BYTE bWarType, BYTE bWarState)
 		LPCHARACTER ch = *it;
 
 		if (bWarState == GUILD_WAR_ON_WAR)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드전중에는 사냥에 따른 이익이 없습니다."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드전중에는 사냥에 따른 이익이 없습니다."), ch->GetLanguage()));
 
 		LPDESC d = ch->GetDesc();
 
@@ -651,7 +651,7 @@ void CGuild::GuildWarEntryAccept(DWORD dwOppGID, LPCHARACTER ch)
 
 	if (gw.state != GUILD_WAR_ON_WAR)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("이미 전쟁이 끝났습니다."));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("이미 전쟁이 끝났습니다."), ch->GetLanguage()));
 		return;
 	}
 

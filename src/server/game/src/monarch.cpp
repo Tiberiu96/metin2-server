@@ -41,7 +41,7 @@ struct FHealMyEmpire
 
 			if (ch->IsPC() && m_bEmpire == ch->GetEmpire())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("군주가 내린 축복으로 모든 에너지가 가득 채워집니다"));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("군주가 내린 축복으로 모든 에너지가 가득 채워집니다"), ch->GetLanguage()));
 				ch->PointChange(POINT_HP, ch->GetMaxHP() - ch->GetHP());
 				ch->PointChange(POINT_SP, ch->GetMaxSP() - ch->GetSP());
 				ch->EffectPacket(SE_SPUP_BLUE);
@@ -62,7 +62,7 @@ int CMonarch::HealMyEmpire(LPCHARACTER ch ,DWORD price)
 	{
 		if (!ch->IsGM())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT("군주의 자격을 가지고 있지 않습니다"));
+			ch->ChatPacket(CHAT_TYPE_INFO ,LC_TEXT_LANG(LC_TEXT("군주의 자격을 가지고 있지 않습니다"), ch->GetLanguage()));
 			sys_err("No Monarch pid %d ", pid);
 			return 0;
 		}
@@ -70,14 +70,14 @@ int CMonarch::HealMyEmpire(LPCHARACTER ch ,DWORD price)
 
 	if (!ch->IsMCOK(CHARACTER::MI_HEAL))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d 초 후에 군주의 축복을 사용할 수 있습니다"), ch->GetMCLTime(CHARACTER::MI_HEAL));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d 초 후에 군주의 축복을 사용할 수 있습니다"), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_HEAL));
 
 		return 0;
 	}
 
 	if (!IsMoneyOk(price, Empire)) 
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), GetMoney(Empire), price);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("국고에 돈이 부족합니다. 현재 : %u 필요금액 : %u"), ch->GetLanguage()), GetMoney(Empire), price);
 		return 0;
 	}
 
@@ -94,7 +94,7 @@ int CMonarch::HealMyEmpire(LPCHARACTER ch ,DWORD price)
 	ch->SetMC(CHARACTER::MI_HEAL);
 
 	if (test_server)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("[TEST_ONLY]현재 국고 : %d "), GetMoney(Empire) - price);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[TEST_ONLY]현재 국고 : %d "), ch->GetLanguage()), GetMoney(Empire) - price);
 	return 1;
 }
 

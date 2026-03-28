@@ -77,7 +77,7 @@ DWORD CGuildManager::CreateGuild(TGuildCreateParameter& gcp)
 
 	if (!check_name(gcp.name))
 	{
-		gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드 이름이 적합하지 않습니다."));
+		gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드 이름이 적합하지 않습니다."), gcp.master->GetLanguage()));
 		return 0;
 	}
 
@@ -90,13 +90,13 @@ DWORD CGuildManager::CreateGuild(TGuildCreateParameter& gcp)
 
 		if (!(row[0] && row[0][0] == '0'))
 		{
-			gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 이미 같은 이름의 길드가 있습니다."));
+			gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 이미 같은 이름의 길드가 있습니다."), gcp.master->GetLanguage()));
 			return 0;
 		}
 	}
 	else
 	{
-		gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드를 생성할 수 없습니다."));
+		gcp.master->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드를 생성할 수 없습니다."), gcp.master->GetLanguage()));
 		return 0;
 	}
 
@@ -556,7 +556,7 @@ void CGuildManager::RefuseWar(DWORD guild_id1, DWORD guild_id2)
 	if (g1 && g2)
 	{
 		if (g2->GetMasterCharacter())
-			g2->GetMasterCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> %s 길드가 길드전을 거부하였습니다."), g1->GetName());
+			g2->GetMasterCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> %s 길드가 길드전을 거부하였습니다."), g2->GetMasterCharacter()->GetLanguage()), g1->GetName());
 	}
 
 	if ( g1 != NULL )
@@ -740,7 +740,7 @@ void CGuildManager::CancelWar(DWORD guild_id1, DWORD guild_id2)
 		LPCHARACTER master1 = g1->GetMasterCharacter();
 
 		if (master1)
-			master1->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드전이 취소 되었습니다."));
+			master1->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드전이 취소 되었습니다."), master1->GetLanguage()));
 	}
 
 	if (g2)
@@ -748,7 +748,7 @@ void CGuildManager::CancelWar(DWORD guild_id1, DWORD guild_id2)
 		LPCHARACTER master2 = g2->GetMasterCharacter();
 
 		if (master2)
-			master2->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("<길드> 길드전이 취소 되었습니다."));
+			master2->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드전이 취소 되었습니다."), master2->GetLanguage()));
 	}
 
 	if (g1 && g2)

@@ -53,7 +53,7 @@ bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 
 	if (IsObserverMode())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("관전 상태에서는 교환을 할 수 없습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("관전 상태에서는 교환을 할 수 없습니다."), GetLanguage()));
 		return false;
 	}
 
@@ -90,7 +90,7 @@ bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 
 	if (victim->IsBlockMode(BLOCK_EXCHANGE))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방이 교환 거부 상태입니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방이 교환 거부 상태입니다."), GetLanguage()));
 		return false;
 	}
 
@@ -154,7 +154,7 @@ bool CExchange::AddItem(TItemPos item_pos, BYTE display_pos)
 
 	if (IS_SET(item->GetAntiFlag(), ITEM_ANTIFLAG_GIVE))
 	{
-		m_pOwner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("아이템을 건네줄 수 없습니다."));
+		m_pOwner->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("아이템을 건네줄 수 없습니다."), m_pOwner->GetLanguage()));
 		return false;
 	}
 
@@ -519,31 +519,31 @@ bool CExchange::Accept(bool bAccept)
 		// 를 리턴한다.
 		if (!Check(&iItemCount))
 		{
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈이 부족하거나 아이템이 제자리에 없습니다."));
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방의 돈이 부족하거나 아이템이 제자리에 없습니다."));
+			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("돈이 부족하거나 아이템이 제자리에 없습니다."), GetOwner()->GetLanguage()));
+			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방의 돈이 부족하거나 아이템이 제자리에 없습니다."), victim->GetLanguage()));
 			goto EXCHANGE_END;
 		}
 
 		// 리턴 받은 아이템 개수로 상대방의 소지품에 남은 자리가 있나 확인한다.
 		if (!CheckSpace())
 		{
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방의 소지품에 빈 공간이 없습니다."));
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지품에 빈 공간이 없습니다."));
+			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방의 소지품에 빈 공간이 없습니다."), GetOwner()->GetLanguage()));
+			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("소지품에 빈 공간이 없습니다."), victim->GetLanguage()));
 			goto EXCHANGE_END;
 		}
 
 		// 상대방도 마찬가지로..
 		if (!GetCompany()->Check(&iItemCount))
 		{
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("돈이 부족하거나 아이템이 제자리에 없습니다."));
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방의 돈이 부족하거나 아이템이 제자리에 없습니다."));
+			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("돈이 부족하거나 아이템이 제자리에 없습니다."), victim->GetLanguage()));
+			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방의 돈이 부족하거나 아이템이 제자리에 없습니다."), GetOwner()->GetLanguage()));
 			goto EXCHANGE_END;
 		}
 
 		if (!GetCompany()->CheckSpace())
 		{
-			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("상대방의 소지품에 빈 공간이 없습니다."));
-			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("소지품에 빈 공간이 없습니다."));
+			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방의 소지품에 빈 공간이 없습니다."), victim->GetLanguage()));
+			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("소지품에 빈 공간이 없습니다."), GetOwner()->GetLanguage()));
 			goto EXCHANGE_END;
 		}
 
@@ -566,8 +566,8 @@ bool CExchange::Accept(bool bAccept)
 					victim->Save();
 
 				// INTERNATIONAL_VERSION
-				GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님과의 교환이 성사 되었습니다."), victim->GetName());
-				victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%s 님과의 교환이 성사 되었습니다."), GetOwner()->GetName());
+				GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 님과의 교환이 성사 되었습니다."), GetOwner()->GetLanguage()), victim->GetName());
+				victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 님과의 교환이 성사 되었습니다."), victim->GetLanguage()), GetOwner()->GetName());
 				// END_OF_INTERNATIONAL_VERSION
 			}
 		}

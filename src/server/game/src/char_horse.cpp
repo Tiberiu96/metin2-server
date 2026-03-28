@@ -17,13 +17,13 @@ bool CHARACTER::StartRiding()
 {
 	if (IsDead() == true)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("쓰러진 상태에서는 말에 탈 수 없습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("쓰러진 상태에서는 말에 탈 수 없습니다."), GetLanguage()));
 		return false;
 	}
 	
 	if (IsPolymorphed())
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("변신 상태에서는 말에 탈 수 없습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("변신 상태에서는 말에 탈 수 없습니다."), GetLanguage()));
 		return false;
 	}
 
@@ -32,7 +32,7 @@ bool CHARACTER::StartRiding()
 
 	if (armor && (armor->GetVnum() >= 11901 && armor->GetVnum() <= 11904))
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("예복을 입은 상태에서 말을 탈 수 없습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("예복을 입은 상태에서 말을 탈 수 없습니다."), GetLanguage()));
 		return false;
 	}
 
@@ -48,11 +48,11 @@ bool CHARACTER::StartRiding()
 	if (false == CHorseRider::StartRiding())
 	{
 		if (GetHorseLevel() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말을 소유하고 있지 않습니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("말을 소유하고 있지 않습니다."), GetLanguage()));
 		else if (GetHorseHealth() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말이 죽어있는 상태 입니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("말이 죽어있는 상태 입니다."), GetLanguage()));
 		else if (GetHorseStamina() <= 0)
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말의 스테미너가 부족하여 말을 탈 수 없습니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("말의 스테미너가 부족하여 말을 탈 수 없습니다."), GetLanguage()));
 
 		return false;
 	}
@@ -178,7 +178,7 @@ void CHARACTER::HorseSummon(bool bSummon, bool bFromFar, DWORD dwVnum, const cha
 
 		if (!m_chHorse)
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("말 소환에 실패하였습니다."));
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("말 소환에 실패하였습니다."), GetLanguage()));
 			return;
 		}
 

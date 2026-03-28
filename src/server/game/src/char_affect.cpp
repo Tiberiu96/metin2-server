@@ -538,7 +538,7 @@ bool CHARACTER::AddAffect(DWORD dwType, BYTE bApplyOn, long lApplyValue, DWORD d
 	// CHAT_BLOCK
 	if (dwType == AFFECT_BLOCK_CHAT && lDuration > 1)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("운영자 제제로 채팅이 금지 되었습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("운영자 제제로 채팅이 금지 되었습니다."), GetLanguage()));
 	}
 	// END_OF_CHAT_BLOCK
 
@@ -720,7 +720,7 @@ bool CHARACTER::RemoveAffect(DWORD dwType)
 	// CHAT_BLOCK
 	if (dwType == AFFECT_BLOCK_CHAT)
 	{
-		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("채팅 금지가 풀렸습니다."));
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("채팅 금지가 풀렸습니다."), GetLanguage()));
 	}
 	// END_OF_CHAT_BLOCK
 

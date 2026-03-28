@@ -2198,7 +2198,7 @@
 "Je kan dit voorwerp niet in de inventaris van je riem doen.";
 
 "같은 개량서를 합칠 수는 없습니다.";
-"[1106-??]No puedes unir esto.";
+"Deze items kunnen niet worden gecombineerd.";
 
 "%d 냥을 투자하셨습니다.";
 "Je hebt %d Yang geinvesteerd.";
@@ -2270,16 +2270,16 @@
 "Als je de rode rook inhaleert die uit de doos komt, ben je sneller!";
 
 "더 이상 이 아이템으로 속성을 추가할 수 없습니다";
-"You cannot add more bonus.";
+"Er kan geen extra bonus meer worden toegevoegd.";
 
 "성공적으로 속성이 추가 되었습니다";
-"New bonus added successfully.";
+"Bonus succesvol toegevoegd.";
 
 "변경 시킬 속성이 없습니다";
-"You cannot change the bonuses.";
+"De bonussen kunnen niet worden gewijzigd.";
 
 "%s이 필요합니다.";
-"%s needed.";
+"%s vereist.";
 
 "문제 입니다.";
 "OX-Question: ";

@@ -2198,7 +2198,7 @@
 "Não podes equipar este item no teu inventário do cinto.";
 
 "°°Àº °³·®¼­¸¦ ÇÕÄ¥ ¼ö´Â ¾ø½À´Ï´Ù.";
-"[1106-??]No puedes unir esto.";
+"Não é possível combinar estes itens.";
 
 "%d ³ÉÀ» ÅõÀÚÇÏ¼Ì½À´Ï´Ù.";
 "Investiste %d Yang.";
@@ -2270,16 +2270,16 @@
 "Se inalares o fumo vermelho que sai da caixa irás tornar-te mais rápido.";
 
 "´õ ÀÌ»ó ÀÌ ¾ÆÀÌÅÛÀ¸·Î ¼Ó¼ºÀ» Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù";
-"You cannot add more bonus.";
+"Não é possível adicionar mais bônus.";
 
 "¼º°øÀûÀ¸·Î ¼Ó¼ºÀÌ Ãß°¡ µÇ¾ú½À´Ï´Ù";
-"New bonus added successfully.";
+"Bônus adicionado com sucesso.";
 
 "º¯°æ ½ÃÅ³ ¼Ó¼ºÀÌ ¾ø½À´Ï´Ù";
-"You cannot change the bonuses.";
+"Não é possível alterar os bônus.";
 
 "%sÀÌ ÇÊ¿äÇÕ´Ï´Ù.";
-"%s needed.";
+"%s necessário.";
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";
