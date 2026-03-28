@@ -450,7 +450,7 @@ namespace quest
 	}
 
 	/**
-	 * @version 05/06/08	Bang2ni - __get_guildid_byname ½ºÅ©¸³Æ® ÇÔ¼ö µî·Ï
+	 * @version 05/06/08	Bang2ni - __get_guildid_byname ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½
 	 */
 	bool CQuestManager::InitializeLua()
 	{
@@ -569,6 +569,61 @@ namespace quest
 				sys_err("LOAD_TRANSLATE_ERROR(%s)", translateFileName);
 				return false;
 			}
+
+			// Dynamic translation: load all translate_*.lua into __translations table
+			{
+				static const char * lang_codes[] = {
+					"en", "de", "hu", "fr", "cz", "dk", "es",
+					"gr", "it", "nl", "pl", "pt", "ro", "ru", "tr",
+					NULL
+				};
+
+				// Create __translations = {}
+				lua_newtable(L);
+				lua_setglobal(L, "__translations");
+
+				// Store EN (already loaded as gameforge)
+				lua_getglobal(L, "__translations");
+				lua_pushstring(L, "en");
+				lua_getglobal(L, "gameforge");
+				lua_settable(L, -3);
+				lua_pop(L, 1);
+
+				// Load each translate_XX.lua
+				for (int i = 0; lang_codes[i] != NULL; i++)
+				{
+					if (strcmp(lang_codes[i], "en") == 0)
+						continue;
+
+					char path[256];
+					snprintf(path, sizeof(path), "%s/translate_%s.lua",
+						LocaleService_GetBasePath().c_str(), lang_codes[i]);
+
+					// Save current gameforge
+					lua_getglobal(L, "gameforge");
+
+					// Load file (overwrites gameforge)
+					int ret = lua_dofile(L, path);
+					if (ret == 0)
+					{
+						// Store new gameforge in __translations[lang]
+						lua_getglobal(L, "__translations");
+						lua_pushstring(L, lang_codes[i]);
+						lua_getglobal(L, "gameforge");
+						lua_settable(L, -3);
+						lua_pop(L, 1);
+
+						sys_log(0, "LoadTranslate_%s: OK", lang_codes[i]);
+					}
+					else
+					{
+						sys_log(0, "LoadTranslate_%s: FAILED (file may not exist)", lang_codes[i]);
+					}
+
+					// Restore EN as gameforge
+					lua_setglobal(L, "gameforge");
+				}
+			}
 		}
 
 		{
@@ -587,6 +642,22 @@ namespace quest
 			if (questLocaleLoadingResult != 0)
 			{
 				sys_err("LoadQuestLocale(%s) FAILURE", questLocaleFileName);
+				return false;
+			}
+		}
+
+		// Load translate proxy AFTER locale.lua (replaces gameforge and locale with dynamic proxies)
+		if (LC_IsEurope())
+		{
+			char proxyFileName[256];
+			snprintf(proxyFileName, sizeof(proxyFileName), "%s/translate_proxy.lua",
+				LocaleService_GetBasePath().c_str());
+
+			int proxyResult = lua_dofile(L, proxyFileName);
+			sys_log(0, "LoadTranslateProxy(%s), returns %d", proxyFileName, proxyResult);
+			if (proxyResult != 0)
+			{
+				sys_err("LOAD_TRANSLATE_PROXY_ERROR(%s)", proxyFileName);
 				return false;
 			}
 		}
@@ -696,7 +767,7 @@ namespace quest
 
 		if (chReply)
 		{
-			// ½Ã°£ Áö³ª¸é ¾Ë¾Æ¼­ ´ÝÈû
+			// ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 
 		if (chWait)
@@ -716,12 +787,12 @@ namespace quest
 
 		sys_log(0, "GotoConfirmState vid %u msg '%s', timeout %d", dwVID, szMsg, iTimeout);
 
-		// 1. »ó´ë¹æ¿¡°Ô È®ÀÎÃ¢ ¶ç¿ò
-		// 2. ³ª¿¡°Ô È®ÀÎ ±â´Ù¸°´Ù°í Ç¥½ÃÇÏ´Â Ã¢ ¶ç¿ò
-		// 3. Å¸ÀÓ¾Æ¿ô ¼³Á¤ (Å¸ÀÓ¾Æ¿ô µÇ¸é »ó´ë¹æ Ã¢ ´Ý°í ³ª¿¡°Ôµµ Ã¢ ´ÝÀ¸¶ó°í º¸³¿)
+		// 1. ï¿½ï¿½ï¿½æ¿¡ï¿½ï¿½ È®ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½
+		// 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½Ù°ï¿½ Ç¥ï¿½ï¿½ï¿½Ï´ï¿½ Ã¢ ï¿½ï¿½ï¿½
+		// 3. Å¸ï¿½Ó¾Æ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ (Å¸ï¿½Ó¾Æ¿ï¿½ ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ ï¿½Ý°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½ Ã¢ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 
 		// 1
-		// »ó´ë¹æÀÌ ¾ø´Â °æ¿ì´Â ±×³É »ó´ë¹æ¿¡°Ô º¸³»Áö ¾Ê´Â´Ù. Å¸ÀÓ¾Æ¿ô¿¡ ÀÇÇØ¼­ ³Ñ¾î°¡°ÔµÊ
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½æ¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. Å¸ï¿½Ó¾Æ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Ñ¾î°¡ï¿½Ôµï¿½
 		LPCHARACTER ch = CHARACTER_MANAGER::instance().Find(dwVID);
 		if (ch && ch->IsPC())
 		{
@@ -757,7 +828,7 @@ namespace quest
 		AddScript("[INPUT]");
 		SendScript();
 
-		// ½Ã°£ Á¦ÇÑÀ» °Ë
+		// ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		//event_create(input_timeout_event, dwEI, PASSES_PER_SEC(iTimeout));
 	}
 
