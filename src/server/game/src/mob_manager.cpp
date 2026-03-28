@@ -110,6 +110,8 @@ bool CMobManager::Initialize(TMobTable * pTable, int iSize)
 
 	//exit(1);
 	CHARACTER_MANAGER::instance().for_each_pc(std::bind(&CMobManager::RebindMobProto, this, std::placeholders::_1));
+
+	LoadMobNames();
 	return true;
 }
 
@@ -304,6 +306,100 @@ bool CMobManager::LoadGroupGroup(const char * c_pszFileName)
 	}
 
 	return true;
+}
+
+bool CMobManager::LoadMobNames()
+{
+	static const char * s_aszLangCodes[] = {
+		"en", "de", "hu", "fr", "cz", "dk", "es", "gr", "it", "nl", "pl", "pt", "ro", "ru", "tr"
+	};
+	static const int s_iLangCount = (int)(sizeof(s_aszLangCodes) / sizeof(s_aszLangCodes[0]));
+
+	for (int i = 0; i < s_iLangCount; ++i)
+	{
+		const char * lang = s_aszLangCodes[i];
+		char szFileName[256];
+
+		if (strcmp(lang, "en") == 0)
+			snprintf(szFileName, sizeof(szFileName), "../../share/conf/mob_names.txt");
+		else
+			snprintf(szFileName, sizeof(szFileName), "../../share/conf/mob_names_%s.txt", lang);
+
+		FILE * fp = fopen(szFileName, "r");
+		if (!fp)
+		{
+			sys_log(0, "LoadMobNames: cannot open %s (skipping)", szFileName);
+			continue;
+		}
+
+		char szLine[256];
+		// Skip header line (VNUM\tLOCALE_NAME)
+		if (!fgets(szLine, sizeof(szLine), fp))
+		{
+			fclose(fp);
+			continue;
+		}
+
+		std::map<DWORD, std::string> & langMap = m_mapMobNamesByLang[lang];
+		int iCount = 0;
+
+		while (fgets(szLine, sizeof(szLine), fp))
+		{
+			int len = (int)strlen(szLine);
+			while (len > 0 && (szLine[len-1] == '\n' || szLine[len-1] == '\r'))
+				szLine[--len] = 0;
+
+			if (len == 0)
+				continue;
+
+			char * pTab = strchr(szLine, '\t');
+			if (!pTab)
+				continue;
+
+			*pTab = 0;
+			DWORD dwVnum = 0;
+			str_to_number(dwVnum, szLine);
+			if (dwVnum == 0)
+				continue;
+
+			langMap[dwVnum] = pTab + 1;
+			++iCount;
+		}
+
+		fclose(fp);
+		sys_log(0, "LoadMobNames: loaded %d names for lang '%s'", iCount, lang);
+	}
+
+	return true;
+}
+
+const char * CMobManager::GetLocaleName(DWORD dwVnum, const char * lang)
+{
+	if (lang && *lang)
+	{
+		std::map<std::string, std::map<DWORD, std::string> >::iterator itLang =
+			m_mapMobNamesByLang.find(lang);
+
+		if (itLang != m_mapMobNamesByLang.end())
+		{
+			std::map<DWORD, std::string>::iterator itName = itLang->second.find(dwVnum);
+			if (itName != itLang->second.end())
+				return itName->second.c_str();
+		}
+	}
+
+	// Fallback to EN
+	std::map<std::string, std::map<DWORD, std::string> >::iterator itEn =
+		m_mapMobNamesByLang.find("en");
+
+	if (itEn != m_mapMobNamesByLang.end())
+	{
+		std::map<DWORD, std::string>::iterator itName = itEn->second.find(dwVnum);
+		if (itName != itEn->second.end())
+			return itName->second.c_str();
+	}
+
+	return NULL;
 }
 
 bool CMobManager::LoadGroup(const char * c_pszFileName)

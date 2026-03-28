@@ -1005,7 +1005,16 @@ void CHARACTER::EncodeInsertPacket(LPENTITY entity)
 		else
 		{
 		show_all_info:
-			strlcpy(addPacket.name, GetName(), sizeof(addPacket.name));
+			if (m_bCharType == CHAR_TYPE_NPC && entity->IsType(ENTITY_CHARACTER))
+			{
+				LPCHARACTER receiver = (LPCHARACTER) entity;
+				const char * locName = CMobManager::instance().GetLocaleName(GetRaceNum(), receiver->GetLanguage());
+				strlcpy(addPacket.name, locName ? locName : GetName(), sizeof(addPacket.name));
+			}
+			else
+			{
+				strlcpy(addPacket.name, GetName(), sizeof(addPacket.name));
+			}
 
 			if (GetGuild() != NULL)
 			{	
@@ -6136,16 +6145,14 @@ void CHARACTER::MonsterChat(BYTE bMonsterChatType)
 	if (IsPC())
 		return;
 
-	char sbuf[256+1];
+	int iIdx = 0;
 
 	if (IsMonster())
 	{
 		if (number(0, 60))
 			return;
 
-		snprintf(sbuf, sizeof(sbuf), 
-				"(locale.monster_chat[%i] and locale.monster_chat[%i][%d] or '')",
-				GetRaceNum(), GetRaceNum(), bMonsterChatType*3 + number(1, 3));
+		iIdx = bMonsterChatType * 3 + number(1, 3);
 	}
 	else
 	{
@@ -6163,27 +6170,53 @@ void CHARACTER::MonsterChat(BYTE bMonsterChatType)
 				return;
 		}
 
-		snprintf(sbuf, sizeof(sbuf), "(locale.monster_chat[%i] and locale.monster_chat[%i][number(1, table.getn(locale.monster_chat[%i]))] or '')", GetRaceNum(), GetRaceNum(), GetRaceNum());
+		// Get message count for this NPC
+		char sCountBuf[128];
+		snprintf(sCountBuf, sizeof(sCountBuf),
+			"table.getn(locale.monster_chat[%i] or {})", GetRaceNum());
+		std::string sCount = quest::ScriptToString(sCountBuf);
+		int iCount = sCount.empty() ? 0 : atoi(sCount.c_str());
+		if (iCount <= 0)
+			return;
+
+		iIdx = number(1, iCount);
 	}
 
-	std::string text = quest::ScriptToString(sbuf);
-
-	if (text.empty())
-		return;
-
+	// Build per-player localized packets
 	struct packet_chat pack_chat;
+	pack_chat.header  = HEADER_GC_CHAT;
+	pack_chat.type    = CHAT_TYPE_TALKING;
+	pack_chat.id      = GetVID();
+	pack_chat.bEmpire = 0;
 
-	pack_chat.header    = HEADER_GC_CHAT;
-	pack_chat.size	= sizeof(struct packet_chat) + text.size() + 1;
-	pack_chat.type      = CHAT_TYPE_TALKING;
-	pack_chat.id        = GetVID();
-	pack_chat.bEmpire	= 0;
+	ENTITY_MAP::iterator it = m_map_view.begin();
+	while (it != m_map_view.end())
+	{
+		LPENTITY entity = (it++)->first;
+		if (!entity->IsType(ENTITY_CHARACTER))
+			continue;
 
-	TEMP_BUFFER buf;
-	buf.write(&pack_chat, sizeof(struct packet_chat));
-	buf.write(text.c_str(), text.size() + 1);
+		LPCHARACTER receiver = (LPCHARACTER) entity;
+		if (!receiver->IsPC() || !receiver->GetDesc())
+			continue;
 
-	PacketAround(buf.read_peek(), buf.size());
+		const char * lang = receiver->GetLanguage();
+		char sbuf[320];
+		snprintf(sbuf, sizeof(sbuf),
+			"(__translations['%s'] and __translations['%s'].locale and __translations['%s'].locale['monster_chat_%i_%i']) or (locale.monster_chat[%i] and locale.monster_chat[%i][%i]) or ''",
+			lang, lang, lang, GetRaceNum(), iIdx, GetRaceNum(), GetRaceNum(), iIdx);
+
+		std::string text = quest::ScriptToString(sbuf);
+		if (text.empty())
+			continue;
+
+		pack_chat.size = sizeof(struct packet_chat) + text.size() + 1;
+
+		TEMP_BUFFER buf;
+		buf.write(&pack_chat, sizeof(struct packet_chat));
+		buf.write(text.c_str(), text.size() + 1);
+		receiver->GetDesc()->Packet(buf.read_peek(), buf.size());
+	}
 }
 
 void CHARACTER::SetQuestNPCID(DWORD vid)
