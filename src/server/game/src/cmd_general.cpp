@@ -324,7 +324,7 @@ EVENTFUNC(timed_event)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("%d초 남았습니다."), info->left_second);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d초 남았습니다."), ch->GetLanguage()), info->left_second);
 		--info->left_second;
 	}
 
@@ -336,7 +336,7 @@ ACMD(do_cmd)
 	/* RECALL_DELAY
 	   if (ch->m_pkRecallEvent != NULL)
 	   {
-	   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("취소 되었습니다."));
+	   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("취소 되었습니다."), ch->GetLanguage()));
 	   event_cancel(&ch->m_pkRecallEvent);
 	   return;
 	   }
@@ -344,7 +344,7 @@ ACMD(do_cmd)
 
 	if (ch->m_pkTimedEvent)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("취소 되었습니다."));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("취소 되었습니다."), ch->GetLanguage()));
 		event_cancel(&ch->m_pkTimedEvent);
 		return;
 	}
@@ -352,15 +352,15 @@ ACMD(do_cmd)
 	switch (subcmd)
 	{
 		case SCMD_LOGOUT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("로그인 화면으로 돌아 갑니다. 잠시만 기다리세요."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("로그인 화면으로 돌아 갑니다. 잠시만 기다리세요."), ch->GetLanguage()));
 			break;
 
 		case SCMD_QUIT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("게임을 종료 합니다. 잠시만 기다리세요."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("게임을 종료 합니다. 잠시만 기다리세요."), ch->GetLanguage()));
 			break;
 
 		case SCMD_PHASE_SELECT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("캐릭터를 전환 합니다. 잠시만 기다리세요."));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("캐릭터를 전환 합니다. 잠시만 기다리세요."), ch->GetLanguage()));
 			break;
 	}
 

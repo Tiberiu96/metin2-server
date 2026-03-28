@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "locale_service.h"
+#include "locale.hpp"
 #include "constants.h"
 #include "banword.h"
 #include "utils.h"
@@ -425,6 +426,9 @@ void LocaleService_LoadLocaleStringFile()
 	fprintf(stderr, "LocaleService %s\n", g_stLocaleFilename.c_str());
 
 	locale_init(g_stLocaleFilename.c_str());
+
+	// Load per-language locale_string files for dynamic multilanguage
+	locale_init_all_langs();
 }
 
 void LocaleService_LoadEmpireTextConvertTables()

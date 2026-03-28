@@ -6,6 +6,10 @@ typedef std::map< std::string, std::string > LocaleStringMapType;
 
 LocaleStringMapType localeString;
 
+// Per-language locale string maps: lang code -> (english text -> translation)
+typedef std::map< std::string, LocaleStringMapType > LocaleStringByLangType;
+LocaleStringByLangType localeStringByLang;
+
 int g_iUseLocale = 0;
 
 void locale_add(const char **strings)
@@ -48,7 +52,7 @@ const char *quote_find_end(const char *string)
 	{
 		if (quote && *tmp == '\\' && *(tmp + 1))
 		{
-			// \ ´ÙÀ½ ¹®ÀÚ°¡ " ¸é ½ºÅµÇÑ´Ù.
+			// \ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ " ï¿½ï¿½ ï¿½ï¿½Åµï¿½Ñ´ï¿½.
 			switch (*(tmp + 1))
 			{
 				case '"':
@@ -210,5 +214,108 @@ void locale_init(const char *filename)
 	while (tmp && *tmp);
 
 	M2_DELETE_ARRAY(buf);
+}
+
+void locale_init_all_langs()
+{
+	static const char * s_aszLangCodes[] = {
+		"de", "hu", "fr", "cz", "dk", "es", "gr", "it", "nl", "pl", "pt", "ro", "ru", "tr"
+	};
+	static const int s_iLangCount = (int)(sizeof(s_aszLangCodes) / sizeof(s_aszLangCodes[0]));
+
+	for (int i = 0; i < s_iLangCount; ++i)
+	{
+		const char * lang = s_aszLangCodes[i];
+		char szFileName[256];
+		snprintf(szFileName, sizeof(szFileName), "locale/english/locale_string_%s.txt", lang);
+
+		FILE * fp = fopen(szFileName, "rb");
+		if (!fp)
+			continue;
+
+		fseek(fp, 0L, SEEK_END);
+		int fileLen = ftell(fp);
+		fseek(fp, 0L, SEEK_SET);
+
+		fileLen++;
+		char * buf = M2_NEW char[fileLen];
+		memset(buf, 0, fileLen);
+		fread(buf, fileLen - 1, sizeof(char), fp);
+		fclose(fp);
+
+		LocaleStringMapType & langMap = localeStringByLang[lang];
+		int iCount = 0;
+
+		const char * tmp = buf;
+		const char * end;
+		char * strings[NUM_LOCALES];
+
+		do
+		{
+			for (int j = 0; j < NUM_LOCALES; j++)
+				strings[j] = NULL;
+
+			if (*tmp == '"')
+			{
+				for (int j = 0; j < NUM_LOCALES; j++)
+				{
+					if (!(end = quote_find_end(tmp)))
+						break;
+
+					strings[j] = locale_convert(tmp, end - tmp);
+					tmp = ++end;
+
+					while (*tmp == '\n' || *tmp == '\r' || *tmp == ' ') tmp++;
+
+					if (j + 1 == NUM_LOCALES)
+						break;
+
+					if (*tmp != '"')
+						break;
+				}
+
+				if (strings[0] != NULL && strings[1] != NULL)
+				{
+					LocaleStringMapType::const_iterator itEn = localeString.find(strings[0]);
+					if (itEn != localeString.end())
+					{
+						langMap[itEn->second] = strings[1];
+						++iCount;
+					}
+				}
+
+				for (int j = 0; j < NUM_LOCALES; j++)
+					if (strings[j])
+						M2_DELETE_ARRAY(strings[j]);
+			}
+			else
+			{
+				tmp = strchr(tmp, '\n');
+				if (tmp)
+					tmp++;
+			}
+		}
+		while (tmp && *tmp);
+
+		M2_DELETE_ARRAY(buf);
+
+		sys_log(0, "locale_init_all_langs: loaded %d strings for lang '%s'", iCount, lang);
+	}
+}
+
+const char * locale_find_lang(const char * string, const char * lang)
+{
+	if (!lang || !*lang || strcmp(lang, "en") == 0)
+		return string;
+
+	LocaleStringByLangType::const_iterator itLang = localeStringByLang.find(lang);
+	if (itLang != localeStringByLang.end())
+	{
+		LocaleStringMapType::const_iterator itStr = itLang->second.find(string);
+		if (itStr != itLang->second.end())
+			return itStr->second.c_str();
+	}
+
+	return string;
 }
 
