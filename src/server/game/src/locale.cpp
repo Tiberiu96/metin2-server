@@ -52,7 +52,7 @@ const char *quote_find_end(const char *string)
 	{
 		if (quote && *tmp == '\\' && *(tmp + 1))
 		{
-			// \ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ " ï¿½ï¿½ ï¿½ï¿½Åµï¿½Ñ´ï¿½.
+			// \ ´ÙÀ½ ¹®ÀÚ°¡ " ¸é ½ºÅµÇÑ´Ù.
 			switch (*(tmp + 1))
 			{
 				case '"':
