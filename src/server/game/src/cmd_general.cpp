@@ -52,16 +52,16 @@ ACMD(do_user_horse_ride)
 
 	if (ch->IsHorseRiding() == false)
 	{
-		// ¸»ÀÌ ¾Æ´Ñ ´Ù¸¥Å»°ÍÀ» Å¸°íÀÖ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ù¸ï¿½Å»ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½Ö´ï¿½.
 		if (ch->GetMountVnum())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÌ¹Ì Å»°ÍÀ» ÀÌ¿ëÁßÀÔ´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ì¹ï¿½ Å»ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 			return;
 		}
 
 		if (ch->GetHorse() == NULL)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»À» ¸ÕÀú ¼ÒÈ¯ÇØÁÖ¼¼¿ä."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 			return;
 		}
 
@@ -78,30 +78,30 @@ ACMD(do_user_horse_back)
 	if (ch->GetHorse() != NULL)
 	{
 		ch->HorseSummon(false);
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»À» µ¹·Áº¸³Â½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 	}
 	else if (ch->IsHorseRiding() == true)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»¿¡¼­ ¸ÕÀú ³»·Á¾ß ÇÕ´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½."), ch->GetLanguage()));
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»À» ¸ÕÀú ¼ÒÈ¯ÇØÁÖ¼¼¿ä."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 	}
 }
 
 ACMD(do_user_horse_feed)
 {
-	// °³ÀÎ»óÁ¡À» ¿¬ »óÅÂ¿¡¼­´Â ¸» ¸ÔÀÌ¸¦ ÁÙ ¼ö ¾ø´Ù.
+	// ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	if (ch->GetMyShop())
 		return;
 
 	if (ch->GetHorse() == NULL)
 	{
 		if (ch->IsHorseRiding() == false)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»À» ¸ÕÀú ¼ÒÈ¯ÇØÁÖ¼¼¿ä."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 		else
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»À» Åº »óÅÂ¿¡¼­´Â ¸ÔÀÌ¸¦ ÁÙ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ Åº ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -111,13 +111,13 @@ ACMD(do_user_horse_feed)
 	{
 		ch->RemoveSpecifyItem(dwFood, 1);
 		ch->FeedHorse();
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»¿¡°Ô %s%s ÁÖ¾ú½À´Ï´Ù."), ch->GetLanguage()), 
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %s%s ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()), 
 				ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName,
-				g_iUseLocale ? "" : under_han(ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName) ? LC_TEXT("À»") : LC_TEXT("¸¦"));
+				g_iUseLocale ? "" : under_han(ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName) ? LC_TEXT("ï¿½ï¿½") : LC_TEXT("ï¿½ï¿½"));
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ¾ÆÀÌÅÛÀÌ ÇÊ¿äÇÕ´Ï´Ù"), ch->GetLanguage()), ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Õ´Ï´ï¿½"), ch->GetLanguage()), ITEM_MANAGER::instance().GetTable(dwFood)->szLocaleName);
 	}
 }
 
@@ -216,7 +216,7 @@ EVENTFUNC(shutdown_event)
 	else
 	{
 		char buf[64];
-		snprintf(buf, sizeof(buf), LC_TEXT("¼Ë´Ù¿îÀÌ %dÃÊ ³²¾Ò½À´Ï´Ù."), *pSec);
+		snprintf(buf, sizeof(buf), LC_TEXT("ï¿½Ë´Ù¿ï¿½ï¿½ï¿½ %dï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½Ï´ï¿½."), *pSec);
 		SendNotice(buf);
 
 		--*pSec;
@@ -235,7 +235,7 @@ void Shutdown(int iSec)
 	CWarMapManager::instance().OnShutdown();
 
 	char buf[64];
-	snprintf(buf, sizeof(buf), LC_TEXT("%dÃÊ ÈÄ °ÔÀÓÀÌ ¼Ë´Ù¿î µË´Ï´Ù."), iSec);
+	snprintf(buf, sizeof(buf), LC_TEXT("%dï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë´Ù¿ï¿½ ï¿½Ë´Ï´ï¿½."), iSec);
 
 	SendNotice(buf);
 
@@ -324,7 +324,7 @@ EVENTFUNC(timed_event)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%dÃÊ ³²¾Ò½À´Ï´Ù."), ch->GetLanguage()), info->left_second);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%dï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()), info->left_second);
 		--info->left_second;
 	}
 
@@ -336,7 +336,7 @@ ACMD(do_cmd)
 	/* RECALL_DELAY
 	   if (ch->m_pkRecallEvent != NULL)
 	   {
-	   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Ãë¼Ò µÇ¾ú½À´Ï´Ù."), ch->GetLanguage()));
+	   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 	   event_cancel(&ch->m_pkRecallEvent);
 	   return;
 	   }
@@ -344,7 +344,7 @@ ACMD(do_cmd)
 
 	if (ch->m_pkTimedEvent)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Ãë¼Ò µÇ¾ú½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		event_cancel(&ch->m_pkTimedEvent);
 		return;
 	}
@@ -352,15 +352,15 @@ ACMD(do_cmd)
 	switch (subcmd)
 	{
 		case SCMD_LOGOUT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("·Î±×ÀÎ È­¸éÀ¸·Î µ¹¾Æ °©´Ï´Ù. Àá½Ã¸¸ ±â´Ù¸®¼¼¿ä."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Î±ï¿½ï¿½ï¿½ È­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½Ã¸ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 			break;
 
 		case SCMD_QUIT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("°ÔÀÓÀ» Á¾·á ÇÕ´Ï´Ù. Àá½Ã¸¸ ±â´Ù¸®¼¼¿ä."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½. ï¿½ï¿½Ã¸ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 			break;
 
 		case SCMD_PHASE_SELECT:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Ä³¸¯ÅÍ¸¦ ÀüÈ¯ ÇÕ´Ï´Ù. Àá½Ã¸¸ ±â´Ù¸®¼¼¿ä."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Ä³ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½È¯ ï¿½Õ´Ï´ï¿½. ï¿½ï¿½Ã¸ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 			break;
 	}
 
@@ -404,7 +404,7 @@ ACMD(do_mount)
 	   char			arg1[256];
 	   struct action_mount_param	param;
 
-	// ÀÌ¹Ì Å¸°í ÀÖÀ¸¸é
+	// ï¿½Ì¹ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (ch->GetMountingChr())
 	{
 	char arg2[256];
@@ -422,7 +422,7 @@ ACMD(do_mount)
 
 	if (distance > 600.0f)
 	{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Á» ´õ °¡±îÀÌ °¡¼­ ³»¸®¼¼¿ä."), ch->GetLanguage()));
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 	return;
 	}
 
@@ -439,7 +439,7 @@ ACMD(do_mount)
 
 	if (!tch->IsNPC() || !tch->IsMountable())
 	{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("°Å±â¿¡´Â Å» ¼ö ¾ø¾î¿ä."), ch->GetLanguage()));
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Å±â¿¡ï¿½ï¿½ Å» ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 	return;
 	}
 
@@ -447,7 +447,7 @@ ACMD(do_mount)
 
 	if (distance > 600.0f)
 	{
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Á» ´õ °¡±îÀÌ °¡¼­ Å¸¼¼¿ä."), ch->GetLanguage()));
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 	return;
 	}
 
@@ -495,41 +495,41 @@ ACMD(do_restart)
 		{
 			if (ch->IsHack())
 			{
-				//¼ºÁö ¸ÊÀÏ°æ¿ì¿¡´Â Ã¼Å© ÇÏÁö ¾Ê´Â´Ù.
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ì¿¡ï¿½ï¿½ Ã¼Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 				if (false == CThreeWayWar::instance().IsSungZiMapIndex(ch->GetMapIndex()))
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¾ÆÁ÷ Àç½ÃÀÛ ÇÒ ¼ö ¾ø½À´Ï´Ù. (%dÃÊ ³²À½)"), ch->GetLanguage()), iTimeToDead - (180 - g_nPortalLimitTime));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. (%dï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)"), ch->GetLanguage()), iTimeToDead - (180 - g_nPortalLimitTime));
 					return;
 				}
 			}
 
 			if (iTimeToDead > 170)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¾ÆÁ÷ Àç½ÃÀÛ ÇÒ ¼ö ¾ø½À´Ï´Ù. (%dÃÊ ³²À½)"), ch->GetLanguage()), iTimeToDead - 170);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. (%dï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)"), ch->GetLanguage()), iTimeToDead - 170);
 				return;
 			}
 		}
 	}
 
 	//PREVENT_HACK
-	//DESC : Ã¢°í, ±³È¯ Ã¢ ÈÄ Æ÷Å»À» »ç¿ëÇÏ´Â ¹ö±×¿¡ ÀÌ¿ëµÉ¼ö ÀÖ¾î¼­
-	//		ÄðÅ¸ÀÓÀ» Ãß°¡ 
+	//DESC : Ã¢ï¿½ï¿½, ï¿½ï¿½È¯ Ã¢ ï¿½ï¿½ ï¿½ï¿½Å»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½×¿ï¿½ ï¿½Ì¿ï¿½É¼ï¿½ ï¿½Ö¾î¼­
+	//		ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ 
 	if (subcmd == SCMD_RESTART_TOWN)
 	{
 		if (ch->IsHack())
 		{
-			//±æµå¸Ê, ¼ºÁö¸Ê¿¡¼­´Â Ã¼Å© ÇÏÁö ¾Ê´Â´Ù.
+			//ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 			if ((!ch->GetWarMap() || ch->GetWarMap()->GetType() == GUILD_WAR_TYPE_FLAG) ||
 			   	false == CThreeWayWar::instance().IsSungZiMapIndex(ch->GetMapIndex()))
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¾ÆÁ÷ Àç½ÃÀÛ ÇÒ ¼ö ¾ø½À´Ï´Ù. (%dÃÊ ³²À½)"), ch->GetLanguage()), iTimeToDead - (180 - g_nPortalLimitTime));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. (%dï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)"), ch->GetLanguage()), iTimeToDead - (180 - g_nPortalLimitTime));
 				return;
 			}
 		}
 
 		if (iTimeToDead > 173)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¾ÆÁ÷ ¸¶À»¿¡¼­ Àç½ÃÀÛ ÇÒ ¼ö ¾ø½À´Ï´Ù. (%d ÃÊ ³²À½)"), ch->GetLanguage()), iTimeToDead - 173);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. (%d ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)"), ch->GetLanguage()), iTimeToDead - 173);
 			return;
 		}
 	}
@@ -542,7 +542,7 @@ ACMD(do_restart)
 	ch->StartRecoveryEvent();
 
 	//FORKED_LOAD
-	//DESC: »ï°Å¸® ÀüÅõ½Ã ºÎÈ°À» ÇÒ°æ¿ì ¸ÊÀÇ ÀÔ±¸°¡ ¾Æ´Ñ »ï°Å¸® ÀüÅõÀÇ ½ÃÀÛÁöÁ¡À¸·Î ÀÌµ¿ÇÏ°Ô µÈ´Ù.
+	//DESC: ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô±ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï°ï¿½ ï¿½È´ï¿½.
 	if (1 == quest::CQuestManager::instance().GetEventFlag("threeway_war"))
 	{
 		if (subcmd == SCMD_RESTART_TOWN || subcmd == SCMD_RESTART_HERE)
@@ -559,12 +559,12 @@ ACMD(do_restart)
 				return;
 			}
 
-			//¼ºÁö 
+			//ï¿½ï¿½ï¿½ï¿½ 
 			if (true == CThreeWayWar::instance().IsSungZiMapIndex(ch->GetMapIndex()))
 			{
 				if (CThreeWayWar::instance().GetReviveTokenForPlayer(ch->GetPlayerID()) <= 0)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¼ºÁö¿¡¼­ ºÎÈ° ±âÈ¸¸¦ ¸ðµÎ ÀÒ¾ú½À´Ï´Ù! ¸¶À»·Î ÀÌµ¿ÇÕ´Ï´Ù!"), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È° ï¿½ï¿½È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½!"), ch->GetLanguage()));
 					ch->WarpSet(EMPIRE_START_X(ch->GetEmpire()), EMPIRE_START_Y(ch->GetEmpire()));
 				}
 				else
@@ -665,7 +665,7 @@ ACMD(do_stat_minus)
 
 	if (ch->IsPolymorphed())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("µÐ°© Áß¿¡´Â ´É·ÂÀ» ¿Ã¸± ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ð°ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ ï¿½É·ï¿½ï¿½ï¿½ ï¿½Ã¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -732,7 +732,7 @@ ACMD(do_stat)
 
 	if (ch->IsPolymorphed())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("µÐ°© Áß¿¡´Â ´É·ÂÀ» ¿Ã¸± ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ð°ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ ï¿½É·ï¿½ï¿½ï¿½ ï¿½Ã¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -777,7 +777,7 @@ ACMD(do_pvp)
 {
 	if (ch->GetArena() != NULL || CArenaManager::instance().IsArenaMap(ch->GetMapIndex()) == true)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("´ë·ÃÀå¿¡¼­ »ç¿ëÇÏ½Ç ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -796,7 +796,7 @@ ACMD(do_pvp)
 
 	if (pkVictim->GetArena() != NULL)
 	{
-		pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("»ó´ë¹æÀÌ ´ë·ÃÁßÀÔ´Ï´Ù."), pkVictim->GetLanguage()));
+		pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), pkVictim->GetLanguage()));
 		return;
 	}
 
@@ -813,7 +813,7 @@ ACMD(do_guildskillup)
 
 	if (!ch->GetGuild())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±æµå¿¡ ¼ÓÇØÀÖÁö ¾Ê½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -827,7 +827,7 @@ ACMD(do_guildskillup)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±æµå ½ºÅ³ ·¹º§À» º¯°æÇÒ ±ÇÇÑÀÌ ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 	}
 }
 
@@ -874,7 +874,7 @@ ACMD(do_skillup)
 }
 
 //
-// @version	05/06/20 Bang2ni - Ä¿¸Çµå Ã³¸® Delegate to CHARACTER class
+// @version	05/06/20 Bang2ni - Ä¿ï¿½Çµï¿½ Ã³ï¿½ï¿½ Delegate to CHARACTER class
 //
 ACMD(do_safebox_close)
 {
@@ -882,7 +882,7 @@ ACMD(do_safebox_close)
 }
 
 //
-// @version	05/06/20 Bang2ni - Ä¿¸Çµå Ã³¸® Delegate to CHARACTER class
+// @version	05/06/20 Bang2ni - Ä¿ï¿½Çµï¿½ Ã³ï¿½ï¿½ Delegate to CHARACTER class
 //
 ACMD(do_safebox_password)
 {
@@ -900,13 +900,13 @@ ACMD(do_safebox_change_password)
 
 	if (!*arg1 || strlen(arg1)>6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢°í> Àß¸øµÈ ¾ÏÈ£¸¦ ÀÔ·ÂÇÏ¼Ì½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢ï¿½ï¿½> ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼Ì½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
 	if (!*arg2 || strlen(arg2)>6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢°í> Àß¸øµÈ ¾ÏÈ£¸¦ ÀÔ·ÂÇÏ¼Ì½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢ï¿½ï¿½> ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼Ì½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -919,7 +919,7 @@ ACMD(do_safebox_change_password)
 
 			if (isalpha(arg2[i]) == false)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢°í> ºñ¹Ð¹øÈ£´Â ¿µ¹®ÀÚ¸¸ °¡´ÉÇÕ´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢ï¿½ï¿½> ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 		}
@@ -941,7 +941,7 @@ ACMD(do_mall_password)
 
 	if (!*arg1 || strlen(arg1) > 6)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢°í> Àß¸øµÈ ¾ÏÈ£¸¦ ÀÔ·ÂÇÏ¼Ì½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢ï¿½ï¿½> ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼Ì½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -949,13 +949,13 @@ ACMD(do_mall_password)
 
 	if (ch->GetMall())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢°í> Ã¢°í°¡ ÀÌ¹Ì ¿­·ÁÀÖ½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢ï¿½ï¿½> Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
-	if (iPulse - ch->GetMallLoadTime() < passes_per_sec * 10) // 10ÃÊ¿¡ ÇÑ¹ø¸¸ ¿äÃ» °¡´É
+	if (iPulse - ch->GetMallLoadTime() < passes_per_sec * 10) // 10ï¿½Ê¿ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢°í> Ã¢°í¸¦ ´ÝÀºÁö 10ÃÊ ¾È¿¡´Â ¿­ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<Ã¢ï¿½ï¿½> Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -986,13 +986,13 @@ ACMD(do_ungroup)
 
 	if (!CPartyManager::instance().IsEnablePCParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ÆÄÆ¼> ¼­¹ö ¹®Á¦·Î ÆÄÆ¼ °ü·Ã Ã³¸®¸¦ ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½Æ¼> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
 	if (ch->GetDungeon())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ÆÄÆ¼> ´øÀü ¾È¿¡¼­´Â ÆÄÆ¼¿¡¼­ ³ª°¥ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½Æ¼> ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -1005,7 +1005,7 @@ ACMD(do_ungroup)
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ÆÄÆ¼> ÆÄÆ¼¿¡¼­ ³ª°¡¼Ì½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½Æ¼> ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		//pParty->SendPartyRemoveOneToAll(ch);
 		pParty->Quit(ch->GetPlayerID());
 		//pParty->SendPartyRemoveAllToOne(ch);
@@ -1035,20 +1035,20 @@ ACMD(do_set_run_mode)
 
 ACMD(do_war)
 {
-	//³» ±æµå Á¤º¸¸¦ ¾ò¾î¿À°í
+	//ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CGuild * g = ch->GetGuild();
 
 	if (!g)
 		return;
 
-	//ÀüÀïÁßÀÎÁö Ã¼Å©ÇÑ¹ø!
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ñ¹ï¿½!
 	if (g->UnderAnyWar())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ÀÌ¹Ì ´Ù¸¥ ÀüÀï¿¡ ÂüÀü Áß ÀÔ´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½Ì¹ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
-	//ÆÄ¶ó¸ÞÅÍ¸¦ µÎ¹è·Î ³ª´©°í
+	//ï¿½Ä¶ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Î¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	char arg1[256], arg2[256];
 	int type = GUILD_WAR_TYPE_FIELD;
 	two_arguments(argument, arg1, sizeof(arg1), arg2, sizeof(arg2));
@@ -1067,33 +1067,33 @@ ACMD(do_war)
 			return;
 	}
 
-	//±æµåÀÇ ¸¶½ºÅÍ ¾ÆÀÌµð¸¦ ¾ò¾î¿ÂµÚ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Âµï¿½
 	DWORD gm_pid = g->GetMasterPID();
 
-	//¸¶½ºÅÍÀÎÁö Ã¼Å©(±æÀüÀº ±æµåÀå¸¸ÀÌ °¡´É)
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å©(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½å¸¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	if (gm_pid != ch->GetPlayerID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±æµåÀü¿¡ ´ëÇÑ ±ÇÇÑÀÌ ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
-	//»ó´ë ±æµå¸¦ ¾ò¾î¿À°í
+	//ï¿½ï¿½ï¿½ ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CGuild * opp_g = CGuildManager::instance().FindGuildByName(arg1);
 
 	if (!opp_g)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±×·± ±æµå°¡ ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½×·ï¿½ ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
-	//»ó´ë±æµå¿ÍÀÇ »óÅÂ Ã¼Å©
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 	switch (g->GetGuildWarState(opp_g->GetID()))
 	{
 		case GUILD_WAR_NONE:
 			{
 				if (opp_g->UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµå°¡ ÀÌ¹Ì ÀüÀï Áß ÀÔ´Ï´Ù."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å°¡ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 					return;
 				}
 
@@ -1101,13 +1101,13 @@ ACMD(do_war)
 
 				if (g->GetGuildMoney() < iWarPrice)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> Àüºñ°¡ ºÎÁ·ÇÏ¿© ±æµåÀüÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 					return;
 				}
 
 				if (opp_g->GetGuildMoney() < iWarPrice)
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµåÀÇ Àüºñ°¡ ºÎÁ·ÇÏ¿© ±æµåÀüÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 					return;
 				}
 			}
@@ -1115,7 +1115,7 @@ ACMD(do_war)
 
 		case GUILD_WAR_SEND_DECLARE:
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÌ¹Ì ¼±ÀüÆ÷°í ÁßÀÎ ±æµåÀÔ´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 			break;
@@ -1124,7 +1124,7 @@ ACMD(do_war)
 			{
 				if (opp_g->UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµå°¡ ÀÌ¹Ì ÀüÀï Áß ÀÔ´Ï´Ù."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å°¡ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 					g->RequestRefuseWar(opp_g->GetID());
 					return;
 				}
@@ -1133,7 +1133,7 @@ ACMD(do_war)
 
 		case GUILD_WAR_RESERVE:
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ÀÌ¹Ì ÀüÀïÀÌ ¿¹¾àµÈ ±æµå ÀÔ´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 			break;
@@ -1142,22 +1142,22 @@ ACMD(do_war)
 			return;
 
 		default:
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ÀÌ¹Ì ÀüÀï ÁßÀÎ ±æµåÀÔ´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()));
 			g->RequestRefuseWar(opp_g->GetID());
 			return;
 	}
 
 	if (!g->CanStartWar(type))
 	{
-		// ±æµåÀüÀ» ÇÒ ¼ö ÀÖ´Â Á¶°ÇÀ» ¸¸Á·ÇÏÁö¾Ê´Â´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.
 		if (g->GetLadderPoint() == 0)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ·¹´õ Á¡¼ö°¡ ¸ðÀÚ¶ó¼­ ±æµåÀüÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 			sys_log(0, "GuildWar.StartError.NEED_LADDER_POINT");
 		}
 		else if (g->GetMemberCount() < GUILD_WAR_MIN_MEMBER_COUNT)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±æµåÀüÀ» ÇÏ±â À§ÇØ¼± ÃÖ¼ÒÇÑ %d¸íÀÌ ÀÖ¾î¾ß ÇÕ´Ï´Ù."), ch->GetLanguage()), GUILD_WAR_MIN_MEMBER_COUNT);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ %dï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Õ´Ï´ï¿½."), ch->GetLanguage()), GUILD_WAR_MIN_MEMBER_COUNT);
 			sys_log(0, "GuildWar.StartError.NEED_MINIMUM_MEMBER[%d]", GUILD_WAR_MIN_MEMBER_COUNT);
 		}
 		else
@@ -1167,13 +1167,13 @@ ACMD(do_war)
 		return;
 	}
 
-	// ÇÊµåÀü Ã¼Å©¸¸ ÇÏ°í ¼¼¼¼ÇÑ Ã¼Å©´Â »ó´ë¹æÀÌ ½Â³«ÇÒ¶§ ÇÑ´Ù.
+	// ï¿½Êµï¿½ï¿½ï¿½ Ã¼Å©ï¿½ï¿½ ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â³ï¿½ï¿½Ò¶ï¿½ ï¿½Ñ´ï¿½.
 	if (!opp_g->CanStartWar(GUILD_WAR_TYPE_FIELD))
 	{
 		if (opp_g->GetLadderPoint() == 0)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµåÀÇ ·¹´õ Á¡¼ö°¡ ¸ðÀÚ¶ó¼­ ±æµåÀüÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		else if (opp_g->GetMemberCount() < GUILD_WAR_MIN_MEMBER_COUNT)
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµåÀÇ ±æµå¿ø ¼ö°¡ ºÎÁ·ÇÏ¿© ±æµåÀüÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -1187,7 +1187,7 @@ ACMD(do_war)
 		if (pCCI != NULL)
 			break;
 
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµåÀÇ ±æµåÀåÀÌ Á¢¼ÓÁßÀÌ ¾Æ´Õ´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½."), ch->GetLanguage()));
 		g->RequestRefuseWar(opp_g->GetID());
 		return;
 
@@ -1203,7 +1203,7 @@ ACMD(do_war)
 		if (pCCI != NULL)
 			break;
 
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> »ó´ë¹æ ±æµåÀÇ ±æµåÀåÀÌ Á¢¼ÓÁßÀÌ ¾Æ´Õ´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½."), ch->GetLanguage()));
 		g->RequestRefuseWar(opp_g->GetID());
 		return;
 
@@ -1228,7 +1228,7 @@ ACMD(do_nowar)
 
 	if (gm_pid != ch->GetPlayerID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±æµåÀü¿¡ ´ëÇÑ ±ÇÇÑÀÌ ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -1236,7 +1236,7 @@ ACMD(do_nowar)
 
 	if (!opp_g)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<±æµå> ±×·± ±æµå°¡ ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<ï¿½ï¿½ï¿½> ï¿½×·ï¿½ ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -1277,7 +1277,7 @@ ACMD(do_messenger_auth)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("´ë·ÃÀå¿¡¼­ »ç¿ëÇÏ½Ç ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -1297,7 +1297,7 @@ ACMD(do_messenger_auth)
 		LPCHARACTER tch = CHARACTER_MANAGER::instance().FindPC(arg2);
 
 		if (tch)
-			tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ´ÔÀ¸·Î ºÎÅÍ Ä£±¸ µî·ÏÀ» °ÅºÎ ´çÇß½À´Ï´Ù."), tch->GetLanguage()), ch->GetName());
+			tch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½."), tch->GetLanguage()), ch->GetName());
 	}
 
 	//MessengerManager::instance().AuthToAdd(ch->GetName(), arg2, answer == 'y' ? false : true); // DENY
@@ -1330,7 +1330,7 @@ ACMD(do_unmount)
 	}
 	else
 	{
-		ch->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÎº¥Åä¸®°¡ ²Ë Â÷¼­ ³»¸± ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 	}
 
 }
@@ -1384,7 +1384,7 @@ ACMD(do_view_equip)
 
 		   if (ch->GetSP() < iSPCost)
 		   {
-		   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Á¤½Å·ÂÀÌ ºÎÁ·ÇÏ¿© ´Ù¸¥ »ç¶÷ÀÇ Àåºñ¸¦ º¼ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		   ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½Å·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		   return;
 		   }
 		   ch->PointChange(POINT_SP, -iSPCost);
@@ -1397,13 +1397,13 @@ ACMD(do_party_request)
 {
 	if (ch->GetArena())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("´ë·ÃÀå¿¡¼­ »ç¿ëÇÏ½Ç ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
 	if (ch->GetParty())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÌ¹Ì ÆÄÆ¼¿¡ ¼ÓÇØ ÀÖÀ¸¹Ç·Î °¡ÀÔ½ÅÃ»À» ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ì¹ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½Ô½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
@@ -1461,25 +1461,25 @@ ACMD(do_monarch_warpto)
 
 	if (!CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±ºÁÖ¸¸ÀÌ »ç¿ë °¡´ÉÇÑ ±â´ÉÀÔ´Ï´Ù"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½"), ch->GetLanguage()));
 		return;
 	}
 	
-	//±ºÁÖ ÄðÅ¸ÀÓ °Ë»ç
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ë»ï¿½
 	if (!ch->IsMCOK(CHARACTER::MI_WARP))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d ÃÊ°£ ÄðÅ¸ÀÓÀÌ Àû¿ëÁßÀÔ´Ï´Ù."), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_WARP));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d ï¿½Ê°ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_WARP));
 		return;
 	}
 
-	//±ºÁÖ ¸÷ ¼ÒÈ¯ ºñ¿ë 
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ 
 	const int WarpPrice = 10000;
 	
-	//±ºÁÖ ±¹°í °Ë»ç 
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ 
 	if (!CMonarch::instance().IsMoneyOk(WarpPrice, ch->GetEmpire()))
 	{
 		int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±¹°í¿¡ µ·ÀÌ ºÎÁ·ÇÕ´Ï´Ù. ÇöÀç : %u ÇÊ¿ä±Ý¾× : %u"), ch->GetLanguage()), NationMoney, WarpPrice);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ : %u ï¿½Ê¿ï¿½Ý¾ï¿½ : %u"), ch->GetLanguage()), NationMoney, WarpPrice);
 		return;	
 	}
 
@@ -1490,7 +1490,7 @@ ACMD(do_monarch_warpto)
 
 	if (!*arg1)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("»ç¿ë¹ý: warpto <character name>"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½: warpto <character name>"), ch->GetLanguage()));
 		return;
 	}
 
@@ -1504,18 +1504,18 @@ ACMD(do_monarch_warpto)
 		{
 			if (pkCCI->bEmpire != ch->GetEmpire())
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Å¸Á¦±¹ À¯Àú¿¡°Ô´Â ÀÌµ¿ÇÒ¼ö ¾ø½À´Ï´Ù"), ch->GetLanguage()));
+				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ ï¿½Ìµï¿½ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½"), ch->GetLanguage()));
 				return;
 			}
 
 			if (pkCCI->bChannel != g_bChannel)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç À¯Àú´Â %d Ã¤³Î¿¡ ÀÖ½À´Ï´Ù. (ÇöÀç Ã¤³Î %d)"), ch->GetLanguage()), pkCCI->bChannel, g_bChannel);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %d Ã¤ï¿½Î¿ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. (ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ %d)"), ch->GetLanguage()), pkCCI->bChannel, g_bChannel);
 				return;
 			}
 			if (!IsMonarchWarpZone(pkCCI->lMapIndex))
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç Áö¿ªÀ¸·Î ÀÌµ¿ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 
@@ -1526,13 +1526,13 @@ ACMD(do_monarch_warpto)
 			else
 			{
 				//ch->ChatPacket(CHAT_TYPE_INFO, "You warp to (%d, %d)", pos.x, pos.y);
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ¿¡°Ô·Î ÀÌµ¿ÇÕ´Ï´Ù"), ch->GetLanguage()), arg1);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ï¿½ï¿½ï¿½Ô·ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½"), ch->GetLanguage()), arg1);
 				ch->WarpSet(pos.x, pos.y);
 				
-				//±ºÁÖ µ· »è°¨	
+				//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½è°¨	
 				CMonarch::instance().SendtoDBDecMoney(WarpPrice, ch->GetEmpire(), ch);
 
-				//ÄðÅ¸ÀÓ ÃÊ±âÈ­ 
+				//ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
 				ch->SetMC(CHARACTER::MI_WARP);
 			}
 		}
@@ -1547,26 +1547,26 @@ ACMD(do_monarch_warpto)
 	{
 		if (tch->GetEmpire() != ch->GetEmpire())
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Å¸Á¦±¹ À¯Àú¿¡°Ô´Â ÀÌµ¿ÇÒ¼ö ¾ø½À´Ï´Ù"), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ ï¿½Ìµï¿½ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½"), ch->GetLanguage()));
 			return;
 		}
 		if (!IsMonarchWarpZone(tch->GetMapIndex()))
 		{
-			ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç Áö¿ªÀ¸·Î ÀÌµ¿ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 			return;
 		}
 		x = tch->GetX();
 		y = tch->GetY();
 	}
 
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ¿¡°Ô·Î ÀÌµ¿ÇÕ´Ï´Ù"), ch->GetLanguage()), arg1);
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ï¿½ï¿½ï¿½Ô·ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½"), ch->GetLanguage()), arg1);
 	ch->WarpSet(x, y);
 	ch->Stop();
 
-	//±ºÁÖ µ· »è°¨	
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½è°¨	
 	CMonarch::instance().SendtoDBDecMoney(WarpPrice, ch->GetEmpire(), ch);
 
-	//ÄðÅ¸ÀÓ ÃÊ±âÈ­ 
+	//ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
 	ch->SetMC(CHARACTER::MI_WARP);
 }
 
@@ -1580,31 +1580,31 @@ ACMD(do_monarch_transfer)
 
 	if (!*arg1)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("»ç¿ë¹ý: transfer <name>"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½: transfer <name>"), ch->GetLanguage()));
 		return;
 	}
 	
 	if (!CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±ºÁÖ¸¸ÀÌ »ç¿ë °¡´ÉÇÑ ±â´ÉÀÔ´Ï´Ù"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½"), ch->GetLanguage()));
 		return;
 	}
 	
-	//±ºÁÖ ÄðÅ¸ÀÓ °Ë»ç
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ë»ï¿½
 	if (!ch->IsMCOK(CHARACTER::MI_TRANSFER))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d ÃÊ°£ ÄðÅ¸ÀÓÀÌ Àû¿ëÁßÀÔ´Ï´Ù."), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_TRANSFER));	
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d ï¿½Ê°ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_TRANSFER));	
 		return;
 	}
 
-	//±ºÁÖ ¿öÇÁ ºñ¿ë 
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 
 	const int WarpPrice = 10000;
 
-	//±ºÁÖ ±¹°í °Ë»ç 
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ 
 	if (!CMonarch::instance().IsMoneyOk(WarpPrice, ch->GetEmpire()))
 	{
 		int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±¹°í¿¡ µ·ÀÌ ºÎÁ·ÇÕ´Ï´Ù. ÇöÀç : %u ÇÊ¿ä±Ý¾× : %u"), ch->GetLanguage()), NationMoney, WarpPrice);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ : %u ï¿½Ê¿ï¿½Ý¾ï¿½ : %u"), ch->GetLanguage()), NationMoney, WarpPrice);
 		return;	
 	}
 
@@ -1619,22 +1619,22 @@ ACMD(do_monarch_transfer)
 		{
 			if (pkCCI->bEmpire != ch->GetEmpire())
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("´Ù¸¥ Á¦±¹ À¯Àú´Â ¼ÒÈ¯ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 			if (pkCCI->bChannel != g_bChannel)
 			{
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ´ÔÀº %d Ã¤³Î¿¡ Á¢¼Ó Áß ÀÔ´Ï´Ù. (ÇöÀç Ã¤³Î: %d)"), ch->GetLanguage()), arg1, pkCCI->bChannel, g_bChannel);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ï¿½ï¿½ï¿½ï¿½ %d Ã¤ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô´Ï´ï¿½. (ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½: %d)"), ch->GetLanguage()), arg1, pkCCI->bChannel, g_bChannel);
 				return;
 			}
 			if (!IsMonarchWarpZone(pkCCI->lMapIndex))
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç Áö¿ªÀ¸·Î ÀÌµ¿ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 			if (!IsMonarchWarpZone(ch->GetMapIndex()))
 			{
-				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç Áö¿ªÀ¸·Î ¼ÒÈ¯ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+				ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 				return;
 			}
 
@@ -1646,16 +1646,16 @@ ACMD(do_monarch_transfer)
 			pgg.lY = ch->GetY();
 
 			P2P_MANAGER::instance().Send(&pgg, sizeof(TPacketGGTransfer));
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ´ÔÀ» ¼ÒÈ¯ÇÏ¿´½À´Ï´Ù."), ch->GetLanguage()), arg1);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()), arg1);
 			
-			//±ºÁÖ µ· »è°¨	
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½è°¨	
 			CMonarch::instance().SendtoDBDecMoney(WarpPrice, ch->GetEmpire(), ch);
-			//ÄðÅ¸ÀÓ ÃÊ±âÈ­ 
+			//ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
 			ch->SetMC(CHARACTER::MI_TRANSFER);
 		}
 		else
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÔ·ÂÇÏ½Å ÀÌ¸§À» °¡Áø »ç¿ëÀÚ°¡ ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ô·ï¿½ï¿½Ï½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		}
 
 		return;
@@ -1664,32 +1664,32 @@ ACMD(do_monarch_transfer)
 
 	if (ch == tch)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÚ½ÅÀ» ¼ÒÈ¯ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
 	if (tch->GetEmpire() != ch->GetEmpire())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("´Ù¸¥ Á¦±¹ À¯Àú´Â ¼ÒÈ¯ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 	if (!IsMonarchWarpZone(tch->GetMapIndex()))
 	{
-		ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç Áö¿ªÀ¸·Î ÀÌµ¿ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 	if (!IsMonarchWarpZone(ch->GetMapIndex()))
 	{
-		ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÇØ´ç Áö¿ªÀ¸·Î ¼ÒÈ¯ÇÒ ¼ö ¾ø½À´Ï´Ù."), ch->GetLanguage()));
+		ch->ChatPacket (CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), ch->GetLanguage()));
 		return;
 	}
 
 	//tch->Show(ch->GetMapIndex(), ch->GetX(), ch->GetY(), ch->GetZ());
 	tch->WarpSet(ch->GetX(), ch->GetY(), ch->GetMapIndex());
 	
-	//±ºÁÖ µ· »è°¨	
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½è°¨	
 	CMonarch::instance().SendtoDBDecMoney(WarpPrice, ch->GetEmpire(), ch);
-	//ÄðÅ¸ÀÓ ÃÊ±âÈ­ 
+	//ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
 	ch->SetMC(CHARACTER::MI_TRANSFER);
 }
 
@@ -1697,24 +1697,24 @@ ACMD(do_monarch_info)
 {
 	if (CMonarch::instance().IsMonarch(ch->GetPlayerID(), ch->GetEmpire()))	
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("³ªÀÇ ±ºÁÖ Á¤º¸"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), ch->GetLanguage()));
 		TMonarchInfo * p = CMonarch::instance().GetMonarch();
 		for (int n = 1; n < 4; ++n)
 		{
 			if (n == ch->GetEmpire())
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[%s±ºÁÖ] : %s  º¸À¯±Ý¾× %lld "), ch->GetLanguage()), EMPIRE_NAME(n), p->name[n], p->money[n]);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[%sï¿½ï¿½ï¿½ï¿½] : %s  ï¿½ï¿½ï¿½ï¿½ï¿½Ý¾ï¿½ %lld "), ch->GetLanguage()), EMPIRE_NAME(n), p->name[n], p->money[n]);
 			else
-				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[%s±ºÁÖ] : %s  "), ch->GetLanguage()), EMPIRE_NAME(n), p->name[n]);
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[%sï¿½ï¿½ï¿½ï¿½] : %s  "), ch->GetLanguage()), EMPIRE_NAME(n), p->name[n]);
 				
 		}
 	}
 	else
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±ºÁÖ Á¤º¸"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), ch->GetLanguage()));
 		TMonarchInfo * p = CMonarch::instance().GetMonarch();
 		for (int n = 1; n < 4; ++n)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[%s±ºÁÖ] : %s  "), ch->GetLanguage()), EMPIRE_NAME(n), p->name[n]);
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("[%sï¿½ï¿½ï¿½ï¿½] : %s  "), ch->GetLanguage()), EMPIRE_NAME(n), p->name[n]);
 				
 		}
 	}
@@ -1779,60 +1779,60 @@ ACMD(do_monarch_tax)
 		return;
 	}
 
-	// ±ºÁÖ °Ë»ç	
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½	
 	if (!ch->IsMonarch())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±ºÁÖ¸¸ÀÌ »ç¿ëÇÒ¼ö ÀÖ´Â ±â´ÉÀÔ´Ï´Ù"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½"), ch->GetLanguage()));
 		return;
 	}
 
-	// ¼¼±Ý¼³Á¤ 
+	// ï¿½ï¿½ï¿½Ý¼ï¿½ï¿½ï¿½ 
 	int tax = 0;
 	str_to_number(tax,  arg1);
 
 	if (tax < 1 || tax > 50)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("1-50 »çÀÌÀÇ ¼öÄ¡¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("1-50 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½"), ch->GetLanguage()));
 
 	quest::CQuestManager::instance().SetEventFlag("trade_tax", tax); 
 
-	// ±ºÁÖ¿¡°Ô ¸Þ¼¼Áö ÇÏ³ª
-	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¼¼±ÝÀÌ %d %·Î ¼³Á¤µÇ¾ú½À´Ï´Ù"), ch->GetLanguage()));
+	// ï¿½ï¿½ï¿½Ö¿ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %d %ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½"), ch->GetLanguage()));
 
-	// °øÁö 
+	// ï¿½ï¿½ï¿½ï¿½ 
 	char szMsg[1024];	
 
-	snprintf(szMsg, sizeof(szMsg), "±ºÁÖÀÇ ¸íÀ¸·Î ¼¼±ÝÀÌ %d %% ·Î º¯°æµÇ¾ú½À´Ï´Ù", tax);
+	snprintf(szMsg, sizeof(szMsg), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %d %% ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½", tax);
 	BroadcastNotice(szMsg);
 
-	snprintf(szMsg, sizeof(szMsg), "¾ÕÀ¸·Î´Â °Å·¡ ±Ý¾×ÀÇ %d %% °¡ ±¹°í·Î µé¾î°¡°ÔµË´Ï´Ù.", tax);
+	snprintf(szMsg, sizeof(szMsg), "ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ ï¿½Å·ï¿½ ï¿½Ý¾ï¿½ï¿½ï¿½ %d %% ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°¡ï¿½ÔµË´Ï´ï¿½.", tax);
 	BroadcastNotice(szMsg);
 
-	// ÄðÅ¸ÀÓ ÃÊ±âÈ­ 
+	// ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
 	ch->SetMC(CHARACTER::MI_TAX); 
 }
 
 static const DWORD cs_dwMonarchMobVnums[] =
 {
-	191, //	»ê°ß½Å
-	192, //	Àú½Å
-	193, //	¿õ½Å
-	194, //	È£½Å
-	391, //	¹ÌÁ¤
-	392, //	ÀºÁ¤
-	393, //	¼¼¶û
-	394, //	ÁøÈñ
-	491, //	¸ÍÈ¯
-	492, //	º¸¿ì
-	493, //	±¸ÆÐ
-	494, //	ÃßÈç
-	591, //	ºñ·ù´Ü´ëÀå
-	691, //	¿õ±Í Á·Àå
-	791, //	¹Ð±³±³ÁÖ
-	1304, // ´©··¹ü±Í
-	1901, // ±¸¹ÌÈ£
-	2091, // ¿©¿Õ°Å¹Ì
-	2191, // °Å´ë»ç¸·°ÅºÏ
-	2206, // È­¿°¿Õi
+	191, //	ï¿½ï¿½ß½ï¿½
+	192, //	ï¿½ï¿½ï¿½ï¿½
+	193, //	ï¿½ï¿½ï¿½ï¿½
+	194, //	È£ï¿½ï¿½
+	391, //	ï¿½ï¿½ï¿½ï¿½
+	392, //	ï¿½ï¿½ï¿½ï¿½
+	393, //	ï¿½ï¿½ï¿½ï¿½
+	394, //	ï¿½ï¿½ï¿½ï¿½
+	491, //	ï¿½ï¿½È¯
+	492, //	ï¿½ï¿½ï¿½ï¿½
+	493, //	ï¿½ï¿½ï¿½ï¿½
+	494, //	ï¿½ï¿½ï¿½ï¿½
+	591, //	ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½
+	691, //	ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	791, //	ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½
+	1304, // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	1901, // ï¿½ï¿½ï¿½ï¿½È£
+	2091, // ï¿½ï¿½ï¿½Õ°Å¹ï¿½
+	2191, // ï¿½Å´ï¿½ç¸·ï¿½Åºï¿½
+	2206, // È­ï¿½ï¿½ï¿½ï¿½i
 	0,
 };
 
@@ -1845,7 +1845,7 @@ ACMD(do_monarch_mob)
 
 	if (!ch->IsMonarch())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±ºÁÖ¸¸ÀÌ »ç¿ëÇÒ¼ö ÀÖ´Â ±â´ÉÀÔ´Ï´Ù"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½"), ch->GetLanguage()));
 		return;
 	}
 	
@@ -1862,26 +1862,26 @@ ACMD(do_monarch_mob)
 	{
 		if (mapEmpire != pcEmpire && mapEmpire != 0)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ÀÚ±¹ ¿µÅä¿¡¼­¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Â ±â´ÉÀÔ´Ï´Ù"), ch->GetLanguage()));
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½Ú±ï¿½ ï¿½ï¿½ï¿½ä¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½"), ch->GetLanguage()));
 			return;
 		}
 	}
 
-	// ±ºÁÖ ¸÷ ¼ÒÈ¯ ºñ¿ë 
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ 
 	const int SummonPrice = 5000000;
 
-	// ±ºÁÖ ÄðÅ¸ÀÓ °Ë»ç
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ë»ï¿½
 	if (!ch->IsMCOK(CHARACTER::MI_SUMMON))
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d ÃÊ°£ ÄðÅ¸ÀÓÀÌ Àû¿ëÁßÀÔ´Ï´Ù."), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_SUMMON));	
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%d ï¿½Ê°ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."), ch->GetLanguage()), ch->GetMCLTime(CHARACTER::MI_SUMMON));	
 		return;
 	}
 	
-	// ±ºÁÖ ±¹°í °Ë»ç 
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ 
 	if (!CMonarch::instance().IsMoneyOk(SummonPrice, ch->GetEmpire()))
 	{
 		int NationMoney = CMonarch::instance().GetMoney(ch->GetEmpire());
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("±¹°í¿¡ µ·ÀÌ ºÎÁ·ÇÕ´Ï´Ù. ÇöÀç : %u ÇÊ¿ä±Ý¾× : %u"), ch->GetLanguage()), NationMoney, SummonPrice);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ : %u ï¿½Ê¿ï¿½Ý¾ï¿½ : %u"), ch->GetLanguage()), NationMoney, SummonPrice);
 		return;	
 	}
 
@@ -1905,14 +1905,14 @@ ACMD(do_monarch_mob)
 
 	DWORD count;
 
-	// ¼ÒÈ¯ °¡´É ¸÷ °Ë»ç
+	// ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ë»ï¿½
 	for (count = 0; cs_dwMonarchMobVnums[count] != 0; ++count)
 		if (cs_dwMonarchMobVnums[count] == vnum)
 			break;
 
 	if (0 == cs_dwMonarchMobVnums[count])
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¼ÒÈ¯ÇÒ¼ö ¾ø´Â ¸ó½ºÅÍ ÀÔ´Ï´Ù. ¼ÒÈ¯°¡´ÉÇÑ ¸ó½ºÅÍ´Â È¨ÆäÀÌÁö¸¦ ÂüÁ¶ÇÏ¼¼¿ä"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½È¯ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´Ï´ï¿½. ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í´ï¿½ È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½"), ch->GetLanguage()));
 		return;
 	}
 
@@ -1928,10 +1928,10 @@ ACMD(do_monarch_mob)
 
 	if (tch)
 	{
-		// ±ºÁÖ µ· »è°¨	
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½è°¨	
 		CMonarch::instance().SendtoDBDecMoney(SummonPrice, ch->GetEmpire(), ch);
 
-		// ÄðÅ¸ÀÓ ÃÊ±âÈ­ 
+		// ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ê±ï¿½È­ 
 		ch->SetMC(CHARACTER::MI_SUMMON); 
 	}
 }
@@ -1940,92 +1940,92 @@ static const char* FN_point_string(int apply_number)
 {
 	switch (apply_number)
 	{
-		case POINT_MAX_HP:	return LC_TEXT("ÃÖ´ë »ý¸í·Â +%d");
-		case POINT_MAX_SP:	return LC_TEXT("ÃÖ´ë Á¤½Å·Â +%d");
-		case POINT_HT:		return LC_TEXT("Ã¼·Â +%d");
-		case POINT_IQ:		return LC_TEXT("Áö´É +%d");
-		case POINT_ST:		return LC_TEXT("±Ù·Â +%d");
-		case POINT_DX:		return LC_TEXT("¹ÎÃ¸ +%d");
-		case POINT_ATT_SPEED:	return LC_TEXT("°ø°Ý¼Óµµ +%d");
-		case POINT_MOV_SPEED:	return LC_TEXT("ÀÌµ¿¼Óµµ %d");
-		case POINT_CASTING_SPEED:	return LC_TEXT("ÄðÅ¸ÀÓ -%d");
-		case POINT_HP_REGEN:	return LC_TEXT("»ý¸í·Â È¸º¹ +%d");
-		case POINT_SP_REGEN:	return LC_TEXT("Á¤½Å·Â È¸º¹ +%d");
-		case POINT_POISON_PCT:	return LC_TEXT("µ¶°ø°Ý %d");
-		case POINT_STUN_PCT:	return LC_TEXT("½ºÅÏ +%d");
-		case POINT_SLOW_PCT:	return LC_TEXT("½½·Î¿ì +%d");
-		case POINT_CRITICAL_PCT:	return LC_TEXT("%d%% È®·ü·Î Ä¡¸íÅ¸ °ø°Ý");
-		case POINT_RESIST_CRITICAL:	return LC_TEXT("»ó´ëÀÇ Ä¡¸íÅ¸ È®·ü %d%% °¨¼Ò");
-		case POINT_PENETRATE_PCT:	return LC_TEXT("%d%% È®·ü·Î °üÅë °ø°Ý");
-		case POINT_RESIST_PENETRATE: return LC_TEXT("»ó´ëÀÇ °üÅë °ø°Ý È®·ü %d%% °¨¼Ò");
-		case POINT_ATTBONUS_HUMAN:	return LC_TEXT("ÀÎ°£·ù ¸ó½ºÅÍ Å¸°ÝÄ¡ +%d%%");
-		case POINT_ATTBONUS_ANIMAL:	return LC_TEXT("µ¿¹°·ù ¸ó½ºÅÍ Å¸°ÝÄ¡ +%d%%");
-		case POINT_ATTBONUS_ORC:	return LC_TEXT("¿õ±ÍÁ· Å¸°ÝÄ¡ +%d%%");
-		case POINT_ATTBONUS_MILGYO:	return LC_TEXT("¹Ð±³·ù Å¸°ÝÄ¡ +%d%%");
-		case POINT_ATTBONUS_UNDEAD:	return LC_TEXT("½ÃÃ¼·ù Å¸°ÝÄ¡ +%d%%");
-		case POINT_ATTBONUS_DEVIL:	return LC_TEXT("¾Ç¸¶·ù Å¸°ÝÄ¡ +%d%%");
-		case POINT_STEAL_HP:		return LC_TEXT("Å¸°ÝÄ¡ %d%% ¸¦ »ý¸í·ÂÀ¸·Î Èí¼ö");
-		case POINT_STEAL_SP:		return LC_TEXT("Å¸·ÂÄ¡ %d%% ¸¦ Á¤½Å·ÂÀ¸·Î Èí¼ö");
-		case POINT_MANA_BURN_PCT:	return LC_TEXT("%d%% È®·ü·Î Å¸°Ý½Ã »ó´ë Àü½Å·Â ¼Ò¸ð");
-		case POINT_DAMAGE_SP_RECOVER:	return LC_TEXT("%d%% È®·ü·Î ÇÇÇØ½Ã Á¤½Å·Â È¸º¹");
-		case POINT_BLOCK:			return LC_TEXT("¹°¸®Å¸°Ý½Ã ºí·° È®·ü %d%%");
-		case POINT_DODGE:			return LC_TEXT("È° °ø°Ý È¸ÇÇ È®·ü %d%%");
-		case POINT_RESIST_SWORD:	return LC_TEXT("ÇÑ¼Õ°Ë ¹æ¾î %d%%");
-		case POINT_RESIST_TWOHAND:	return LC_TEXT("¾ç¼Õ°Ë ¹æ¾î %d%%");
-		case POINT_RESIST_DAGGER:	return LC_TEXT("µÎ¼Õ°Ë ¹æ¾î %d%%");
-		case POINT_RESIST_BELL:		return LC_TEXT("¹æ¿ï ¹æ¾î %d%%");
-		case POINT_RESIST_FAN:		return LC_TEXT("ºÎÃ¤ ¹æ¾î %d%%");
-		case POINT_RESIST_BOW:		return LC_TEXT("È°°ø°Ý ÀúÇ× %d%%");
-		case POINT_RESIST_FIRE:		return LC_TEXT("È­¿° ÀúÇ× %d%%");
-		case POINT_RESIST_ELEC:		return LC_TEXT("Àü±â ÀúÇ× %d%%");
-		case POINT_RESIST_MAGIC:	return LC_TEXT("¸¶¹ý ÀúÇ× %d%%");
-		case POINT_RESIST_WIND:		return LC_TEXT("¹Ù¶÷ ÀúÇ× %d%%");
-		case POINT_RESIST_ICE:		return LC_TEXT("³Ã±â ÀúÇ× %d%%");
-		case POINT_RESIST_EARTH:	return LC_TEXT("´ëÁö ÀúÇ× %d%%");
-		case POINT_RESIST_DARK:		return LC_TEXT("¾îµÒ ÀúÇ× %d%%");
-		case POINT_REFLECT_MELEE:	return LC_TEXT("Á÷Á¢ Å¸°ÝÄ¡ ¹Ý»ç È®·ü : %d%%");
-		case POINT_REFLECT_CURSE:	return LC_TEXT("ÀúÁÖ µÇµ¹¸®±â È®·ü %d%%");
-		case POINT_POISON_REDUCE:	return LC_TEXT("µ¶ ÀúÇ× %d%%");
-		case POINT_KILL_SP_RECOVER:	return LC_TEXT("%d%% È®·ü·Î ÀûÅðÄ¡½Ã Á¤½Å·Â È¸º¹");
-		case POINT_EXP_DOUBLE_BONUS:	return LC_TEXT("%d%% È®·ü·Î ÀûÅðÄ¡½Ã °æÇèÄ¡ Ãß°¡ »ó½Â");
-		case POINT_GOLD_DOUBLE_BONUS:	return LC_TEXT("%d%% È®·ü·Î ÀûÅðÄ¡½Ã µ· 2¹è µå·Ó");
-		case POINT_ITEM_DROP_BONUS:	return LC_TEXT("%d%% È®·ü·Î ÀûÅðÄ¡½Ã ¾ÆÀÌÅÛ 2¹è µå·Ó");
-		case POINT_POTION_BONUS:	return LC_TEXT("¹°¾à »ç¿ë½Ã %d%% ¼º´É Áõ°¡");
-		case POINT_KILL_HP_RECOVERY:	return LC_TEXT("%d%% È®·ü·Î ÀûÅðÄ¡½Ã »ý¸í·Â È¸º¹");
-//		case POINT_IMMUNE_STUN:	return LC_TEXT("±âÀýÇÏÁö ¾ÊÀ½ %d%%");
-//		case POINT_IMMUNE_SLOW:	return LC_TEXT("´À·ÁÁöÁö ¾ÊÀ½ %d%%");
-//		case POINT_IMMUNE_FALL:	return LC_TEXT("³Ñ¾îÁöÁö ¾ÊÀ½ %d%%");
+		case POINT_MAX_HP:	return LC_TEXT("ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ +%d");
+		case POINT_MAX_SP:	return LC_TEXT("ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ +%d");
+		case POINT_HT:		return LC_TEXT("Ã¼ï¿½ï¿½ +%d");
+		case POINT_IQ:		return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ +%d");
+		case POINT_ST:		return LC_TEXT("ï¿½Ù·ï¿½ +%d");
+		case POINT_DX:		return LC_TEXT("ï¿½ï¿½Ã¸ +%d");
+		case POINT_ATT_SPEED:	return LC_TEXT("ï¿½ï¿½ï¿½Ý¼Óµï¿½ +%d");
+		case POINT_MOV_SPEED:	return LC_TEXT("ï¿½Ìµï¿½ï¿½Óµï¿½ %d");
+		case POINT_CASTING_SPEED:	return LC_TEXT("ï¿½ï¿½Å¸ï¿½ï¿½ -%d");
+		case POINT_HP_REGEN:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ +%d");
+		case POINT_SP_REGEN:	return LC_TEXT("ï¿½ï¿½ï¿½Å·ï¿½ È¸ï¿½ï¿½ +%d");
+		case POINT_POISON_PCT:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %d");
+		case POINT_STUN_PCT:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ +%d");
+		case POINT_SLOW_PCT:	return LC_TEXT("ï¿½ï¿½ï¿½Î¿ï¿½ +%d");
+		case POINT_CRITICAL_PCT:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ Ä¡ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½");
+		case POINT_RESIST_CRITICAL:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¡ï¿½ï¿½Å¸ È®ï¿½ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½");
+		case POINT_PENETRATE_PCT:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+		case POINT_RESIST_PENETRATE: return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½");
+		case POINT_ATTBONUS_HUMAN:	return LC_TEXT("ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ +%d%%");
+		case POINT_ATTBONUS_ANIMAL:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ +%d%%");
+		case POINT_ATTBONUS_ORC:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ +%d%%");
+		case POINT_ATTBONUS_MILGYO:	return LC_TEXT("ï¿½Ð±ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ +%d%%");
+		case POINT_ATTBONUS_UNDEAD:	return LC_TEXT("ï¿½ï¿½Ã¼ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ +%d%%");
+		case POINT_ATTBONUS_DEVIL:	return LC_TEXT("ï¿½Ç¸ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ +%d%%");
+		case POINT_STEAL_HP:		return LC_TEXT("Å¸ï¿½ï¿½Ä¡ %d%% ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+		case POINT_STEAL_SP:		return LC_TEXT("Å¸ï¿½ï¿½Ä¡ %d%% ï¿½ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+		case POINT_MANA_BURN_PCT:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ý½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ ï¿½Ò¸ï¿½");
+		case POINT_DAMAGE_SP_RECOVER:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø½ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ È¸ï¿½ï¿½");
+		case POINT_BLOCK:			return LC_TEXT("ï¿½ï¿½ï¿½ï¿½Å¸ï¿½Ý½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ %d%%");
+		case POINT_DODGE:			return LC_TEXT("È° ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ È®ï¿½ï¿½ %d%%");
+		case POINT_RESIST_SWORD:	return LC_TEXT("ï¿½Ñ¼Õ°ï¿½ ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_TWOHAND:	return LC_TEXT("ï¿½ï¿½Õ°ï¿½ ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_DAGGER:	return LC_TEXT("ï¿½Î¼Õ°ï¿½ ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_BELL:		return LC_TEXT("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_FAN:		return LC_TEXT("ï¿½ï¿½Ã¤ ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_BOW:		return LC_TEXT("È°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_FIRE:		return LC_TEXT("È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_ELEC:		return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_MAGIC:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_WIND:		return LC_TEXT("ï¿½Ù¶ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_ICE:		return LC_TEXT("ï¿½Ã±ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_EARTH:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_RESIST_DARK:		return LC_TEXT("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_REFLECT_MELEE:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Ä¡ ï¿½Ý»ï¿½ È®ï¿½ï¿½ : %d%%");
+		case POINT_REFLECT_CURSE:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ %d%%");
+		case POINT_POISON_REDUCE:	return LC_TEXT("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_KILL_SP_RECOVER:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ È¸ï¿½ï¿½");
+		case POINT_EXP_DOUBLE_BONUS:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½");
+		case POINT_GOLD_DOUBLE_BONUS:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½");
+		case POINT_ITEM_DROP_BONUS:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½");
+		case POINT_POTION_BONUS:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+		case POINT_KILL_HP_RECOVERY:	return LC_TEXT("%d%% È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½");
+//		case POINT_IMMUNE_STUN:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+//		case POINT_IMMUNE_SLOW:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+//		case POINT_IMMUNE_FALL:	return LC_TEXT("ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
 //		case POINT_SKILL:	return LC_TEXT("");
 //		case POINT_BOW_DISTANCE:	return LC_TEXT("");
-		case POINT_ATT_GRADE_BONUS:	return LC_TEXT("°ø°Ý·Â +%d");
-		case POINT_DEF_GRADE_BONUS:	return LC_TEXT("¹æ¾î·Â +%d");
-		case POINT_MAGIC_ATT_GRADE:	return LC_TEXT("¸¶¹ý °ø°Ý·Â +%d");
-		case POINT_MAGIC_DEF_GRADE:	return LC_TEXT("¸¶¹ý ¹æ¾î·Â +%d");
+		case POINT_ATT_GRADE_BONUS:	return LC_TEXT("ï¿½ï¿½ï¿½Ý·ï¿½ +%d");
+		case POINT_DEF_GRADE_BONUS:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ +%d");
+		case POINT_MAGIC_ATT_GRADE:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ +%d");
+		case POINT_MAGIC_DEF_GRADE:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +%d");
 //		case POINT_CURSE_PCT:	return LC_TEXT("");
-		case POINT_MAX_STAMINA:	return LC_TEXT("ÃÖ´ë Áö±¸·Â +%d");
-		case POINT_ATTBONUS_WARRIOR:	return LC_TEXT("¹«»ç¿¡°Ô °­ÇÔ +%d%%");
-		case POINT_ATTBONUS_ASSASSIN:	return LC_TEXT("ÀÚ°´¿¡°Ô °­ÇÔ +%d%%");
-		case POINT_ATTBONUS_SURA:		return LC_TEXT("¼ö¶ó¿¡°Ô °­ÇÔ +%d%%");
-		case POINT_ATTBONUS_SHAMAN:		return LC_TEXT("¹«´ç¿¡°Ô °­ÇÔ +%d%%");
-		case POINT_ATTBONUS_MONSTER:	return LC_TEXT("¸ó½ºÅÍ¿¡°Ô °­ÇÔ +%d%%");
-		case POINT_MALL_ATTBONUS:		return LC_TEXT("°ø°Ý·Â +%d%%");
-		case POINT_MALL_DEFBONUS:		return LC_TEXT("¹æ¾î·Â +%d%%");
-		case POINT_MALL_EXPBONUS:		return LC_TEXT("°æÇèÄ¡ %d%%");
-		case POINT_MALL_ITEMBONUS:		return LC_TEXT("¾ÆÀÌÅÛ µå·ÓÀ² %.1f¹è");
-		case POINT_MALL_GOLDBONUS:		return LC_TEXT("µ· µå·ÓÀ² %.1f¹è");
-		case POINT_MAX_HP_PCT:			return LC_TEXT("ÃÖ´ë »ý¸í·Â +%d%%");
-		case POINT_MAX_SP_PCT:			return LC_TEXT("ÃÖ´ë Á¤½Å·Â +%d%%");
-		case POINT_SKILL_DAMAGE_BONUS:	return LC_TEXT("½ºÅ³ µ¥¹ÌÁö %d%%");
-		case POINT_NORMAL_HIT_DAMAGE_BONUS:	return LC_TEXT("ÆòÅ¸ µ¥¹ÌÁö %d%%");
-		case POINT_SKILL_DEFEND_BONUS:		return LC_TEXT("½ºÅ³ µ¥¹ÌÁö ÀúÇ× %d%%");
-		case POINT_NORMAL_HIT_DEFEND_BONUS:	return LC_TEXT("ÆòÅ¸ µ¥¹ÌÁö ÀúÇ× %d%%");
+		case POINT_MAX_STAMINA:	return LC_TEXT("ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ +%d");
+		case POINT_ATTBONUS_WARRIOR:	return LC_TEXT("ï¿½ï¿½ï¿½ç¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_ATTBONUS_ASSASSIN:	return LC_TEXT("ï¿½Ú°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_ATTBONUS_SURA:		return LC_TEXT("ï¿½ï¿½ï¿½ó¿¡°ï¿½ ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_ATTBONUS_SHAMAN:		return LC_TEXT("ï¿½ï¿½ï¿½ç¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_ATTBONUS_MONSTER:	return LC_TEXT("ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_MALL_ATTBONUS:		return LC_TEXT("ï¿½ï¿½ï¿½Ý·ï¿½ +%d%%");
+		case POINT_MALL_DEFBONUS:		return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_MALL_EXPBONUS:		return LC_TEXT("ï¿½ï¿½ï¿½ï¿½Ä¡ %d%%");
+		case POINT_MALL_ITEMBONUS:		return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ %.1fï¿½ï¿½");
+		case POINT_MALL_GOLDBONUS:		return LC_TEXT("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ %.1fï¿½ï¿½");
+		case POINT_MAX_HP_PCT:			return LC_TEXT("ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ +%d%%");
+		case POINT_MAX_SP_PCT:			return LC_TEXT("ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ +%d%%");
+		case POINT_SKILL_DAMAGE_BONUS:	return LC_TEXT("ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_NORMAL_HIT_DAMAGE_BONUS:	return LC_TEXT("ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_SKILL_DEFEND_BONUS:		return LC_TEXT("ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
+		case POINT_NORMAL_HIT_DEFEND_BONUS:	return LC_TEXT("ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %d%%");
 //		case POINT_PC_BANG_EXP_BONUS:	return LC_TEXT("");
 //		case POINT_PC_BANG_DROP_BONUS:	return LC_TEXT("");
 //		case POINT_EXTRACT_HP_PCT:	return LC_TEXT("");
-		case POINT_RESIST_WARRIOR:	return LC_TEXT("¹«»ç°ø°Ý¿¡ %d%% ÀúÇ×");
-		case POINT_RESIST_ASSASSIN:	return LC_TEXT("ÀÚ°´°ø°Ý¿¡ %d%% ÀúÇ×");
-		case POINT_RESIST_SURA:		return LC_TEXT("¼ö¶ó°ø°Ý¿¡ %d%% ÀúÇ×");
-		case POINT_RESIST_SHAMAN:	return LC_TEXT("¹«´ç°ø°Ý¿¡ %d%% ÀúÇ×");
+		case POINT_RESIST_WARRIOR:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½");
+		case POINT_RESIST_ASSASSIN:	return LC_TEXT("ï¿½Ú°ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½");
+		case POINT_RESIST_SURA:		return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½");
+		case POINT_RESIST_SHAMAN:	return LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ %d%% ï¿½ï¿½ï¿½ï¿½");
 		default:					return NULL;
 	}
 }
@@ -2063,7 +2063,7 @@ static bool FN_hair_affect_string(LPCHARACTER ch, char *buf, size_t bufsiz)
 	mon		= ltm.tm_mon + 1;
 	day		= ltm.tm_mday;
 
-	snprintf(buf + offset, bufsiz - offset, LC_TEXT(" (¸¸·áÀÏ : %d³â %d¿ù %dÀÏ)"), year, mon, day);
+	snprintf(buf + offset, bufsiz - offset, LC_TEXT(" (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : %dï¿½ï¿½ %dï¿½ï¿½ %dï¿½ï¿½)"), year, mon, day);
 
 	return true;
 }
@@ -2198,11 +2198,11 @@ ACMD(do_cube)
 	const std::string& strArg1 = std::string(arg1);
 
 	// r_info (request information)
-	// /cube r_info     ==> (Client -> Server) ÇöÀç NPC°¡ ¸¸µé ¼ö ÀÖ´Â ·¹½ÃÇÇ ¿äÃ»
+	// /cube r_info     ==> (Client -> Server) ï¿½ï¿½ï¿½ï¿½ NPCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 	//					    (Server -> Client) /cube r_list npcVNUM resultCOUNT 123,1/125,1/128,1/130,5
 	//
-	// /cube r_info 3   ==> (Client -> Server) ÇöÀç NPC°¡ ¸¸µé¼ö ÀÖ´Â ·¹½ÃÇÇ Áß 3¹øÂ° ¾ÆÀÌÅÛÀ» ¸¸µå´Â µ¥ ÇÊ¿äÇÑ Á¤º¸¸¦ ¿äÃ»
-	// /cube r_info 3 5 ==> (Client -> Server) ÇöÀç NPC°¡ ¸¸µé¼ö ÀÖ´Â ·¹½ÃÇÇ Áß 3¹øÂ° ¾ÆÀÌÅÛºÎÅÍ ÀÌÈÄ 5°³ÀÇ ¾ÆÀÌÅÛÀ» ¸¸µå´Â µ¥ ÇÊ¿äÇÑ Àç·á Á¤º¸¸¦ ¿äÃ»
+	// /cube r_info 3   ==> (Client -> Server) ï¿½ï¿½ï¿½ï¿½ NPCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 3ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
+	// /cube r_info 3 5 ==> (Client -> Server) ï¿½ï¿½ï¿½ï¿½ NPCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 3ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½Ûºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 5ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
 	//					   (Server -> Client) /cube m_info startIndex count 125,1|126,2|127,2|123,5&555,5&555,4/120000@125,1|126,2|127,2|123,5&555,5&555,4/120000
 	//
 	if (strArg1 == "r_info")
@@ -2291,7 +2291,7 @@ ACMD(do_in_game_mall)
 		return;
 	}
 
-	// ¤Ð_¤Ð Äèµµ¼­¹ö ¾ÆÀÌÅÛ¸ô URL ÇÏµåÄÚµù Ãß°¡
+	// ï¿½ï¿½_ï¿½ï¿½ ï¿½èµµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½ URL ï¿½Ïµï¿½ï¿½Úµï¿½ ï¿½ß°ï¿½
 	if (true == LC_IsWE_Korea())
 	{
 		ch->ChatPacket(CHAT_TYPE_COMMAND, "mall http://metin2.co.kr/50_we_mall/mall/login.htm");
@@ -2323,9 +2323,8 @@ ACMD(do_in_game_mall)
 		return;
 	}*/
 
-	if (LC_IsEurope() == true)
 	{
-		char country_code[3];
+		char country_code[3] = {'r', 'o', '\0'};
 
 		switch (LC_GetLocalType())
 		{
@@ -2347,48 +2346,52 @@ ACMD(do_in_game_mall)
 			case LC_CZECH:		country_code[0] = 'c'; country_code[1] = 'z'; country_code[2] = '\0'; break;
 			case LC_ROMANIA:	country_code[0] = 'r'; country_code[1] = 'o'; country_code[2] = '\0'; break;
 			case LC_HUNGARY:	country_code[0] = 'h'; country_code[1] = 'u'; country_code[2] = '\0'; break;
-			case LC_NETHERLANDS: country_code[0] = 'n'; country_code[1] = 'l'; country_code[2] = '\0'; break;
+			case LC_NETHERLANDS:country_code[0] = 'n'; country_code[1] = 'l'; country_code[2] = '\0'; break;
 			case LC_USA:		country_code[0] = 'u'; country_code[1] = 's'; country_code[2] = '\0'; break;
-			case LC_CANADA:	country_code[0] = 'c'; country_code[1] = 'a'; country_code[2] = '\0'; break;
-			default:
-				if (test_server == true)
-				{
-					country_code[0] = 'd'; country_code[1] = 'e'; country_code[2] = '\0';
-				}
-				break;
+			case LC_CANADA:		country_code[0] = 'c'; country_code[1] = 'a'; country_code[2] = '\0'; break;
+			default: break;
 		}
 
+		long ts = (long)time(NULL);
 		char buf[512+1];
+		char inner_hex[33];
 		char sas[33];
 		MD5_CTX ctx;
-		const char sas_key[] = "GF9001";
-
-		snprintf(buf, sizeof(buf), "%u%u%s", ch->GetPlayerID(), ch->GetAID(), sas_key);
-
-		MD5Init(&ctx);
-		MD5Update(&ctx, (const unsigned char *) buf, strlen(buf));
-#ifdef __FreeBSD__
-		MD5End(&ctx, sas);
-#else
 		static const char hex[] = "0123456789abcdef";
 		unsigned char digest[16];
-		MD5Final(digest, &ctx);
 		int i;
+
+		// inner = MD5(pid + aid + ts + KEY1)
+		snprintf(buf, sizeof(buf), "%u%u%ld%s",
+			ch->GetPlayerID(), ch->GetAID(), ts, g_strMallKey1.c_str());
+		MD5Init(&ctx);
+		MD5Update(&ctx, (const unsigned char*)buf, strlen(buf));
+		MD5Final(digest, &ctx);
 		for (i = 0; i < 16; ++i) {
-			sas[i+i] = hex[digest[i] >> 4];
+			inner_hex[i+i]   = hex[digest[i] >> 4];
+			inner_hex[i+i+1] = hex[digest[i] & 0x0f];
+		}
+		inner_hex[32] = '\0';
+
+		// sas = MD5(inner_hex + KEY2)
+		snprintf(buf, sizeof(buf), "%s%s", inner_hex, g_strMallKey2.c_str());
+		MD5Init(&ctx);
+		MD5Update(&ctx, (const unsigned char*)buf, strlen(buf));
+		MD5Final(digest, &ctx);
+		for (i = 0; i < 16; ++i) {
+			sas[i+i]   = hex[digest[i] >> 4];
 			sas[i+i+1] = hex[digest[i] & 0x0f];
 		}
-		sas[i+i] = '\0';
-#endif
+		sas[32] = '\0';
 
-		snprintf(buf, sizeof(buf), "mall http://%s/ishop?pid=%u&c=%s&sid=%d&sas=%s",
-				g_strWebMallURL.c_str(), ch->GetPlayerID(), country_code, g_server_id, sas);
+		snprintf(buf, sizeof(buf), "mall http://%s/ishop?pid=%u&c=%s&sid=%d&ts=%ld&sas=%s",
+			g_strWebMallURL.c_str(), ch->GetPlayerID(), country_code, g_server_id, ts, sas);
 
 		ch->ChatPacket(CHAT_TYPE_COMMAND, buf);
 	}
 }
 
-// ÁÖ»çÀ§
+// ï¿½Ö»ï¿½ï¿½ï¿½
 ACMD(do_dice) 
 {
 	char arg1[256], arg2[256];
@@ -2413,9 +2416,9 @@ ACMD(do_dice)
 	int n = number(start, end);
 	
 	if (ch->GetParty())
-		ch->GetParty()->ChatPacketToAllMember(CHAT_TYPE_INFO, LC_TEXT("%s´ÔÀÌ ÁÖ»çÀ§¸¦ ±¼·Á %d°¡ ³ª¿Ô½À´Ï´Ù. (%d-%d)"), ch->GetName(), n, start, end);
+		ch->GetParty()->ChatPacketToAllMember(CHAT_TYPE_INFO, LC_TEXT("%sï¿½ï¿½ï¿½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %dï¿½ï¿½ ï¿½ï¿½ï¿½Ô½ï¿½ï¿½Ï´ï¿½. (%d-%d)"), ch->GetName(), n, start, end);
 	else
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("´ç½ÅÀÌ ÁÖ»çÀ§¸¦ ±¼·Á %d°¡ ³ª¿Ô½À´Ï´Ù. (%d-%d)"), ch->GetLanguage()), n, start, end);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ %dï¿½ï¿½ ï¿½ï¿½ï¿½Ô½ï¿½ï¿½Ï´ï¿½. (%d-%d)"), ch->GetLanguage()), n, start, end);
 }
 
 ACMD(do_click_mall)
@@ -2429,7 +2432,7 @@ ACMD(do_ride)
     if (ch->IsDead() || ch->IsStun())
 	return;
 
-    // ³»¸®±â
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     {
 	if (ch->IsHorseRiding())
 	{
@@ -2446,7 +2449,7 @@ ACMD(do_ride)
 	}
     }
 
-    // Å¸±â
+    // Å¸ï¿½ï¿½
     {
 	if (ch->GetHorse() != NULL)
 	{
@@ -2461,7 +2464,7 @@ ACMD(do_ride)
 	    if (NULL == item)
 		continue;
 
-	    // À¯´ÏÅ© Å»°Í ¾ÆÀÌÅÛ
+	    // ï¿½ï¿½ï¿½ï¿½Å© Å»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (item->IsRideItem())
 		{
 			if (NULL==ch->GetWear(WEAR_UNIQUE1) || NULL==ch->GetWear(WEAR_UNIQUE2))
@@ -2473,20 +2476,20 @@ ACMD(do_ride)
 			}
 		}
 
-	    // ÀÏ¹Ý Å»°Í ¾ÆÀÌÅÛ
-	    // TODO : Å»°Í¿ë SubType Ãß°¡
+	    // ï¿½Ï¹ï¿½ Å»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	    // TODO : Å»ï¿½Í¿ï¿½ SubType ï¿½ß°ï¿½
 	    switch (item->GetVnum())
 	    {
-		case 71114:	// Àú½ÅÀÌ¿ë±Ç
-		case 71116:	// »ê°ß½ÅÀÌ¿ë±Ç
-		case 71118:	// ÅõÁö¹üÀÌ¿ë±Ç
-		case 71120:	// »çÀÚ¿ÕÀÌ¿ë±Ç
+		case 71114:	// ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½
+		case 71116:	// ï¿½ï¿½ß½ï¿½ï¿½Ì¿ï¿½ï¿½
+		case 71118:	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½
+		case 71120:	// ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì¿ï¿½ï¿½
 		    dev_log(LOG_DEB0, "[DO_RIDE] USE QUEST ITEM");
 		    ch->UseItem(TItemPos (INVENTORY, i));
 		    return;
 	    }
 
-		// GF mantis #113524, 52001~52090 ¹ø Å»°Í
+		// GF mantis #113524, 52001~52090 ï¿½ï¿½ Å»ï¿½ï¿½
 		if( (item->GetVnum() > 52000) && (item->GetVnum() < 52091) )	{
 			dev_log(LOG_DEB0, "[DO_RIDE] USE QUEST ITEM");
 			ch->UseItem(TItemPos (INVENTORY, i));
@@ -2496,8 +2499,8 @@ ACMD(do_ride)
     }
 
 
-    // Å¸°Å³ª ³»¸± ¼ö ¾øÀ»¶§
-    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("¸»À» ¸ÕÀú ¼ÒÈ¯ÇØÁÖ¼¼¿ä."), ch->GetLanguage()));
+    // Å¸ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), ch->GetLanguage()));
 }
 
 #ifdef __AUCTION__
@@ -2567,7 +2570,7 @@ ACMD(do_enroll_sale)
 }
 
 // temp_auction
-// packetÀ¸·Î Åë½ÅÇÏ°Ô ÇÏ°í, ÀÌ°Ç »èÁ¦ÇØ¾ßÇÑ´Ù.
+// packetï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ï°ï¿½, ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ñ´ï¿½.
 ACMD(do_get_auction_list)
 {
 	char arg1[256];
