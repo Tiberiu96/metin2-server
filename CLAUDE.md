@@ -1,16 +1,16 @@
 # metin2-server
 
-Metin2 Reference Server r40250 by TMP4. Server privat MMORPG rulat pe **FreeBSD 13.5+** (32-bit).
+Metin2 Reference Server r40250 by TMP4. FreeBSD 13.5+ (32-bit).
 
 ## Structura repo
 
 ```
-server/   → runtime server (auth, channel1-4, db, game99, share/)
-src/      → sursa C++ (game, db, libgame, liblua, libthecore, etc.)
-sql/      → schema baze de date (account, player, common, log)
+server/   → runtime (auth, channel1-4, db, game99, share/)
+src/      → sursa C++ (game, db, libgame, liblua, libthecore)
+sql/      → schema DB (account, player, common, log) + migrations/
 ```
 
-## Server path pe FreeBSD
+## Paths FreeBSD
 
 ```
 /usr/metin2/server/   → server/
@@ -20,148 +20,52 @@ sql/      → schema baze de date (account, player, common, log)
 ## Comenzi server
 
 ```sh
-start       # cd /usr/metin2/server && sh start.sh
-close       # cd /usr/metin2/server && sh close.sh
-clean       # cd /usr/metin2/server && sh clean.sh
-backup      # cd /usr/metin2/server && sh backup.sh
+cd /usr/metin2/server && sh start.sh   # pornire
+cd /usr/metin2/server && sh close.sh   # oprire
+cd /usr/metin2/server && sh clean.sh   # curatare
 ```
 
-## Setup de la zero (server nou)
+## Compilare
 
-1. **Instalezi pachetele necesare** (FreeBSD 32-bit):
-```sh
-pkg install llvm-devel gmake makedepend python27 mariadb106-client mariadb106-server git
-```
+Doar pe FreeBSD 32-bit (`pkg install llvm-devel gmake makedepend`).
 
-2. **Pornesti MariaDB:**
 ```sh
-echo 'mysql_enable="yes"' >> /etc/rc.conf
-service mysql-server start
-```
-
-3. **Copiezi my.cnf:**
-```sh
-cp /usr/metin2/sql/my.cnf /usr/local/etc/mysql/my.cnf
-service mysql-server restart
-```
-
-4. **Clonezi repo-ul:**
-```sh
-cd /usr && git clone https://github.com/Tiberiu96/metin2-server.git metin2
-```
-
-5. **Importi bazele de date:**
-```sh
-mysql -u root < /usr/metin2/sql/account.sql
-mysql -u root < /usr/metin2/sql/common.sql
-mysql -u root < /usr/metin2/sql/player.sql
-mysql -u root < /usr/metin2/sql/log.sql
-```
-
-6. **Compilezi binarele:**
-```sh
-cd /usr/metin2/src/server/db/src && gmake dep && gmake -j9
+cd /usr/metin2/src/server/db/src   && gmake dep && gmake -j9
 cd /usr/metin2/src/server/game/src && gmake dep && gmake -j9
+# Binarele merg in: server/share/bin/
 ```
 
-7. **Copiezi binarele:**
-```sh
-cp /usr/metin2/src/server/db/src/db /usr/metin2/server/share/bin/
-cp /usr/metin2/src/server/game/src/game /usr/metin2/server/share/bin/
+Quests: `cd /usr/metin2/server/share/locale/english/quest && python2.7 make.py`
+
+## Configuratie IP
+
+Fiecare CONFIG (auth, channel*/first, game1, game2, game99):
 ```
-
-8. **Configurezi IP-urile** in toate fisierele CONFIG (vezi sectiunea Configuratie IP)
-
-9. **Pornesti serverul:**
-```sh
-cd /usr/metin2/server && sh start.sh
-```
-
----
-
-## Compilare sursa
-
-Compilarea este posibila **doar pe FreeBSD 32-bit**. Pachete necesare:
-```sh
-pkg install llvm-devel gmake makedepend
-```
-
-```sh
-# Compilare db
-cd /usr/metin2/src/server/db/src && gmake dep && gmake -j9
-
-# Compilare game
-cd /usr/metin2/src/server/game/src && gmake dep && gmake -j9
-
-# Binarele generate merg in: server/share/bin/
-```
-
-## Compilare quests
-
-```sh
-cd /usr/metin2/server/share/locale/english/quest && python2.7 make.py
-```
-
-## Configuratie IP (CONFIG files)
-
-Fiecare server (auth, channel*/first, channel*/game1, channel*/game2, game99) are un fisier CONFIG cu:
-```
-BIND_IP: 192.168.x.x     # IP intern/privat (ifconfig)
+BIND_IP: 192.168.x.x     # IP intern (ifconfig)
 PROXY_IP: 77.88.99.111   # IP extern/public
 ```
-Decomentati liniile (stergeti `#`) si setati IP-urile corecte.
 
 ## Baze de date
 
-- **MariaDB 10.6** (recomandat) sau MySQL 5.6
-- Baze de date: `account`, `player`, `common`, `log`
-- SQL dumps in `sql/`
+- MariaDB 10.6 — baze: `account`, `player`, `common`, `log`
 - User MySQL: `metin2@localhost` / `root@%`
 - `sql/my.cnf` → `/usr/local/etc/mysql/my.cnf`
 
-Setup MariaDB:
+## Migratii DB
+
+Orice schema change → fisier nou in `sql/migrations/` (ex: `001_descriere.sql`).
+
+- Numerotare secventiala 3 cifre, idempotent (`IF NOT EXISTS`)
+- Nu modifica niciodata un fisier deja aplicat
+
 ```sh
-pkg install mariadb106-client mariadb106-server
-echo 'mysql_enable="yes"' >> /etc/rc.conf
-service mysql-server start
+mysql -u root player < /usr/metin2/sql/migrations/001_descriere.sql
 ```
-
-## Migratii baza de date
-
-Orice modificare la schema sau datele MySQL se adauga ca fisier incremental in `sql/migrations/`.
-
-**Conventie de denumire:**
-```
-sql/migrations/001_descriere_scurta.sql
-sql/migrations/002_alta_modificare.sql
-```
-
-**Reguli:**
-- Numerotare secventiala cu 3 cifre: `001`, `002`, `003`...
-- Numele descrie ce face modificarea (ex: `001_add_skill_table.sql`, `002_update_player_exp.sql`)
-- Fiecare fisier trebuie sa fie idempotent unde e posibil (`IF NOT EXISTS`, `IF EXISTS`)
-- Nu modifica niciodata un fisier de migratie deja aplicat — adauga unul nou
-
-**Aplicare migratie pe server:**
-```sh
-mysql -u root player < /usr/metin2/sql/migrations/001_add_skill_table.sql
-```
-
-**Urmareste ce migratii au fost aplicate** — noteaza in commit message si in numele fisierului ordinea.
-
----
 
 ## Limbi disponibile
 
 EN/DE/HU/FR/CZ/DK/ES/GR/IT/NL/PL/PT/RO/RU/TR (default: EN)
-
-Pentru schimbare limba (ex: DE):
-1. `server/share/conf/item_names_de.txt` → `item_names.txt`
-2. `server/share/conf/mob_names_de.txt` → `mob_names.txt`
-3. `server/share/locale/english/translate_de.lua` → activ
-4. Recompileaza quests: `questcompile`
-5. Redenumeste `server/share/locale/english/` → `germany/`
-6. Actualizeaza `common.locale` table in DB: `LOCALE` → `germany`
+Fisiere per-limba: `locale_string_ro.txt`, `translate_ro.lua`, `item_names_ro.txt`, `mob_names_ro.txt`
 
 ## Credentiale default
 
@@ -173,38 +77,33 @@ Pentru schimbare limba (ex: DE):
 
 ## GM Commands
 
-Pentru orice comanda GM ceruta, consulta intai:
-**`.claude/references/commands_gm.md`**
-
-Contine toate comenzile organizate pe categorii cu sintaxa, nivel GM necesar si descriere.
-Comanda corecta pentru spawn mob este `/mob <vnum>` (nu `/spawn`).
+Consulta **`.claude/references/commands_gm.md`** pentru orice comanda GM.
+Spawn mob: `/mob <vnum>` (nu `/spawn`).
 
 ## Database Schema
 
-For full verified schema of all tables and columns, see:
-**`.claude/references/db_schema.md`**
+Schema completa verificata: **`.claude/references/db_schema.md`**
 
-Key facts to remember:
-- `account.account` (NOT `accounts`) — login, password, email, status, availDt (camelCase), empire (unreliable default 0)
-- `player.player` — NO empire column
-- `player.player_index` — authoritative empire; `id` = account_id, `pid1–4` = character slots
-- To get empire: `LEFT JOIN player_index ON player_index.id = player.account_id`
-- `common.gmlist` — GM accounts with mAuthority level
+Fapte critice:
+
+- `account.account` (nu `accounts`) — coloane: login, password, email, status, availDt, empire
+- `player.player` — fara coloana empire
+- `player.player_index` — empire autoritar; `id` = account_id, `pid1–4` = sloturi personaje
+- Empire: `LEFT JOIN player_index ON player_index.id = player.account_id`
+- `common.gmlist` — conturi GM cu mAuthority
 
 ## Sistem traduceri (LC_TEXT)
 
-Stringurile din sursa C++ sunt in **engleza** (ASCII pur). `LC_TEXT("English string")` cauta traducerea in `server/share/locale/english/locale_string.txt` — cheia e engleza, valoarea e tot engleza (identitate pentru EN). `LC_TEXT_LANG(text, lang)` cauta in `locale_string_ro.txt` / `locale_string_de.txt` etc. pentru traducerea per-jucator.
+Sursa C++ foloseste stringuri **engleze ASCII**. Fluxul:
 
-- Daca traducerea lipseste din `locale_string.txt` → serverul logheaza `LOCALE_ERROR` in syserr si trimite `@0949` + textul original
-- Fisierele sursa sunt **UTF-8** (sau ASCII pur) — orice editor poate fi folosit fara restrictii de encoding
+1. `LC_TEXT("English")` → cauta in `locale_string.txt` (en→en, identitate)
+2. `LC_TEXT_LANG(text, lang)` → cauta in `locale_string_ro.txt` etc. per jucator
+
+`LOCALE_ERROR` in syserr = cheia lipseste din `locale_string.txt`.
 
 ## Troubleshooting
 
-- **Connection refused**: verifica syserr in db, auth si channels
-- **Path-uri syserr** (fara /log/ !):
-  - DB: `/usr/metin2/server/db/syserr`
-  - Auth: `/usr/metin2/server/auth/syserr`
-  - Game: `/usr/metin2/server/channel1/game1/syserr`
-- **Eroare frecventa**: db nu se poate conecta la MySQL → `socket_connect: HOST 127.0.0.1:15000`
-- **Jucatori kickati dupa charselect**: BIND_IP/PROXY_IP neconfigurat corect
+- **Syserr paths** (fara `/log/`): `server/db/syserr`, `server/auth/syserr`, `server/channel1/game1/syserr`
+- **Connection refused**: verifica syserr db/auth/channels
+- **Jucatori kickati dupa charselect**: BIND_IP/PROXY_IP gresit
 - **Compilare pe x64**: foloseste jail 32-bit
