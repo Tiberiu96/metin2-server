@@ -26,5 +26,6 @@ MALL_KEY2: jT8&bZ3cF6!hY5sA
 TRAFFIC_PROFILE: 
 TEST_SERVER: 0
 MAX_LEVEL: 105
+USER_LIMIT: 300
 #BIND_IP: Your Private/Internal IPv4 address
 #PROXY_IP: Your Public/External IPv4 address

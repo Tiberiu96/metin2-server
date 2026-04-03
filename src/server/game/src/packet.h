@@ -977,6 +977,7 @@ typedef struct packet_char_additional_info
 	short	sAlignment;
 	BYTE	bPKMode;
 	DWORD	dwMountVnum;
+	char	language[3];
 } TPacketGCCharacterAdditionalInfo;
 
 /*

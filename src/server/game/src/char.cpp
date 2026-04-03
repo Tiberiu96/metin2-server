@@ -1028,6 +1028,7 @@ void CHARACTER::EncodeInsertPacket(LPENTITY entity)
 			addPacket.sAlignment = m_iAlignment / 10;
 		}
 
+		strlcpy(addPacket.language, GetLanguage(), sizeof(addPacket.language));
 		d->Packet(&addPacket, sizeof(TPacketGCCharacterAdditionalInfo));
 	}
 
