@@ -91,7 +91,7 @@ EVENTFUNC( DragonLair_Collapse_Event )
 	if (0 == pInfo->step)
 	{
 		char buf[512];
-		snprintf(buf, 512, LC_TEXT("용가리가 %d 초만에 죽어써효ㅠㅠ"), pInfo->pLair->GetEstimatedTime());
+		snprintf(buf, 512, LC_TEXT("Dragon died in %d seconds lol"), pInfo->pLair->GetEstimatedTime());
 		SendNoticeMap(buf, pInfo->InstanceMapIndex, true);
 
 		pInfo->step++;

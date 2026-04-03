@@ -183,8 +183,8 @@ void CPVPManager::Insert(LPCHARACTER pkChr, LPCHARACTER pkVictim)
 		// 복수할 수 있으면 바로 싸움!
 		if (pkPVP->Agree(pkChr->GetPlayerID()))
 		{
-			pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s님과의 대결 시작!"), pkVictim->GetLanguage()), pkChr->GetName());
-			pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s님과의 대결 시작!"), pkChr->GetLanguage()), pkVictim->GetName());
+			pkVictim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The battle with %s has begun!", pkVictim->GetLanguage()), pkChr->GetName());
+			pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The battle with %s has begun!", pkChr->GetLanguage()), pkVictim->GetName());
 		}
 		return;
 	}
@@ -202,10 +202,10 @@ void CPVPManager::Insert(LPCHARACTER pkChr, LPCHARACTER pkVictim)
 	pkPVP->Packet();
 
 	char msg[CHAT_MAX_LEN + 1];
-	snprintf(msg, sizeof(msg), LC_TEXT("%s님이 대결신청을 했습니다. 승낙하려면 대결동의를 하세요."), pkChr->GetName());
+	snprintf(msg, sizeof(msg), LC_TEXT("%s challenged you to a battle!"), pkChr->GetName());
 
 	pkVictim->ChatPacket(CHAT_TYPE_INFO, msg);
-	pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s에게 대결신청을 했습니다."), pkChr->GetLanguage()), pkVictim->GetName());
+	pkChr->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have challenged %s to a battle.", pkChr->GetLanguage()), pkVictim->GetName());
 
 	// NOTIFY_PVP_MESSAGE
 	LPDESC pkVictimDesc = pkVictim->GetDesc();

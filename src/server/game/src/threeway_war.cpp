@@ -340,7 +340,7 @@ void CThreeWayWar::onDead(LPCHARACTER pChar, LPCHARACTER pkKiller)
 	{
 		char szBuf[64 + 1];
 
-		snprintf(szBuf, sizeof(szBuf), LC_TEXT("현재 스코어 신수국:%d 천조국:%d 진노국:%d"),
+		snprintf(szBuf, sizeof(szBuf), LC_TEXT("Current score: Shinsoo %d, Chunjo %d, Jinno %d"),
 				GetKillScore(1), GetKillScore(2), GetKillScore(3));
 
 		SendNoticeMap(szBuf, GetSungziMapIndex(), false);
@@ -406,9 +406,9 @@ void CThreeWayWar::onDead(LPCHARACTER pChar, LPCHARACTER pkKiller)
 		//----------------------
 		const std::string Nation(EMPIRE_NAME(bLoseEmpire));
 		const std::string Script(
-				LC_TEXT("성지의 마왕: 너희 ") +
+				LC_TEXT("The devil of the hallowed place: [ENTER][ENTER]") +
 				Nation +
-				LC_TEXT("녀석들은 이곳 성지에 있을 자격을 잃었다. 모두 성지에서 물러나거라~~[ENTER][ENTER] 10초 후에 모두 마을로 이동하게 됩니다. ") +
+				LC_TEXT(", you don't have any right to be here! The members of your kingdom will leave this hallowed ground in 10 seconds.") +
 				"[ENTER][DONE]"
 				);
 
@@ -418,7 +418,7 @@ void CThreeWayWar::onDead(LPCHARACTER pChar, LPCHARACTER pkKiller)
 		// 공지 한방 날려줌.
 		//----------------------
 		char szNotice[512+1];
-		snprintf(szNotice, sizeof(szNotice), LC_TEXT("삼거리 전투에서 %s 국가가 가장먼저 탈락을 하였습니다"), Nation.c_str());
+		snprintf(szNotice, sizeof(szNotice), LC_TEXT("%s has been defeated and drops out of the Kingdom Battle."), Nation.c_str());
 		BroadcastNotice(szNotice);
 
 		snprintf(szNotice, sizeof(szNotice), "First Step: %s exclusion", Nation.c_str());
@@ -496,7 +496,7 @@ void CThreeWayWar::onDead(LPCHARACTER pChar, LPCHARACTER pkKiller)
 		//------------------------------
 		{
 			char szBuf[64 + 1];
-			snprintf(szBuf, sizeof(szBuf), LC_TEXT("현재 스코어 신수국:%d 천조국:%d 진노국:%d"),
+			snprintf(szBuf, sizeof(szBuf), LC_TEXT("Current score: Shinsoo %d, Chunjo %d, Jinno %d"),
 					GetKillScore(1), GetKillScore(2), GetKillScore(3));
 
 			SendNoticeMap(szBuf, GetSungziMapIndex(), false);
@@ -510,7 +510,7 @@ void CThreeWayWar::onDead(LPCHARACTER pChar, LPCHARACTER pkKiller)
 			const std::string EmpireName(EMPIRE_NAME(nVictoryEmpireIndex));
 			const std::string Script(
 					EmpireName +
-					LC_TEXT(". 너희가 성지의 수호자를 잡게 된다면 너희는 성지의 주인이 된다.[ENTER][ENTER] ") +
+					LC_TEXT("If you defeat the Guard of the Holy Place, you will become the owner of it.") +
 					"[ENTER][DONE]");
 
 			struct packet_script pack_script;

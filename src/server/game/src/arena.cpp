@@ -237,17 +237,17 @@ EVENTFUNC(ready_to_start_event)
 
 		if (chA != NULL)
 		{
-			chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련 상대가 사라져 대련을 종료합니다."), chA->GetLanguage()));
+			chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has finished, because your combatant vanished.", chA->GetLanguage()));
 			sys_log(0, "ARENA: Oppernent is disappered. MyPID(%d) OppPID(%d)", pArena->GetPlayerAPID(), pArena->GetPlayerBPID());
 		}
 
 		if (chB != NULL)
 		{
-			chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련 상대가 사라져 대련을 종료합니다."), chB->GetLanguage()));
+			chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has finished, because your combatant vanished.", chB->GetLanguage()));
 			sys_log(0, "ARENA: Oppernent is disappered. MyPID(%d) OppPID(%d)", pArena->GetPlayerBPID(), pArena->GetPlayerAPID());
 		}
 
-		pArena->SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("대련 상대가 사라져 대련을 종료합니다."));
+		pArena->SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("The duel has finished, because your combatant vanished."));
 
 		pArena->EndDuel();
 		return 0;
@@ -264,20 +264,20 @@ EVENTFUNC(ready_to_start_event)
 
 				if (count > 10000)
 				{
-					chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("물약 제한이 없습니다."), chA->GetLanguage()));
-					chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("물약 제한이 없습니다."), chB->GetLanguage()));
+					chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("There is no limit for Potions.", chA->GetLanguage()));
+					chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("There is no limit for Potions.", chB->GetLanguage()));
 				}
 				else
 				{
 					chA->SetPotionLimit(count);
 					chB->SetPotionLimit(count);
 
-					chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("물약을 %d 개 까지 사용 가능합니다."), chA->GetLanguage()), chA->GetPotionLimit());
-					chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("물약을 %d 개 까지 사용 가능합니다."), chB->GetLanguage()), chB->GetPotionLimit());
+					chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You can use up to %d potions.", chA->GetLanguage()), chA->GetPotionLimit());
+					chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You can use up to %d potions.", chB->GetLanguage()), chB->GetPotionLimit());
 				}
-				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("10초뒤 대련이 시작됩니다."), chA->GetLanguage()));
-				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("10초뒤 대련이 시작됩니다."), chB->GetLanguage()));
-				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("10초뒤 대련이 시작됩니다."));
+				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The fight will start in 10 seconds.", chA->GetLanguage()));
+				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The fight will start in 10 seconds.", chB->GetLanguage()));
+				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("The fight will start in 10 seconds."));
 
 				info->state++;
 				return PASSES_PER_SEC(10);
@@ -286,9 +286,9 @@ EVENTFUNC(ready_to_start_event)
 
 		case 1:
 			{
-				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련이 시작되었습니다."), chA->GetLanguage()));
-				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련이 시작되었습니다."), chB->GetLanguage()));
-				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("대련이 시작되었습니다."));
+				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has begun.", chA->GetLanguage()));
+				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has begun.", chB->GetLanguage()));
+				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("The duel has begun."));
 
 				TPacketGCDuelStart duelStart;
 				duelStart.header = HEADER_GC_DUEL_START;
@@ -358,9 +358,9 @@ EVENTFUNC(ready_to_start_event)
 				buf2.write(&dwOppList[0], 4);
 				chB->GetDesc()->Packet(buf2.read_peek(), buf2.size());
 
-				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련이 시작되었습니다."), chA->GetLanguage()));
-				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련이 시작되었습니다."), chB->GetLanguage()));
-				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("대련이 시작되었습니다."));
+				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has begun.", chA->GetLanguage()));
+				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has begun.", chB->GetLanguage()));
+				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("The duel has begun."));
 
 				pArena->ClearEvent();
 
@@ -370,9 +370,9 @@ EVENTFUNC(ready_to_start_event)
 
 		default:
 			{
-				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련장 문제로 인하여 대련을 종료합니다."), chA->GetLanguage()));
-				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련장 문제로 인하여 대련을 종료합니다."), chB->GetLanguage()));
-				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("대련장 문제로 인하여 대련을 종료합니다."));
+				chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel is being finished because there is a problem in the duel arena.", chA->GetLanguage()));
+				chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel is being finished because there is a problem in the duel arena.", chB->GetLanguage()));
+				pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("The duel is being finished because there is a problem in the duel arena."));
 
 				sys_log(0, "ARENA: Something wrong in event func. info->state(%d)", info->state);
 
@@ -411,17 +411,17 @@ EVENTFUNC(duel_time_out)
 	{
 		if (chA != NULL)
 		{
-			chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련 상대가 사라져 대련을 종료합니다."), chA->GetLanguage()));
+			chA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has finished, because your combatant vanished.", chA->GetLanguage()));
 			sys_log(0, "ARENA: Oppernent is disappered. MyPID(%d) OppPID(%d)", pArena->GetPlayerAPID(), pArena->GetPlayerBPID());
 		}
 
 		if (chB != NULL)
 		{
-			chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("대련 상대가 사라져 대련을 종료합니다."), chB->GetLanguage()));
+			chB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The duel has finished, because your combatant vanished.", chB->GetLanguage()));
 			sys_log(0, "ARENA: Oppernent is disappered. MyPID(%d) OppPID(%d)", pArena->GetPlayerBPID(), pArena->GetPlayerAPID());
 		}
 
-		pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("대련 상대가 사라져 대련을 종료합니다."));
+		pArena->SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("The duel has finished, because your combatant vanished."));
 
 		pArena->EndDuel();
 		return 0;
@@ -431,14 +431,14 @@ EVENTFUNC(duel_time_out)
 		switch (info->state)
 		{
 			case 0:
-				pArena->SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("대련 시간 초과로 대련을 중단합니다."));
-				pArena->SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("10초뒤 마을로 이동합니다."));
+				pArena->SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("The duel has finished because of a timeout."));
+				pArena->SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("In 10 seconds you will be teleported into the city."));
 
-				chA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("대련 시간 초과로 대련을 중단합니다."), chA->GetLanguage()));
-				chA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("10초뒤 마을로 이동합니다."), chA->GetLanguage()));
+				chA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("The duel has finished because of a timeout.", chA->GetLanguage()));
+				chA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("In 10 seconds you will be teleported into the city.", chA->GetLanguage()));
 
-				chB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("대련 시간 초과로 대련을 중단합니다."), chB->GetLanguage()));
-				chB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("10초뒤 마을로 이동합니다."), chB->GetLanguage()));
+				chB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("The duel has finished because of a timeout.", chB->GetLanguage()));
+				chB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("In 10 seconds you will be teleported into the city.", chB->GetLanguage()));
 
 				TPacketGCDuelStart duelStart;
 				duelStart.header = HEADER_GC_DUEL_START;
@@ -733,19 +733,19 @@ bool CArena::OnDead(DWORD dwPIDA, DWORD dwPIDB)
 	if (pCharA == NULL && pCharB == NULL)
 	{
 		// 둘다 접속이 끊어졌다 ?!
-		SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("대련자 문제로 인하여 대련을 중단합니다."));
+		SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("The duel has been stopped because there is a problem in the arena."));
 		restart = false;
 	}
 	else if (pCharA == NULL && pCharB != NULL)
 	{
-		pCharB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("상대방 캐릭터의 문제로 인하여 대련을 종료합니다."), pCharB->GetLanguage()));
-		SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("대련자 문제로 인하여 대련을 종료합니다."));
+		pCharB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("Your combatant has got some problems. The duel is being cancelled.", pCharB->GetLanguage()));
+		SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("The duel is being cancelled as there is a problem with the combatant."));
 		restart = false;
 	}
 	else if (pCharA != NULL && pCharB == NULL)
 	{
-		pCharA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("상대방 캐릭터의 문제로 인하여 대련을 종료합니다."), pCharA->GetLanguage()));
-		SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("대련자 문제로 인하여 대련을 종료합니다."));
+		pCharA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("Your combatant has got some problems. The duel is being cancelled.", pCharA->GetLanguage()));
+		SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("The duel is being cancelled as there is a problem with the combatant."));
 		restart = false;
 	}
 	else if (pCharA != NULL && pCharB != NULL)
@@ -756,9 +756,9 @@ bool CArena::OnDead(DWORD dwPIDA, DWORD dwPIDB)
 
 			if (m_dwSetPointOfA >= m_dwSetCount)
 			{
-				pCharA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("%s 님이 대련에서 승리하였습니다."), pCharA->GetLanguage()), pCharA->GetName());
-				pCharB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("%s 님이 대련에서 승리하였습니다."), pCharB->GetLanguage()), pCharA->GetName());
-				SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("%s 님이 대련에서 승리하였습니다."), pCharA->GetName());
+				pCharA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("%s has won the duel.", pCharA->GetLanguage()), pCharA->GetName());
+				pCharB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("%s has won the duel.", pCharB->GetLanguage()), pCharA->GetName());
+				SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("%s has won the duel."), pCharA->GetName());
 
 				sys_log(0, "ARENA: Duel is end. Winner %s(%d) Loser %s(%d)",
 						pCharA->GetName(), GetPlayerAPID(), pCharB->GetName(), GetPlayerBPID());
@@ -766,10 +766,10 @@ bool CArena::OnDead(DWORD dwPIDA, DWORD dwPIDB)
 			else
 			{
 				restart = true;
-				pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 님이 승리하였습니다."), pCharA->GetLanguage()), pCharA->GetName());
+				pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("%s has won.", pCharA->GetLanguage()), pCharA->GetName());
 				pCharA->ChatPacket(CHAT_TYPE_NOTICE, "%s %d : %d %s", pCharA->GetName(), m_dwSetPointOfA, m_dwSetPointOfB, pCharB->GetName());
 
-				pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 님이 승리하였습니다."), pCharB->GetLanguage()), pCharA->GetName());
+				pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("%s has won.", pCharB->GetLanguage()), pCharA->GetName());
 				pCharB->ChatPacket(CHAT_TYPE_NOTICE, "%s %d : %d %s", pCharA->GetName(), m_dwSetPointOfA, m_dwSetPointOfB, pCharB->GetName());
 
 				SendChatPacketToObserver(CHAT_TYPE_NOTICE, "%s %d : %d %s", pCharA->GetName(), m_dwSetPointOfA, m_dwSetPointOfB, pCharB->GetName());
@@ -783,19 +783,19 @@ bool CArena::OnDead(DWORD dwPIDA, DWORD dwPIDB)
 			m_dwSetPointOfB++;
 			if (m_dwSetPointOfB >= m_dwSetCount)
 			{
-				pCharA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("%s 님이 대련에서 승리하였습니다."), pCharA->GetLanguage()), pCharB->GetName());
-				pCharB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG(LC_TEXT("%s 님이 대련에서 승리하였습니다."), pCharB->GetLanguage()), pCharB->GetName());
-				SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("%s 님이 대련에서 승리하였습니다."), pCharB->GetName());
+				pCharA->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("%s has won the duel.", pCharA->GetLanguage()), pCharB->GetName());
+				pCharB->ChatPacket(CHAT_TYPE_NOTICE, LC_TEXT_LANG("%s has won the duel.", pCharB->GetLanguage()), pCharB->GetName());
+				SendChatPacketToObserver(CHAT_TYPE_NOTICE, LC_TEXT("%s has won the duel."), pCharB->GetName());
 
 				sys_log(0, "ARENA: Duel is end. Winner(%d) Loser(%d)", GetPlayerBPID(), GetPlayerAPID());
 			}
 			else
 			{
 				restart = true;
-				pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 님이 승리하였습니다."), pCharA->GetLanguage()), pCharB->GetName());
+				pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("%s has won.", pCharA->GetLanguage()), pCharB->GetName());
 				pCharA->ChatPacket(CHAT_TYPE_NOTICE, "%s %d : %d %s", pCharA->GetName(), m_dwSetPointOfA, m_dwSetPointOfB, pCharB->GetName());
 
-				pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s 님이 승리하였습니다."), pCharB->GetLanguage()), pCharB->GetName());
+				pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("%s has won.", pCharB->GetLanguage()), pCharB->GetName());
 				pCharB->ChatPacket(CHAT_TYPE_NOTICE, "%s %d : %d %s", pCharA->GetName(), m_dwSetPointOfA, m_dwSetPointOfB, pCharB->GetName());
 
 				SendChatPacketToObserver(CHAT_TYPE_NOTICE, "%s %d : %d %s", pCharA->GetName(), m_dwSetPointOfA, m_dwSetPointOfB, pCharB->GetName());
@@ -821,12 +821,12 @@ bool CArena::OnDead(DWORD dwPIDA, DWORD dwPIDB)
 	if (restart == false)
 	{
 		if (pCharA != NULL)
-			pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("10초뒤 마을로 되돌아갑니다."), pCharA->GetLanguage()));
+			pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You will be teleported into the city in 10 seconds.", pCharA->GetLanguage()));
 
 		if (	pCharB != NULL)
-			pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("10초뒤 마을로 되돌아갑니다."), pCharB->GetLanguage()));
+			pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You will be teleported into the city in 10 seconds.", pCharB->GetLanguage()));
 
-		SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("10초뒤 마을로 되돌아갑니다."));
+		SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("You will be teleported into the city in 10 seconds."));
 
 		if (m_pEvent != NULL) {
 			event_cancel(&m_pEvent);
@@ -842,12 +842,12 @@ bool CArena::OnDead(DWORD dwPIDA, DWORD dwPIDB)
 	else
 	{
 		if (pCharA != NULL)
-			pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("10초뒤 다음 판을 시작합니다."), pCharA->GetLanguage()));
+			pCharA->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The next round will begin in 10 seconds.", pCharA->GetLanguage()));
 
 		if (pCharB != NULL)
-			pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("10초뒤 다음 판을 시작합니다."), pCharB->GetLanguage()));
+			pCharB->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The next round will begin in 10 seconds.", pCharB->GetLanguage()));
 
-		SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("10초뒤 다음 판을 시작합니다."));
+		SendChatPacketToObserver(CHAT_TYPE_INFO, LC_TEXT("The next round will begin in 10 seconds."));
 
 		if (m_pEvent != NULL) {
 			event_cancel(&m_pEvent);
@@ -953,7 +953,7 @@ void CArena::OnDisconnect(DWORD pid)
 	if (m_dwPIDA == pid)
 	{
 		if (GetPlayerB() != NULL)
-			GetPlayerB()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방 캐릭터가 접속을 종료하여 대련을 중지합니다."), GetPlayerB()->GetLanguage()));
+			GetPlayerB()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The combatants have been separated. The duel has been stopped.", GetPlayerB()->GetLanguage()));
 
 		sys_log(0, "ARENA : Duel is end because of Opp(%d) is disconnect. MyPID(%d)", GetPlayerAPID(), GetPlayerBPID());
 		EndDuel();
@@ -961,7 +961,7 @@ void CArena::OnDisconnect(DWORD pid)
 	else if (m_dwPIDB == pid)
 	{
 		if (GetPlayerA() != NULL)
-			GetPlayerA()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("상대방 캐릭터가 접속을 종료하여 대련을 중지합니다."), GetPlayerA()->GetLanguage()));
+			GetPlayerA()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The combatants have been separated. The duel has been stopped.", GetPlayerA()->GetLanguage()));
 
 		sys_log(0, "ARENA : Duel is end because of Opp(%d) is disconnect. MyPID(%d)", GetPlayerBPID(), GetPlayerAPID());
 		EndDuel();

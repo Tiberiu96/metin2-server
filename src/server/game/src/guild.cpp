@@ -63,12 +63,12 @@ CGuild::CGuild(TGuildCreateParameter & cp)
 
 	strlcpy(m_data.name, cp.name, sizeof(m_data.name));
 	m_data.master_pid = cp.master->GetPlayerID();
-	strlcpy(m_data.grade_array[0].grade_name, LC_TEXT("길드장"), sizeof(m_data.grade_array[0].grade_name));
+	strlcpy(m_data.grade_array[0].grade_name, LC_TEXT("Leader"), sizeof(m_data.grade_array[0].grade_name));
 	m_data.grade_array[0].auth_flag = GUILD_AUTH_ADD_MEMBER | GUILD_AUTH_REMOVE_MEMBER | GUILD_AUTH_NOTICE | GUILD_AUTH_USE_SKILL;
 
 	for (int i = 1; i < GUILD_GRADE_COUNT; ++i)
 	{
-		strlcpy(m_data.grade_array[i].grade_name, LC_TEXT("길드원"), sizeof(m_data.grade_array[i].grade_name));
+		strlcpy(m_data.grade_array[i].grade_name, LC_TEXT("Member"), sizeof(m_data.grade_array[i].grade_name));
 		m_data.grade_array[i].auth_flag = 0;
 	}
 
@@ -922,7 +922,7 @@ bool CGuild::OfferExp(LPCHARACTER ch, int amount)
 
 	if (ch->GetExp() < (DWORD) amount)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 제공하고자 하는 경험치가 남은 경험치보다 많습니다."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] Provided Experience is larger then left Experience.", ch->GetLanguage()));
 		return false;
 	}
 
@@ -1017,7 +1017,7 @@ void CGuild::AddComment(LPCHARACTER ch, const std::string& str)
 
 	if (ch->IncreaseChatCounter() >= 2) // Guild Comment Flood Exploit fix
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("퀘스트를 로드하는 중입니다. 잠시만 기다려 주십시오."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your request is loading. Please wait.", ch->GetLanguage()));
 		return;
 	}
 
@@ -1039,7 +1039,7 @@ void CGuild::DeleteComment(LPCHARACTER ch, DWORD comment_id)
 		pmsg = DBManager::instance().DirectQuery("DELETE FROM guild_comment%s WHERE id = %u AND guild_id = %u AND name = '%s'",get_table_postfix(), comment_id, m_data.guild_id, ch->GetName());
 
 	if (pmsg->Get()->uiAffectedRows == 0 || pmsg->Get()->uiAffectedRows == (uint32_t)-1)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 삭제할 수 없는 글입니다."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] This message cannot be deleted.", ch->GetLanguage()));
 	else
 		RefreshCommentForce(ch->GetPlayerID());
 
@@ -1290,7 +1290,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 	if (GetSP() < iNeededSP)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 용신력이 부족합니다. (%d, %d)"), ch->GetLanguage()), GetSP(), iNeededSP);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] Not enough Dragon Ghost. (%d, %d)", ch->GetLanguage()), GetSP(), iNeededSP);
 		return;
 	}
 
@@ -1299,7 +1299,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 	if (!abSkillUsable[dwRealVnum])
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 쿨타임이 끝나지 않아 길드 스킬을 사용할 수 없습니다."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] You cannot use the guild skills yet.", ch->GetLanguage()));
 		return;
 	}
 
@@ -1318,7 +1318,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 	//GuildPointChange(POINT_SP, -iNeededSP);
 
 	if (test_server)
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> %d 스킬을 사용함 (%d, %d) to %u"), ch->GetLanguage()), dwVnum, GetSP(), iNeededSP, pid);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> Used skill %d (%d, %d) to %u", ch->GetLanguage()), dwVnum, GetSP(), iNeededSP, pid);
 
 	switch (dwVnum)
 	{
@@ -1339,7 +1339,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 
 					if (pcci->bChannel != g_bChannel)
 					{
-						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 상대가 %d 채널에 있습니다. (현재 채널 %d)"), ch->GetLanguage()), pcci->bChannel, g_bChannel);
+						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] This player is on channel %d. (Current channel: %d)", ch->GetLanguage()), pcci->bChannel, g_bChannel);
 					}
 					else
 					{
@@ -1352,7 +1352,7 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 					}
 				}
 				else
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 상대가 온라인 상태가 아닙니다."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] This player is not online.", ch->GetLanguage()));
 			}
 			break;
 
@@ -1366,13 +1366,13 @@ void CGuild::UseSkill(DWORD dwVnum, LPCHARACTER ch, DWORD pid)
 			{
 				/*if (ch->GetPlayerID() != GetMasterPID())
 				  {
-				  ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드장만 길드 스킬을 사용할 수 있습니다."), ch->GetLanguage()));
+				  ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> Only the guild master can use guild skills.", ch->GetLanguage()));
 				  return;
 				  }*/
 
 				if (!UnderAnyWar())
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드 스킬은 길드전 중에만 사용할 수 있습니다."), ch->GetLanguage()));
+					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] This guild skill can only be used during war.", ch->GetLanguage()));
 					return;
 				}
 
@@ -1739,7 +1739,7 @@ bool CGuild::ChargeSP(LPCHARACTER ch, int iSP)
 
 	SendDBSkillUpdate(iSP);
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> %u의 용신력을 회복하였습니다."), ch->GetLanguage()), iSP);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> Recovered %u Dragon Power.", ch->GetLanguage()), iSP);
 	}
 	return true;
 }
@@ -1813,7 +1813,7 @@ void CGuild::RequestDepositMoney(LPCHARACTER ch, int iGold)
 {
 	if (false==ch->CanDeposit())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 잠시후에 이용해주십시오"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] Please try again later.", ch->GetLanguage()));
 		return;
 	}
 
@@ -1840,19 +1840,19 @@ void CGuild::RequestWithdrawMoney(LPCHARACTER ch, int iGold)
 {
 	if (false==ch->CanDeposit())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 잠시후에 이용해주십시오"), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] Please try again later.", ch->GetLanguage()));
 		return;
 	}
 
 	if (ch->GetPlayerID() != GetMasterPID())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드 금고에선 길드장만 출금할 수 있습니다."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] Only the guild leader can withdraw Yang.", ch->GetLanguage()));
 		return;
 	}
 
 	if (m_data.gold < iGold)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 가지고 있는 돈이 부족합니다."), ch->GetLanguage()));
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] You do not have enough Yang.", ch->GetLanguage()));
 		return;
 	}
 
@@ -1947,7 +1947,7 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 {
 	if (quest::CQuestManager::instance().GetPCForce(pchInviter->GetPlayerID())->IsRunning() == true)
 	{
-	    pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 상대방이 초대 신청을 받을 수 없는 상태입니다."), pchInviter->GetLanguage()));
+	    pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> The other party cannot receive invitations.", pchInviter->GetLanguage()));
 	    return;
 	}
 
@@ -1957,17 +1957,17 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 
 	if ( pchInvitee->IsBlockMode( BLOCK_GUILD_INVITE ) ) 
 	{
-		pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 상대방이 길드 초대 거부 상태입니다."), pchInviter->GetLanguage()) );
+		pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] The player has declined the guild invitation.", pchInviter->GetLanguage()) );
 		return;
 	} 
 	else if ( !HasGradeAuth( GetMember( pchInviter->GetPlayerID() )->grade, GUILD_AUTH_ADD_MEMBER ) ) 
 	{
-		pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 길드원을 초대할 권한이 없습니다."), pchInviter->GetLanguage()) );
+		pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] You do not have the authority to invite someone to join the guild.", pchInviter->GetLanguage()) );
 		return;
 	} 
 	else if ( pchInvitee->GetEmpire() != pchInviter->GetEmpire() ) 
 	{
-		pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 다른 제국 사람을 길드에 초대할 수 없습니다."), pchInviter->GetLanguage()) );
+		pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] You cannot invite players from another kingdom into the guild.", pchInviter->GetLanguage()) );
 		return;
 	}
 
@@ -1977,18 +1977,18 @@ void CGuild::Invite( LPCHARACTER pchInviter, LPCHARACTER pchInvitee )
 		case GERR_NONE: break;
 		case GERR_WITHDRAWPENALTY:
 						pchInviter->ChatPacket( CHAT_TYPE_INFO, 
-								LC_TEXT("<길드> 탈퇴한 후 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."), 
+								LC_TEXT("[Guild] This player can be invited again after %d day(s)."), 
 								quest::CQuestManager::instance().GetEventFlag( "guild_withdraw_delay" ) );
 						return;
 		case GERR_COMMISSIONPENALTY:
 						pchInviter->ChatPacket( CHAT_TYPE_INFO, 
-								LC_TEXT("<길드> 길드를 해산한 지 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."), 
+								LC_TEXT("[Guild] After the rearrangement you can invite members again after %d days."), 
 								quest::CQuestManager::instance().GetEventFlag( "guild_disband_delay") );
 						return;
-		case GERR_ALREADYJOIN:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 상대방이 이미 다른 길드에 속해있습니다."), pchInviter->GetLanguage())); return;
-		case GERR_GUILDISFULL:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 최대 길드원 수를 초과했습니다."), pchInviter->GetLanguage())); return;
-		case GERR_GUILD_IS_IN_WAR : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 현재 길드가 전쟁 중 입니다."), pchInviter->GetLanguage()) ); return;
-		case GERR_INVITE_LIMIT : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 현재 신규 가입 제한 상태 입니다."), pchInviter->GetLanguage()) ); return;
+		case GERR_ALREADYJOIN:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] This person is already a member of another Guild.", pchInviter->GetLanguage())); return;
+		case GERR_GUILDISFULL:	pchInviter->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] The maximum guild capacity has been reached.", pchInviter->GetLanguage())); return;
+		case GERR_GUILD_IS_IN_WAR : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> The guild is currently at war.", pchInviter->GetLanguage()) ); return;
+		case GERR_INVITE_LIMIT : pchInviter->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> New member registration is currently restricted.", pchInviter->GetLanguage()) ); return;
 
 		default: sys_err( "ignore guild join error(%d)", errcode ); return;
 	}
@@ -2042,18 +2042,18 @@ void CGuild::InviteAccept( LPCHARACTER pchInvitee )
 		case GERR_NONE: break;
 		case GERR_WITHDRAWPENALTY:
 						pchInvitee->ChatPacket( CHAT_TYPE_INFO, 
-								LC_TEXT("<길드> 탈퇴한 후 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."), 
+								LC_TEXT("[Guild] This player can be invited again after %d day(s)."), 
 								quest::CQuestManager::instance().GetEventFlag( "guild_withdraw_delay" ) );
 						return;
 		case GERR_COMMISSIONPENALTY:
 						pchInvitee->ChatPacket( CHAT_TYPE_INFO, 
-								LC_TEXT("<길드> 길드를 해산한 지 %d일이 지나지 않은 사람은 길드에 초대할 수 없습니다."), 
+								LC_TEXT("[Guild] After the rearrangement you can invite members again after %d days."), 
 								quest::CQuestManager::instance().GetEventFlag( "guild_disband_delay") );
 						return;
-		case GERR_ALREADYJOIN:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 상대방이 이미 다른 길드에 속해있습니다."), pchInvitee->GetLanguage())); return;
-		case GERR_GUILDISFULL:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 최대 길드원 수를 초과했습니다."), pchInvitee->GetLanguage())); return;
-		case GERR_GUILD_IS_IN_WAR : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 현재 길드가 전쟁 중 입니다."), pchInvitee->GetLanguage()) ); return;
-		case GERR_INVITE_LIMIT : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("<길드> 현재 신규 가입 제한 상태 입니다."), pchInvitee->GetLanguage()) ); return;
+		case GERR_ALREADYJOIN:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] This person is already a member of another Guild.", pchInvitee->GetLanguage())); return;
+		case GERR_GUILDISFULL:	pchInvitee->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] The maximum guild capacity has been reached.", pchInvitee->GetLanguage())); return;
+		case GERR_GUILD_IS_IN_WAR : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> The guild is currently at war.", pchInvitee->GetLanguage()) ); return;
+		case GERR_INVITE_LIMIT : pchInvitee->ChatPacket( CHAT_TYPE_INFO, LC_TEXT_LANG("<Guild> New member registration is currently restricted.", pchInvitee->GetLanguage()) ); return;
 
 		default: sys_err( "ignore guild join error(%d)", errcode ); return;
 	}

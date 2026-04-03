@@ -1604,7 +1604,7 @@ void CItem::SetAccessorySocketDownGradeTime(DWORD time)
 	SetSocket(2, time); 
 
 	if (test_server && GetOwner())
-		GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s에서 소켓 빠질때까지 남은 시간 %d"), GetOwner()->GetLanguage()), GetName(), time);
+		GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Time remaining until socket removed from %s: %d", GetOwner()->GetLanguage()), GetName(), time);
 }
 
 EVENTFUNC(accessory_socket_expire_event)
@@ -1752,7 +1752,7 @@ void CItem::AccessorySocketDegrade()
 
 		if (ch)
 		{
-			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("%s에 박혀있던 보석이 사라집니다."), ch->GetLanguage()), GetName());
+			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("A gem socketed in the %s has vanished.", ch->GetLanguage()), GetName());
 		}
 
 		ModifyPoints(false);

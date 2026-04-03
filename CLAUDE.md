@@ -191,16 +191,12 @@ Key facts to remember:
 - To get empire: `LEFT JOIN player_index ON player_index.id = player.account_id`
 - `common.gmlist` — GM accounts with mAuthority level
 
-## ATENTIE: Encoding sursa C++ (EUC-KR)
+## Sistem traduceri (LC_TEXT)
 
-Fisierele `.cpp` si `.h` din `src/server/` contin stringuri Korean (EUC-KR) folosite de `LC_TEXT()` pentru sistemul de traduceri. **NU deschide aceste fisiere in editoare care salveaza automat ca UTF-8** (ex: VS Code cu auto-save) — se corup toti bytes Korean si traducerile nu mai functioneaza (textul apare garbled in joc).
+Stringurile din sursa C++ sunt in **engleza** (ASCII pur). `LC_TEXT("English string")` cauta traducerea in `server/share/locale/english/locale_string.txt` — cheia e engleza, valoarea e tot engleza (identitate pentru EN). `LC_TEXT_LANG(text, lang)` cauta in `locale_string_ro.txt` / `locale_string_de.txt` etc. pentru traducerea per-jucator.
 
-**Reguli:**
-- Foloseste `.editorconfig` (deja configurat) care forteaza encoding EUC-KR
-- In VS Code: verifica in dreapta-jos ca scrie `EUC-KR`, nu `UTF-8`
-- Daca ai modificat un fisier si vezi diff-uri pe linii cu Korean (comentarii/LC_TEXT) pe care **nu** le-ai atins → ai corupt encoding-ul. Fa `git checkout` pe acel fisier
-- `LC_TEXT("korean")` cauta traducerea in `server/share/locale/english/locale_string.txt`
-- Daca traducerea lipseste, serverul trimite `@0949` + textul Korean → apare garbled la client
+- Daca traducerea lipseste din `locale_string.txt` → serverul logheaza `LOCALE_ERROR` in syserr si trimite `@0949` + textul original
+- Fisierele sursa sunt **UTF-8** (sau ASCII pur) — orice editor poate fi folosit fara restrictii de encoding
 
 ## Troubleshooting
 
