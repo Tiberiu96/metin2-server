@@ -16,7 +16,7 @@
 
 void exchange_packet(LPCHARACTER ch, BYTE sub_header, bool is_me, DWORD arg1, TItemPos arg2, DWORD arg3, void * pvData = NULL);
 
-// ±³È¯ ÆÐÅ¶
+// ï¿½ï¿½È¯ ï¿½ï¿½Å¶
 void exchange_packet(LPCHARACTER ch, BYTE sub_header, bool is_me, DWORD arg1, TItemPos arg2, DWORD arg3, void * pvData)
 {
 	if (!ch->GetDesc())
@@ -45,10 +45,10 @@ void exchange_packet(LPCHARACTER ch, BYTE sub_header, bool is_me, DWORD arg1, TI
 	ch->GetDesc()->Packet(&pack_exchg, sizeof(pack_exchg));
 }
 
-// ±³È¯À» ½ÃÀÛ
+// ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 {
-	if (this == victim)	// ÀÚ±â ÀÚ½Å°ú´Â ±³È¯À» ¸øÇÑ´Ù.
+	if (this == victim)	// ï¿½Ú±ï¿½ ï¿½Ú½Å°ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 		return false;
 
 	if (IsObserverMode())
@@ -63,19 +63,19 @@ bool CHARACTER::ExchangeStart(LPCHARACTER victim)
 	//PREVENT_TRADE_WINDOW
 	if ( IsOpenSafebox() || GetShopOwner() || GetMyShop() || IsCubeOpen())
 	{
-		ChatPacket( CHAT_TYPE_INFO, LC_TEXT("´Ù¸¥ °Å·¡Ã¢ÀÌ ¿­·ÁÀÖÀ»°æ¿ì °Å·¡¸¦ ÇÒ¼ö ¾ø½À´Ï´Ù." ) );
+		ChatPacket( CHAT_TYPE_INFO, LC_TEXT("ï¿½Ù¸ï¿½ ï¿½Å·ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." ) );
 		return false;
 	}
 
 	if ( victim->IsOpenSafebox() || victim->GetShopOwner() || victim->GetMyShop() || victim->IsCubeOpen() )
 	{
-		ChatPacket( CHAT_TYPE_INFO, LC_TEXT("»ó´ë¹æÀÌ ´Ù¸¥ °Å·¡ÁßÀÌ¶ó °Å·¡¸¦ ÇÒ¼ö ¾ø½À´Ï´Ù." ) );
+		ChatPacket( CHAT_TYPE_INFO, LC_TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." ) );
 		return false;
 	}
 	//END_PREVENT_TRADE_WINDOW
 	int iDist = DISTANCE_APPROX(GetX() - victim->GetX(), GetY() - victim->GetY());
 
-	// °Å¸® Ã¼Å©
+	// ï¿½Å¸ï¿½ Ã¼Å©
 	if (iDist >= EXCHANGE_MAX_DISTANCE)
 		return false;
 
@@ -143,7 +143,7 @@ bool CExchange::AddItem(TItemPos item_pos, BYTE display_pos)
 	if (!item_pos.IsValidItemPosition())
 		return false;
 
-	// Àåºñ´Â ±³È¯ÇÒ ¼ö ¾øÀ½
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (item_pos.IsEquipPosition())
 		return false;
 
@@ -163,7 +163,7 @@ bool CExchange::AddItem(TItemPos item_pos, BYTE display_pos)
 		return false;
 	}
 
-	// ÀÌ¹Ì ±³È¯Ã¢¿¡ Ãß°¡µÈ ¾ÆÀÌÅÛÀÎ°¡?
+	// ï¿½Ì¹ï¿½ ï¿½ï¿½È¯Ã¢ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½?
 	if (item->IsExchanging())
 	{
 		sys_log(0, "EXCHANGE under exchanging");
@@ -212,7 +212,7 @@ bool CExchange::AddItem(TItemPos item_pos, BYTE display_pos)
 		return true;
 	}
 
-	// Ãß°¡ÇÒ °ø°£ÀÌ ¾øÀ½
+	// ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	return false;
 }
 
@@ -248,7 +248,7 @@ bool CExchange::AddGold(long gold)
 
 	if (GetOwner()->GetGold() < gold)
 	{
-		// °¡Áö°í ÀÖ´Â µ·ÀÌ ºÎÁ·.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		exchange_packet(GetOwner(), EXCHANGE_SUBHEADER_GC_LESS_GOLD, 0, 0, NPOS, 0);
 		return false;
 	}
@@ -271,7 +271,7 @@ bool CExchange::AddGold(long gold)
 	return true;
 }
 
-// µ·ÀÌ ÃæºÐÈ÷ ÀÖ´ÂÁö, ±³È¯ÇÏ·Á´Â ¾ÆÀÌÅÛÀÌ ½ÇÁ¦·Î ÀÖ´ÂÁö È®ÀÎ ÇÑ´Ù.
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½, ï¿½ï¿½È¯ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ñ´ï¿½.
 bool CExchange::Check(int * piItemCount)
 {
 	if (GetOwner()->GetGold() < m_lGold)
@@ -299,38 +299,46 @@ bool CExchange::Check(int * piItemCount)
 
 bool CExchange::CheckSpace()
 {
-	static CGrid s_grid1(5, INVENTORY_MAX_NUM/5 / 2); // inven page 1
-	static CGrid s_grid2(5, INVENTORY_MAX_NUM/5 / 2); // inven page 2
+	static CGrid s_grid1(5, INVENTORY_MAX_NUM/5/4); // inven page 1
+	static CGrid s_grid2(5, INVENTORY_MAX_NUM/5/4); // inven page 2
+	static CGrid s_grid3(5, INVENTORY_MAX_NUM/5/4); // inven page 3
+	static CGrid s_grid4(5, INVENTORY_MAX_NUM/5/4); // inven page 4
 
 	s_grid1.Clear();
 	s_grid2.Clear();
+	s_grid3.Clear();
+	s_grid4.Clear();
 
 	LPCHARACTER	victim = GetCompany()->GetOwner();
 	LPITEM item;
 
 	int i;
 
-	for (i = 0; i < INVENTORY_MAX_NUM / 2; ++i)
+	const int perPageSlotCount = INVENTORY_MAX_NUM / 4;
+
+	for (i = 0; i < INVENTORY_MAX_NUM; ++i)
 	{
 		if (!(item = victim->GetInventoryItem(i)))
 			continue;
 
-		s_grid1.Put(i, 1, item->GetSize());
-	}
-	for (i = INVENTORY_MAX_NUM / 2; i < INVENTORY_MAX_NUM; ++i)
-	{
-		if (!(item = victim->GetInventoryItem(i)))
-			continue;
+		BYTE itemSize = item->GetSize();
 
-		s_grid2.Put(i - INVENTORY_MAX_NUM / 2, 1, item->GetSize());
+		if (i < perPageSlotCount)
+			s_grid1.Put(i, 1, itemSize);
+		else if (i < perPageSlotCount * 2)
+			s_grid2.Put(i - perPageSlotCount, 1, itemSize);
+		else if (i < perPageSlotCount * 3)
+			s_grid3.Put(i - perPageSlotCount * 2, 1, itemSize);
+		else
+			s_grid4.Put(i - perPageSlotCount * 3, 1, itemSize);
 	}
 
-	// ¾Æ... ¹º°¡ °³º´½Å °°Áö¸¸... ¿ëÈ¥¼® ÀÎº¥À» ³ë¸Ö ÀÎº¥ º¸°í µû¶ó ¸¸µç ³» Àß¸øÀÌ´Ù ¤Ð¤Ð
+	// ï¿½ï¿½... ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½... ï¿½ï¿½È¥ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ß¸ï¿½ï¿½Ì´ï¿½ ï¿½Ð¤ï¿½
 	static std::vector <WORD> s_vDSGrid(DRAGON_SOUL_INVENTORY_MAX_NUM);
-	
-	// ÀÏ´Ü ¿ëÈ¥¼®À» ±³È¯ÇÏÁö ¾ÊÀ» °¡´É¼ºÀÌ Å©¹Ç·Î, ¿ëÈ¥¼® ÀÎº¥ º¹»ç´Â ¿ëÈ¥¼®ÀÌ ÀÖÀ» ¶§ ÇÏµµ·Ï ÇÑ´Ù.
+
+	// ï¿½Ï´ï¿½ ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ Å©ï¿½Ç·ï¿½, ï¿½ï¿½È¥ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 	bool bDSInitialized = false;
-	
+
 	for (i = 0; i < EXCHANGE_ITEM_MAX_NUM; ++i)
 	{
 		if (!(item = m_apItems[i]))
@@ -353,12 +361,11 @@ bool CExchange::CheckSpace()
 			WORD wBasePos = DSManager::instance().GetBasePosition(item);
 			if (wBasePos >= DRAGON_SOUL_INVENTORY_MAX_NUM)
 				return false;
-			
+
 			for (int i = 0; i < DRAGON_SOUL_BOX_SIZE; i++)
 			{
 				WORD wPos = wBasePos + i;
-				// if (0 == s_vDSGrid[wBasePos])
-				if (0 == s_vDSGrid[wPos]) // Fix
+				if (0 == s_vDSGrid[wPos])
 				{
 					bool bEmpty = true;
 					for (int j = 1; j < item->GetSize(); j++)
@@ -373,7 +380,7 @@ bool CExchange::CheckSpace()
 					{
 						for (int j = 0; j < item->GetSize(); j++)
 						{
-							s_vDSGrid[wPos + j * DRAGON_SOUL_BOX_COLUMN_NUM] =  wPos + 1;
+							s_vDSGrid[wPos + j * DRAGON_SOUL_BOX_COLUMN_NUM] = wPos + 1;
 						}
 						bExistEmptySpace = true;
 						break;
@@ -388,31 +395,25 @@ bool CExchange::CheckSpace()
 		else
 		{
 			int iPos = s_grid1.FindBlank(1, item->GetSize());
+			if (iPos >= 0) { s_grid1.Put(iPos, 1, item->GetSize()); continue; }
 
-			if (iPos >= 0)
-			{
-				s_grid1.Put(iPos, 1, item->GetSize());
-			}
-			else
-			{
-				iPos = s_grid2.FindBlank(1, item->GetSize());
+			iPos = s_grid2.FindBlank(1, item->GetSize());
+			if (iPos >= 0) { s_grid2.Put(iPos, 1, item->GetSize()); continue; }
 
-				if (iPos >= 0)
-				{
-					s_grid2.Put(iPos, 1, item->GetSize());
-				}
-				else
-				{
-					return false;
-				}
-			}
+			iPos = s_grid3.FindBlank(1, item->GetSize());
+			if (iPos >= 0) { s_grid3.Put(iPos, 1, item->GetSize()); continue; }
+
+			iPos = s_grid4.FindBlank(1, item->GetSize());
+			if (iPos >= 0) { s_grid4.Put(iPos, 1, item->GetSize()); continue; }
+
+			return false;
 		}
 	}
 
 	return true;
 }
 
-// ±³È¯ ³¡ (¾ÆÀÌÅÛ°ú µ· µîÀ» ½ÇÁ¦·Î ¿Å±ä´Ù)
+// ï¿½ï¿½È¯ ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å±ï¿½ï¿½)
 bool CExchange::Done()
 {
 	int		empty_pos, i;
@@ -494,7 +495,7 @@ bool CExchange::Done()
 	return true;
 }
 
-// ±³È¯À» µ¿ÀÇ
+// ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 bool CExchange::Accept(bool bAccept)
 {
 	if (m_bAccept == bAccept)
@@ -502,7 +503,7 @@ bool CExchange::Accept(bool bAccept)
 
 	m_bAccept = bAccept;
 
-	// µÑ ´Ù µ¿ÀÇ ÇßÀ¸¹Ç·Î ±³È¯ ¼º¸³
+	// ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½
 	if (m_bAccept && GetCompany()->m_bAccept)
 	{
 		int	iItemCount;
@@ -514,9 +515,9 @@ bool CExchange::Accept(bool bAccept)
 		victim->SetExchangeTime();		
 		//END_PREVENT_PORTAL_AFTER_EXCHANGE
 
-		// exchange_check ¿¡¼­´Â ±³È¯ÇÒ ¾ÆÀÌÅÛµéÀÌ Á¦ÀÚ¸®¿¡ ÀÖ³ª È®ÀÎÇÏ°í,
-		// ¿¤Å©µµ ÃæºÐÈ÷ ÀÖ³ª È®ÀÎÇÑ´Ù, µÎ¹øÂ° ÀÎÀÚ·Î ±³È¯ÇÒ ¾ÆÀÌÅÛ °³¼ö
-		// ¸¦ ¸®ÅÏÇÑ´Ù.
+		// exchange_check ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ö³ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½,
+		// ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö³ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½, ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		if (!Check(&iItemCount))
 		{
 			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Not enough Yang or not enough space in the inventory.", GetOwner()->GetLanguage()));
@@ -524,7 +525,7 @@ bool CExchange::Accept(bool bAccept)
 			goto EXCHANGE_END;
 		}
 
-		// ¸®ÅÏ ¹ÞÀº ¾ÆÀÌÅÛ °³¼ö·Î »ó´ë¹æÀÇ ¼ÒÁöÇ°¿¡ ³²Àº ÀÚ¸®°¡ ÀÖ³ª È®ÀÎÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ö³ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½.
 		if (!CheckSpace())
 		{
 			GetOwner()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The other person has no space left in their inventory.", GetOwner()->GetLanguage()));
@@ -532,7 +533,7 @@ bool CExchange::Accept(bool bAccept)
 			goto EXCHANGE_END;
 		}
 
-		// »ó´ë¹æµµ ¸¶Âù°¡Áö·Î..
+		// ï¿½ï¿½ï¿½æµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½..
 		if (!GetCompany()->Check(&iItemCount))
 		{
 			victim->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Not enough Yang or not enough space in the inventory.", victim->GetLanguage()));
@@ -557,12 +558,12 @@ bool CExchange::Accept(bool bAccept)
 
 		if (Done())
 		{
-			if (m_lGold) // µ·ÀÌ ÀÖÀ» ‹š¸¸ ÀúÀå
+			if (m_lGold) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				GetOwner()->Save();
 
 			if (GetCompany()->Done())
 			{
-				if (GetCompany()->m_lGold) // µ·ÀÌ ÀÖÀ» ¶§¸¸ ÀúÀå
+				if (GetCompany()->m_lGold) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 					victim->Save();
 
 				// INTERNATIONAL_VERSION
@@ -578,14 +579,14 @@ EXCHANGE_END:
 	}
 	else
 	{
-		// ¾Æ´Ï¸é accept¿¡ ´ëÇÑ ÆÐÅ¶À» º¸³»ÀÚ.
+		// ï¿½Æ´Ï¸ï¿½ acceptï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		exchange_packet(GetOwner(), EXCHANGE_SUBHEADER_GC_ACCEPT, true, m_bAccept, NPOS, 0);
 		exchange_packet(GetCompany()->GetOwner(), EXCHANGE_SUBHEADER_GC_ACCEPT, false, m_bAccept, NPOS, 0);
 		return true;
 	}
 }
 
-// ±³È¯ Ãë¼Ò
+// ï¿½ï¿½È¯ ï¿½ï¿½ï¿½
 void CExchange::Cancel()
 {
 	exchange_packet(GetOwner(), EXCHANGE_SUBHEADER_GC_END, 0, 0, NPOS, 0);

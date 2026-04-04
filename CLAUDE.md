@@ -101,6 +101,16 @@ Sursa C++ foloseste stringuri **engleze ASCII**. Fluxul:
 
 `LOCALE_ERROR` in syserr = cheia lipseste din `locale_string.txt`.
 
+## Verificare inainte de git commit
+
+Inainte de orice commit, verifica fisierele tracked/modificate care contin text (`.cpp`, `.h`, `.txt`, `.lua`) sa nu aiba coruptie de encoding:
+
+- **Semn de coruptie:** secvente `?` sau caractere `\x80-\x9F` aparute in locul caracterelor coreene originale din comentarii
+- **Cum verifici:** `git diff` — daca un fisier cu comentarii coreene afiseaza `?` in loc, NU da commit
+- **Cauza frecventa:** editare cu tool care schimba encoding-ul (ex: Edit tool scrie UTF-8 peste EUC-KR)
+- **Fix:** aplica modificarea cu `perl -i` sau `sed` pastrand encoding-ul original, sau editeaza direct pe FreeBSD
+- **Fisiere sensibile la encoding:** orice `.cpp`/`.h` din `src/` cu comentarii coreene, `locale_string*.txt`, `translate_*.lua`
+
 ## Troubleshooting
 
 - **Syserr paths** (fara `/log/`): `server/db/syserr`, `server/auth/syserr`, `server/channel1/game1/syserr`
