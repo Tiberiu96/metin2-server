@@ -5,9 +5,9 @@
 #include "pool.h"
 #endif
 
-// special_item_group.txt¿¡¼­ Á¤ÀÇÇÏ´Â ¼Ó¼º ±×·ì
-// type attr·Î ¼±¾ðÇÒ ¼ö ÀÖ´Ù.
-// ÀÌ ¼Ó¼º ±×·ìÀ» ÀÌ¿ëÇÒ ¼ö ÀÖ´Â °ÍÀº special_item_group.txt¿¡¼­ Special typeÀ¸·Î Á¤ÀÇµÈ ±×·ì¿¡ ¼ÓÇÑ UNIQUE ITEMÀÌ´Ù.
+// special_item_group.txtï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ó¼ï¿½ ï¿½×·ï¿½
+// type attrï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+// ï¿½ï¿½ ï¿½Ó¼ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ special_item_group.txtï¿½ï¿½ï¿½ï¿½ Special typeï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ ï¿½×·ì¿¡ ï¿½ï¿½ï¿½ï¿½ UNIQUE ITEMï¿½Ì´ï¿½.
 class CSpecialAttrGroup
 {
 public:
@@ -43,10 +43,10 @@ class CSpecialItemGroup
 			MOB_GROUP,
 		};
 
-		// QUEST Å¸ÀÔÀº Äù½ºÆ® ½ºÅ©¸³Æ®¿¡¼­ vnum.sig_use¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Â ±×·ìÀÌ´Ù.
-		//		´Ü, ÀÌ ±×·ì¿¡ µé¾î°¡±â À§ÇØ¼­´Â ITEM ÀÚÃ¼ÀÇ TYPEÀÌ QUEST¿©¾ß ÇÑ´Ù.
-		// SPECIAL Å¸ÀÔÀº idx, item_vnum, attr_vnumÀ» ÀÔ·ÂÇÑ´Ù. attr_vnumÀº À§¿¡ CSpecialAttrGroupÀÇ VnumÀÌ´Ù.
-		//		ÀÌ ±×·ì¿¡ µé¾îÀÖ´Â ¾ÆÀÌÅÛÀº °°ÀÌ Âø¿ëÇÒ ¼ö ¾ø´Ù.
+		// QUEST Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ vnum.sig_useï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½×·ï¿½ï¿½Ì´ï¿½.
+		//		ï¿½ï¿½, ï¿½ï¿½ ï¿½×·ì¿¡ ï¿½ï¿½î°¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ITEM ï¿½ï¿½Ã¼ï¿½ï¿½ TYPEï¿½ï¿½ QUESTï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+		// SPECIAL Å¸ï¿½ï¿½ï¿½ï¿½ idx, item_vnum, attr_vnumï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ñ´ï¿½. attr_vnumï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CSpecialAttrGroupï¿½ï¿½ Vnumï¿½Ì´ï¿½.
+		//		ï¿½ï¿½ ï¿½×·ì¿¡ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		enum ESIGType { NORMAL, PCT, QUEST, SPECIAL };
 
 		struct CSpecialItemInfo
@@ -79,9 +79,9 @@ class CSpecialItemGroup
 			return m_vecProbs.empty();
 		}
 
-		// Type Multi, Áï m_bType == PCT ÀÎ °æ¿ì,
-		// È®·üÀ» ´õÇØ°¡Áö ¾Ê°í, µ¶¸³ÀûÀ¸·Î °è»êÇÏ¿© ¾ÆÀÌÅÛÀ» »ý¼ºÇÑ´Ù.
-		// µû¶ó¼­ ¿©·¯ °³ÀÇ ¾ÆÀÌÅÛÀÌ »ý¼ºµÉ ¼ö ÀÖ´Ù.
+		// Type Multi, ï¿½ï¿½ m_bType == PCT ï¿½ï¿½ ï¿½ï¿½ï¿½,
+		// È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø°ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 		// by rtsummit
 		int GetMultiIndex(std::vector <int> &idx_vec) const
 		{
@@ -143,8 +143,8 @@ class CSpecialItemGroup
 			return false;
 		}
 		
-		// GroupÀÇ TypeÀÌ SpecialÀÎ °æ¿ì¿¡
-		// dwVnum¿¡ ¸ÅÄªµÇ´Â AttrVnumÀ» returnÇØÁØ´Ù.
+		// Groupï¿½ï¿½ Typeï¿½ï¿½ Specialï¿½ï¿½ ï¿½ï¿½ì¿¡
+		// dwVnumï¿½ï¿½ ï¿½ï¿½Äªï¿½Ç´ï¿½ AttrVnumï¿½ï¿½ returnï¿½ï¿½ï¿½Ø´ï¿½.
 		DWORD GetAttrVnum(DWORD dwVnum) const
 		{
 			if (CSpecialItemGroup::SPECIAL != m_bType)
@@ -354,18 +354,18 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 
 		bool                    Initialize(TItemTable * table, int size);
 		void			Destroy();
-		void			Update();	// ¸Å ·çÇÁ¸¶´Ù ºÎ¸¥´Ù.
+		void			Update();	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½.
 		void			GracefulShutdown();
 
 		DWORD			GetNewID();
-		bool			SetMaxItemID(TItemIDRangeTable range); // ÃÖ´ë °íÀ¯ ¾ÆÀÌµð¸¦ ÁöÁ¤
+		bool			SetMaxItemID(TItemIDRangeTable range); // ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 		bool			SetMaxSpareItemID(TItemIDRangeTable range);
 
-		// DelayedSave: ¾î¶°ÇÑ ·çÆ¾ ³»¿¡¼­ ÀúÀåÀ» ÇØ¾ß ÇÒ ÁþÀ» ¸¹ÀÌ ÇÏ¸é ÀúÀå
-		// Äõ¸®°¡ ³Ê¹« ¸¹¾ÆÁö¹Ç·Î "ÀúÀåÀ» ÇÑ´Ù" ¶ó°í Ç¥½Ã¸¸ ÇØµÎ°í Àá±ñ
-		// (¿¹: 1 frame) ÈÄ¿¡ ÀúÀå½ÃÅ²´Ù.
+		// DelayedSave: ï¿½î¶°ï¿½ï¿½ ï¿½ï¿½Æ¾ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½" ï¿½ï¿½ï¿½ Ç¥ï¿½Ã¸ï¿½ ï¿½ØµÎ°ï¿½ ï¿½ï¿½ï¿½
+		// (ï¿½ï¿½: 1 frame) ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½.
 		void			DelayedSave(LPITEM item);
-		void			FlushDelayedSave(LPITEM item); // Delayed ¸®½ºÆ®¿¡ ÀÖ´Ù¸é Áö¿ì°í ÀúÀåÇÑ´Ù. ²÷±è Ã³¸®½Ã »ç¿ë µÊ.
+		void			FlushDelayedSave(LPITEM item); // Delayed ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½.
 		void			SaveSingleItem(LPITEM item);
 
 		LPITEM                  CreateItem(DWORD vnum, DWORD count = 1, DWORD dwID = 0, bool bTryMagic = false, int iRarePct = -1, bool bSkipSave = false);
@@ -374,13 +374,16 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 #else
 		void DestroyItem(LPITEM item, const char* file, size_t line);
 #endif
-		void			RemoveItem(LPITEM item, const char * c_pszReason=NULL); // »ç¿ëÀÚ·Î ºÎÅÍ ¾ÆÀÌÅÛÀ» Á¦°Å
+		void			RemoveItem(LPITEM item, const char * c_pszReason=NULL); // ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 		LPITEM			Find(DWORD id);
 		LPITEM                  FindByVID(DWORD vid);
 		TItemTable *            GetTable(DWORD vnum);
 		bool			GetVnum(const char * c_pszName, DWORD & r_dwVnum);
 		bool			GetVnumByOriginalName(const char * c_pszName, DWORD & r_dwVnum);
+
+		bool			LoadItemNames();
+		const char *		GetLocaleName(DWORD dwVnum, const char * lang);
 
 		bool			GetDropPct(LPCHARACTER pkChr, LPCHARACTER pkKiller, OUT int& iDeltaPercent, OUT int& iRandRange);
 		bool			CreateDropItem(LPCHARACTER pkChr, LPCHARACTER pkKiller, std::vector<LPITEM> & vec_item);
@@ -397,7 +400,7 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 
 		DWORD			GetRefineFromVnum(DWORD dwVnum);
 
-		static void		CopyAllAttrTo(LPITEM pkOldItem, LPITEM pkNewItem);		// pkNewItemÀ¸·Î ¸ðµç ¼Ó¼º°ú ¼ÒÄÏ °ªµéÀ» ¸ñ»çÇÏ´Â ÇÔ¼ö.
+		static void		CopyAllAttrTo(LPITEM pkOldItem, LPITEM pkNewItem);		// pkNewItemï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½.
 
 
 		const CSpecialItemGroup* GetSpecialItemGroup(DWORD dwVnum);
@@ -421,8 +424,8 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		std::map<DWORD, DWORD>		m_map_ItemRefineFrom;
 		int				m_iTopOfTable;
 
-		ITEM_VID_MAP			m_VIDMap;			///< m_dwVIDCount ÀÇ °ª´ÜÀ§·Î ¾ÆÀÌÅÛÀ» ÀúÀåÇÑ´Ù.
-		DWORD				m_dwVIDCount;			///< ÀÌ³à¼® VID°¡ ¾Æ´Ï¶ó ±×³É ÇÁ·Î¼¼½º ´ÜÀ§ À¯´ÏÅ© ¹øÈ£´Ù.
+		ITEM_VID_MAP			m_VIDMap;			///< m_dwVIDCount ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+		DWORD				m_dwVIDCount;			///< ï¿½Ì³à¼® VIDï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½È£ï¿½ï¿½.
 		DWORD				m_dwCurrentID;
 		TItemIDRangeTable	m_ItemIDRange;
 		TItemIDRangeTable	m_ItemIDSpareRange;
@@ -437,21 +440,22 @@ class ITEM_MANAGER : public singleton<ITEM_MANAGER>
 		std::map<DWORD, CMobItemGroup*> m_map_pkMobItemGroup;
 		std::map<DWORD, CLevelItemGroup*> m_map_pkLevelItemGroup;
 		std::map<DWORD, CBuyerThiefGlovesItemGroup*> m_map_pkGloveItemGroup;
+		std::map<std::string, std::map<DWORD, std::string>> m_mapItemNamesByLang;
 
 		// CHECK_UNIQUE_GROUP
 		std::map<DWORD, int>		m_ItemToSpecialGroup;
 		// END_OF_CHECK_UNIQUE_GROUP
 	
 	private:
-		// µ¶ÀÏ¿¡¼­ ±âÁ¸ Ä³½Ã ¾ÆÀÌÅÛ°ú °°Áö¸¸, ±³È¯ °¡´ÉÇÑ Ä³½Ã ¾ÆÀÌÅÛÀ» ¸¸µç´Ù°í ÇÏ¿©,
-		// ¿À¸®Áö³Î ¾ÆÀÌÅÛ¿¡ ±³È¯ ±ÝÁö ÇÃ·¡±×¸¸ »èÁ¦ÇÑ »õ·Î¿î ¾ÆÀÌÅÛµéÀ» ¸¸µé¾î,
-		// »õ·Î¿î ¾ÆÀÌÅÛ ´ë¿ªÀ» ÇÒ´çÇÏ¿´´Ù.
-		// ¹®Á¦´Â »õ·Î¿î ¾ÆÀÌÅÛµµ ¿À¸®Áö³Î ¾ÆÀÌÅÛ°ú °°Àº È¿°ú¸¦ ³»¾ßÇÏ´Âµ¥,
-		// ¼­¹ö°Ç, Å¬¶ó°Ç, vnum ±â¹ÝÀ¸·Î µÇ¾îÀÖ¾î
-		// »õ·Î¿î vnumÀ» ÁË´Ù ¼­¹ö¿¡ »õ·Î ´Ù ¹Ú¾Æ¾ßÇÏ´Â ¾ÈÅ¸±î¿î »óÈ²¿¡ ¸Â´ê¾Ò´Ù.
-		// ±×·¡¼­ »õ vnumÀÇ ¾ÆÀÌÅÛÀÌ¸é, ¼­¹ö¿¡¼­ µ¹¾Æ°¥ ¶§´Â ¿À¸®Áö³Î ¾ÆÀÌÅÛ vnumÀ¸·Î ¹Ù²ã¼­ µ¹°í ÇÏ°í,
-		// ÀúÀåÇÒ ¶§¿¡ º»·¡ vnumÀ¸·Î ¹Ù²ãÁÖµµ·Ï ÇÑ´Ù.
-		// ÀÌ¸¦ À§ÇØ ¿À¸®Áö³Î vnum°ú »õ·Î¿î vnumÀ» ¿¬°á½ÃÄÑÁÖ´Â ¸ÊÀ» ¸¸µê.
+		// ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½Ï¿ï¿½,
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½,
+		// ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ë¿ªï¿½ï¿½ ï¿½Ò´ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½,
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½, vnum ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½Ö¾ï¿½
+		// ï¿½ï¿½ï¿½Î¿ï¿½ vnumï¿½ï¿½ ï¿½Ë´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¾Æ¾ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½È²ï¿½ï¿½ ï¿½Â´ï¿½Ò´ï¿½.
+		// ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ vnumï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vnumï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ã¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½,
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ vnumï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+		// ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vnumï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ vnumï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		typedef std::map <DWORD, DWORD> TMapDW2DW;
 		TMapDW2DW	m_map_new_to_ori;
 
