@@ -1651,6 +1651,9 @@
 "님의 말";
 "'s Horse";
 
+"'s Horse";
+"'s Horse";
+
 "결혼식이 종료됩니다.";
 "The wedding is finishing soon.";
 
