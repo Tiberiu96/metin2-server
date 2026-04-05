@@ -52,7 +52,7 @@ const char *quote_find_end(const char *string)
 	{
 		if (quote && *tmp == '\\' && *(tmp + 1))
 		{
-			// \ ´ÙÀ½ ¹®ÀÚ°¡ " ¸é ½ºÅµÇÑ´Ù.
+			// \ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ " ï¿½ï¿½ ï¿½ï¿½Åµï¿½Ñ´ï¿½.
 			switch (*(tmp + 1))
 			{
 				case '"':
@@ -231,7 +231,10 @@ void locale_init_all_langs()
 
 		FILE * fp = fopen(szFileName, "rb");
 		if (!fp)
+		{
+			sys_err("locale_init_all_langs: cannot open '%s'", szFileName);
 			continue;
+		}
 
 		fseek(fp, 0L, SEEK_END);
 		int fileLen = ftell(fp);

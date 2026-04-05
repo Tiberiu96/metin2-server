@@ -11,12 +11,12 @@
 
 static const char * GetEmpireName(int priv)
 {
-	return LC_TEXT(c_apszEmpireNames[priv]);
+	return c_apszEmpireNames[priv];
 }
 
 static const char * GetPrivName(int priv)
 {
-	return LC_TEXT(c_apszPrivNames[priv]);
+	return c_apszPrivNames[priv];
 }
 
 CPrivManager::CPrivManager()
@@ -160,7 +160,7 @@ void CPrivManager::GiveEmpirePriv(BYTE empire, BYTE type, int value, BYTE bLog, 
 	if (value)
 	{
 		char buf[100];
-		snprintf(buf, sizeof(buf), LC_TEXT("%s: %s has increased by %d%%!"), GetEmpireName(empire), GetPrivName(type), value);
+		snprintf(buf, sizeof(buf), "%s: %s has increased by %d%%!", GetEmpireName(empire), GetPrivName(type), value);
 
 		if (empire)
 			SendNotice(buf);
@@ -170,7 +170,7 @@ void CPrivManager::GiveEmpirePriv(BYTE empire, BYTE type, int value, BYTE bLog, 
 	else
 	{
 		char buf[100];
-		snprintf(buf, sizeof(buf), LC_TEXT("%s 's %s normal again."), GetEmpireName(empire), GetPrivName(type));
+		snprintf(buf, sizeof(buf), "%s 's %s normal again.", GetEmpireName(empire), GetPrivName(type));
 
 		if (empire)
 			SendNotice(buf);
@@ -225,7 +225,7 @@ void CPrivManager::RemoveCharacterPriv(DWORD pid, BYTE type)
 
 int CPrivManager::GetPriv(LPCHARACTER ch, BYTE type)
 {
-	// Ä³¸¯ÅÍÀÇ º¯°æ ¼öÄ¡°¡ -¶ó¸é ¹«Á¶°Ç -¸¸ Àû¿ëµÇ°Ô
+	// Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ -ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç°ï¿½
 	int val_ch = GetPrivByCharacter(ch->GetPlayerID(), type);
 
 	if (val_ch < 0 && !ch->IsEquipUniqueItem(UNIQUE_ITEM_NO_BAD_LUCK_EFFECT))
@@ -234,7 +234,7 @@ int CPrivManager::GetPriv(LPCHARACTER ch, BYTE type)
 	{
 		int val;
 
-		// °³ÀÎ, Á¦±¹, ±æµå, ÀüÃ¼ Áß Å« °ªÀ» ÃëÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½, ï¿½ï¿½Ã¼ ï¿½ï¿½ Å« ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 		val = MAX(val_ch, GetPrivByEmpire(0, type));
 		val = MAX(val, GetPrivByEmpire(ch->GetEmpire(), type));
 
