@@ -2286,3 +2286,9 @@
 
 "문제 입니다.";
 "OX-Question: ";
+
+"Close";
+"Close";
+
+"Experience percentage";
+"Experience percentage";
