@@ -53,10 +53,10 @@ PROXY_IP: 77.88.99.111   # IP extern/public
 
 ## Migratii DB
 
-Schema change → fisier nou in `sql/migrations/` (ex: `001_descriere.sql`).
+Orice schema change → fisier nou in `sql/migrations/` (ex: `001_descriere.sql`).
 
-- Numerotare 3 cifre, idempotent (`IF NOT EXISTS`)
-- Nu modifica fisier deja aplicat
+- Numerotare secventiala 3 cifre, idempotent (`IF NOT EXISTS`)
+- Nu modifica niciodata un fisier deja aplicat
 
 ```sh
 mysql -u root player < /usr/metin2/sql/migrations/001_descriere.sql
@@ -65,7 +65,7 @@ mysql -u root player < /usr/metin2/sql/migrations/001_descriere.sql
 ## Limbi disponibile
 
 EN/DE/HU/FR/CZ/DK/ES/GR/IT/NL/PL/PT/RO/RU/TR (default: EN)
-Per-limba: `locale_string_ro.txt`, `translate_ro.lua`, `item_names_ro.txt`, `mob_names_ro.txt`
+Fisiere per-limba: `locale_string_ro.txt`, `translate_ro.lua`, `item_names_ro.txt`, `mob_names_ro.txt`
 
 ## Credentiale default
 
@@ -77,12 +77,12 @@ Per-limba: `locale_string_ro.txt`, `translate_ro.lua`, `item_names_ro.txt`, `mob
 
 ## GM Commands
 
-Vezi **`.claude/references/commands_gm.md`**.
+Consulta **`.claude/references/commands_gm.md`** pentru orice comanda GM.
 Spawn mob: `/mob <vnum>` (nu `/spawn`).
 
 ## Database Schema
 
-Schema verificata: **`.claude/references/db_schema.md`**
+Schema completa verificata: **`.claude/references/db_schema.md`**
 
 Fapte critice:
 
@@ -94,7 +94,7 @@ Fapte critice:
 
 ## Sistem traduceri (LC_TEXT)
 
-Sursa C++ foloseste stringuri **engleze ASCII**. Flux:
+Sursa C++ foloseste stringuri **engleze ASCII**. Fluxul:
 
 1. `LC_TEXT("English")` → cauta in `locale_string.txt` (en→en, identitate)
 2. `LC_TEXT_LANG(text, lang)` → cauta in `locale_string_ro.txt` etc. per jucator
@@ -103,30 +103,17 @@ Sursa C++ foloseste stringuri **engleze ASCII**. Flux:
 
 ## Verificare inainte de git commit
 
-Verifica fisierele tracked (`.cpp`, `.h`, `.txt`, `.lua`) pentru coruptie encoding:
+Inainte de orice commit, verifica fisierele tracked/modificate care contin text (`.cpp`, `.h`, `.txt`, `.lua`) sa nu aiba coruptie de encoding:
 
-- **Semn coruptie:** secvente `?` sau `\x80-\x9F` in loc de coreene originale
-- **Verifica:** `git diff` — daca afiseaza `?` in loc de coreene, NU da commit
-- **Cauza:** Edit tool scrie UTF-8 peste EUC-KR
-- **Fix:** `perl -i` sau `sed` pastrand encoding original, sau editeaza direct pe FreeBSD
-- **Sensibile:** `.cpp`/`.h` din `src/` cu coreene, `locale_string*.txt`, `translate_*.lua`
-
-## Structura runtime FreeBSD (reala)
-
-```text
-/usr/metin2/server/db/          → syslog, syserr (direct in folder, NU in log/)
-/usr/metin2/server/auth/        → syslog, syserr
-/usr/metin2/server/channel1/game1/  → syslog, syserr
-/usr/metin2/server/channel2/game1/  → syslog, syserr
-/usr/metin2/server/channel{1-4}/game{1-2}/
-/usr/metin2/server/db/log/      → doar core dumps
-/usr/metin2/src/server/db/src/  → sursa db (compilare)
-/usr/metin2/src/server/game/src/ → sursa game (compilare)
-```
+- **Semn de coruptie:** secvente `?` sau caractere `\x80-\x9F` aparute in locul caracterelor coreene originale din comentarii
+- **Cum verifici:** `git diff` — daca un fisier cu comentarii coreene afiseaza `?` in loc, NU da commit
+- **Cauza frecventa:** editare cu tool care schimba encoding-ul (ex: Edit tool scrie UTF-8 peste EUC-KR)
+- **Fix:** aplica modificarea cu `perl -i` sau `sed` pastrand encoding-ul original, sau editeaza direct pe FreeBSD
+- **Fisiere sensibile la encoding:** orice `.cpp`/`.h` din `src/` cu comentarii coreene, `locale_string*.txt`, `translate_*.lua`
 
 ## Troubleshooting
 
-- **Syserr/syslog paths**: direct in `/usr/metin2/server/db/`, `/usr/metin2/server/channel1/game1/` etc. (NU in subdosarul `log/`)
+- **Syserr paths** (fara `/log/`): `server/db/syserr`, `server/auth/syserr`, `server/channel1/game1/syserr`
 - **Connection refused**: verifica syserr db/auth/channels
 - **Jucatori kickati dupa charselect**: BIND_IP/PROXY_IP gresit
 - **Compilare pe x64**: foloseste jail 32-bit
