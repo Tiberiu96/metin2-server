@@ -229,6 +229,7 @@ CPacketInfoCG::CPacketInfoCG()
 	Set(HEADER_CG_DRAGON_SOUL_REFINE, sizeof(TPacketCGDragonSoulRefine), "DragonSoulRefine", false);
 	Set(HEADER_CG_STATE_CHECKER, sizeof(BYTE), "ServerStateCheck", false);
 	Set(HEADER_CG_SET_LANGUAGE, sizeof(TPacketCGSetLanguage), "SetLanguage", false);
+	Set(HEADER_CG_CHANGE_CHANNEL, sizeof(TPacketCGChangeChannel), "ChangeChannel", false);
 }
 
 CPacketInfoCG::~CPacketInfoCG()

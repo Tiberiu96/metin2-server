@@ -46,14 +46,14 @@ class CLoginKey
 };
 
 
-// sequence ¹ö±× Ã£±â¿ë µ¥ÀÌÅ¸
+// sequence ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸
 struct seq_t
 {
 	BYTE	hdr;
 	BYTE	seq;
 };
 typedef std::vector<seq_t>	seq_vector_t;
-// sequence ¹ö±× Ã£±â¿ë µ¥ÀÌÅ¸
+// sequence ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸
 
 class DESC
 {
@@ -116,7 +116,7 @@ class DESC
 
 		void			Log(const char * format, ...);
 
-		// ÇÚµå½¦ÀÌÅ© (½Ã°£ µ¿±âÈ­)
+		// ï¿½Úµå½¦ï¿½ï¿½Å© (ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½È­)
 		void			StartHandshake(DWORD _dw);
 		void			SendHandshake(DWORD dwCurTime, long lNewDelta);
 		bool			HandshakeProcess(DWORD dwTime, long lDelta, bool bInfiniteRetry=false);
@@ -137,7 +137,7 @@ class DESC
 		const DWORD *	GetDecryptionKey() const { return &m_adwDecryptionKey[0]; }
 #endif
 
-		// Á¦±¹
+		// ï¿½ï¿½ï¿½ï¿½
 		BYTE			GetEmpire();
 
 		// for p2p
@@ -146,10 +146,13 @@ class DESC
 		void			DisconnectOfSameLogin();
 
 		void			SetAdminMode();
-		bool			IsAdminMode();		// Handshake ¿¡¼­ ¾îµå¹Î ¸í·ÉÀ» ¾µ¼öÀÖ³ª?
+		bool			IsAdminMode();		// Handshake ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö³ï¿½?
 
 		void			SetPong(bool b);
 		bool			IsPong();
+
+		void			SetChangingChannel(bool b) { m_bChangingChannel = b; }
+		bool			IsChangingChannel() const { return m_bChangingChannel; }
 
 		BYTE			GetSequence();
 		void			SetNextSequence();
@@ -231,7 +234,7 @@ class DESC
 		WORD			m_wP2PPort;
 		BYTE			m_bP2PChannel;
 
-		bool			m_bAdminMode; // Handshake ¿¡¼­ ¾îµå¹Î ¸í·ÉÀ» ¾µ¼öÀÖ³ª?
+		bool			m_bAdminMode; // Handshake ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö³ï¿½?
 		bool			m_bPong;
 
 		int			m_iCurrentSequence;
@@ -260,6 +263,7 @@ class DESC
 
 		bool			m_bDestroyed;
 		bool			m_bChannelStatusRequested;
+		bool			m_bChangingChannel;
 
 #ifdef _IMPROVED_PACKET_ENCRYPTION_
 		Cipher cipher_;
@@ -294,7 +298,7 @@ class DESC
 		void RawPacket(const void * c_pvData, int iSize);
 		void ChatPacket(BYTE type, const char * format, ...);
 
-		/* ½ÃÄö½º ¹ö±× Ã£±â¿ë ÄÚµå */
+		/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ ï¿½Úµï¿½ */
 	public:
 		seq_vector_t	m_seq_vector;
 		void			push_seq (BYTE hdr, BYTE seq);

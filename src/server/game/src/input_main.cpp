@@ -3361,8 +3361,145 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				ch->SetLanguage(lang);
 			}
 			break;
+
+		case HEADER_CG_CHANGE_CHANNEL:
+			ChangeChannel(ch, c_pData);
+			break;
 	}
 	return (iExtraLen);
+}
+
+EVENTINFO(change_channel_event_info)
+{
+	DynamicCharacterPtr ch;
+	BYTE			channel;
+	int				state;
+
+	change_channel_event_info()
+		: channel(0), state(0)
+	{
+	}
+};
+
+EVENTFUNC(change_channel_event)
+{
+	change_channel_event_info* info = dynamic_cast<change_channel_event_info*>(event->info);
+
+	if (info == NULL)
+	{
+		sys_err("change_channel_event> Null pointer");
+		return 0;
+	}
+
+	LPCHARACTER ch = info->ch.Get();
+
+	if (ch == NULL)
+		return 0;
+
+	LPDESC d = ch->GetDesc();
+
+	if (d == NULL)
+		return 0;
+
+	info->state++;
+
+	if (info->state == 1)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Vei schimba canalul in 2 secunde");
+		return PASSES_PER_SEC(1);
+	}
+	else if (info->state == 2)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Vei schimba canalul in 1 secunda");
+		return PASSES_PER_SEC(1);
+	}
+
+
+	const TAccountTable & r = d->GetAccountTable();
+	DWORD dwLoginKey = d->GetLoginKey();
+
+	// 1. Sterge contul din logon map — ch2 poate reconnecta fara LOGIN_ALREADY
+	//    NU trimitem AUTH_LOGIN cu cheie noua: cheia existenta e deja
+	//    inregistrata in db_cache + auth server (LoginPrepare la login initial)
+	d->SetChangingChannel(true);
+	{
+		TLogoutPacket logout;
+		strlcpy(logout.login,  r.login,   sizeof(logout.login));
+		strlcpy(logout.passwd, r.passwd,  sizeof(logout.passwd));
+		db_clientdesc->DBPacket(HEADER_GD_LOGOUT, d->GetHandle(), &logout, sizeof(logout));
+	}
+
+	// 2. Trimite adresa lui ch_target/FIRST — clientul face login normal prin first,
+	//    care redirectioneaza spre game server corect (la fel ca login manual).
+	//    ch_first_port = baza canalului curent + offset canal * 10
+	//    ex: ch1/game2 (13002) -> ch2/first = (13002 - 13002%10) + (2-1)*10 = 13000 + 10 = 13010
+	DWORD target_lAddr;
+#ifdef ENABLE_PROXY_IP
+	if (!g_stProxyIP.empty())
+		target_lAddr = inet_addr(g_stProxyIP.c_str());
+	else
+#endif
+		target_lAddr = inet_addr(g_szPublicIP);
+	WORD cur_base    = (WORD)(mother_port - (mother_port % 10));
+	WORD target_wPort = (WORD)(cur_base + (info->channel - g_bChannel) * 10);
+	// target_wPort = portul lui ch_target/first (offset 0 in canal)
+
+	TPacketGCChangeChannel gc;
+	gc.header    = HEADER_GC_CHANGE_CHANNEL;
+	gc.channel   = info->channel;
+	gc.login_key = dwLoginKey;
+	gc.lAddr     = target_lAddr;
+	gc.wPort     = target_wPort;
+	d->Packet(&gc, sizeof(gc));
+
+
+	ch->Save();
+	d->FlushOutput();
+
+	d->SetPhase(PHASE_CLOSE);
+	return 0;
+}
+
+void CInputMain::ChangeChannel(LPCHARACTER ch, const char* c_pData)
+{
+	TPacketCGChangeChannel* p = (TPacketCGChangeChannel*) c_pData;
+	BYTE bChannel = p->channel;
+
+	if (bChannel < 1)
+		return;
+
+	if (bChannel == g_bChannel)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Esti deja pe canalul %d", g_bChannel);
+		return;
+	}
+
+	// Verifica ca target channel are un peer P2P activ
+	bool bChannelActive = false;
+	const DESC_MANAGER::DESC_SET& c_set = DESC_MANAGER::instance().GetClientSet();
+	for (DESC_MANAGER::DESC_SET::const_iterator it = c_set.begin(); it != c_set.end(); ++it)
+	{
+		if ((*it)->GetP2PChannel() == bChannel)
+		{
+			bChannelActive = true;
+			break;
+		}
+	}
+
+	if (!bChannelActive)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "Canalul %d nu este disponibil", bChannel);
+		return;
+	}
+
+	ch->ChatPacket(CHAT_TYPE_INFO, "Vei schimba canalul in 3 secunde");
+
+	change_channel_event_info* info = AllocEventInfo<change_channel_event_info>();
+	info->ch        = ch;
+	info->channel   = bChannel;
+	info->state     = 0;
+
+	event_create(change_channel_event, info, PASSES_PER_SEC(1));
 }
 
 int CInputDead::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)

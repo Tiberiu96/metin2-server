@@ -110,6 +110,7 @@ enum
 	HEADER_CG_DRAGON_SOUL_REFINE			= 205,
 	HEADER_CG_STATE_CHECKER					= 206,
 	HEADER_CG_SET_LANGUAGE					= 207,
+	HEADER_CG_CHANGE_CHANNEL				= 208,
 
 	HEADER_CG_CLIENT_VERSION			= 0xfd,
 	HEADER_CG_CLIENT_VERSION2			= 0xf1,
@@ -296,6 +297,7 @@ enum
 
 	HEADER_GC_DRAGON_SOUL_REFINE			= 209,
 	HEADER_GC_RESPOND_CHANNELSTATUS			= 210,
+	HEADER_GC_CHANGE_CHANNEL				= 211,
 
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -2396,6 +2398,21 @@ typedef struct SPacketGCStateCheck
 	unsigned long index;
 	unsigned char state;
 } TPacketGCStateCheck;
+
+typedef struct SPacketCGChangeChannel
+{
+	BYTE header;
+	BYTE channel;
+} TPacketCGChangeChannel;
+
+typedef struct SPacketGCChangeChannel
+{
+	BYTE  header;
+	BYTE  channel;
+	DWORD login_key;
+	DWORD lAddr;
+	WORD  wPort;
+} TPacketGCChangeChannel;
 
 #pragma pack()
 #endif

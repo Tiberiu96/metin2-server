@@ -79,6 +79,7 @@ bool CClientManager::FindLogonAccount(const char * c_pszLogin)
 	return true;
 }
 
+
 void CClientManager::QUERY_LOGIN_BY_KEY(CPeer * pkPeer, DWORD dwHandle, TPacketGDLoginByKey * p)
 {
 #ifdef ENABLE_LIMIT_TIME
@@ -114,12 +115,10 @@ void CClientManager::QUERY_LOGIN_BY_KEY(CPeer * pkPeer, DWORD dwHandle, TPacketG
 
 	if (FindLogonAccount(r.login))
 	{
-		sys_log(0, "LOGIN_BY_KEY already login %s %lu", r.login, p->dwLoginKey);
-		TPacketDGLoginAlready ptog;
-		strlcpy(ptog.szLogin, szLogin, sizeof(ptog.szLogin));
-		pkPeer->EncodeHeader(HEADER_DG_LOGIN_ALREADY, dwHandle, sizeof(TPacketDGLoginAlready));
-		pkPeer->Encode(&ptog, sizeof(TPacketDGLoginAlready));
-		return;
+		// Same key = same session (channel change): delete old logon and allow reconnect
+		DWORD dwOldHandle = pkLoginData->GetConnectedPeerHandle();
+		sys_log(0, "LOGIN_BY_KEY channel_change %s %lu old_peer=%u", r.login, p->dwLoginKey, dwOldHandle);
+		DeleteLogonAccount(r.login, dwOldHandle);
 	}
 
 	if (strcasecmp(r.login, szLogin))
@@ -249,7 +248,7 @@ TAccountTable * CreateAccountTableFromRes(MYSQL_RES * res)
 	TAccountTable * pkTab = new TAccountTable;
 	memset(pkTab, 0, sizeof(TAccountTable));
 
-	// Ã¹¹øÂ° ÄÃ·³ °Í¸¸ Âü°í ÇÑ´Ù (JOIN QUERY¸¦ À§ÇÑ °Í ÀÓ)
+	// Ã¹ï¿½ï¿½Â° ï¿½Ã·ï¿½ ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½ (JOIN QUERYï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½)
 	strlcpy(input_pwd, row[col++], sizeof(input_pwd));
 	str_to_number(pkTab->id, row[col++]);
 	strlcpy(pkTab->login, row[col++], sizeof(pkTab->login));
@@ -373,7 +372,7 @@ void CClientManager::RESULT_LOGIN(CPeer * peer, SQLMsg * msg)
 
 	if (info->account_index == 0)
 	{
-		// °èÁ¤ÀÌ ¾ø³×?
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½?
 		if (msg->Get()->uiNumRows == 0)
 		{
 			sys_log(0, "RESULT_LOGIN: no account");
@@ -415,14 +414,14 @@ void CClientManager::RESULT_LOGIN(CPeer * peer, SQLMsg * msg)
 	}
 	else
 	{
-		if (!info->pAccountTable) // ÀÌ·²¸®´Â ¾ø°ÚÁö¸¸;;
+		if (!info->pAccountTable) // ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½;;
 		{
 			peer->EncodeReturn(HEADER_DG_LOGIN_WRONG_PASSWD, info->dwHandle);
 			delete info;
 			return;
 		}
 
-		// ´Ù¸¥ ÄÁ³Ø¼ÇÀÌ ÀÌ¹Ì ·Î±×ÀÎ ÇØ¹ö·È´Ù¸é.. ÀÌ¹Ì Á¢¼ÓÇß´Ù°í º¸³»¾ß ÇÑ´Ù.
+		// ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½Ø¹ï¿½ï¿½È´Ù¸ï¿½.. ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 		if (!InsertLogonAccount(info->pAccountTable->login, peer->GetHandle(), info->ip))
 		{
 			sys_log(0, "RESULT_LOGIN: already logon %s", info->pAccountTable->login);

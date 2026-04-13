@@ -32,7 +32,7 @@ bool CreateItemTableFromRes(MYSQL_RES * res, std::vector<TPlayerItem> * pVec, DW
 
 	int rows;
 
-	if ((rows = mysql_num_rows(res)) <= 0)	// µ¥ÀÌÅÍ ¾øÀ½
+	if ((rows = mysql_num_rows(res)) <= 0)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	{
 		pVec->clear();
 		return true;
@@ -159,7 +159,7 @@ size_t CreatePlayerSaveQuery(char * pszQuery, size_t querySize, TPlayerTable * p
 		pkTab->horse.sStamina,
 		pkTab->horse_skill_point);
 
-	// Binary ·Î ¹Ù²Ù±â À§ÇÑ ÀÓ½Ã °ø°£
+	// Binary ï¿½ï¿½ ï¿½Ù²Ù±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	static char text[8192 + 1];
 
 	CDBManager::instance().EscapeString(text, pkTab->skills, sizeof(pkTab->skills));
@@ -209,9 +209,10 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 {
 	CPlayerTableCache * c;
 	TPlayerTable * pTab;
-	
+
+
 	//
-	// ÇÑ °èÁ¤¿¡ ¼ÓÇÑ ¸ðµç Ä³¸¯ÅÍµé Ä³½¬Ã³¸®
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Íµï¿½ Ä³ï¿½ï¿½Ã³ï¿½ï¿½
 	//
 	CLoginData * pLoginData = GetLoginDataByAID(packet->account_id);
 
@@ -223,12 +224,12 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 	}
 
 	//----------------------------------------------------------------
-	// 1. À¯ÀúÁ¤º¸°¡ DBCache ¿¡ Á¸Àç : DBCache¿¡¼­ 
-	// 2. À¯ÀúÁ¤º¸°¡ DBCache ¿¡ ¾øÀ½ : DB¿¡¼­ 
+	// 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DBCacheï¿½ï¿½ï¿½ï¿½ 
+	// 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DBï¿½ï¿½ï¿½ï¿½ 
 	// ---------------------------------------------------------------
 	
 	//----------------------------------
-	// 1. À¯ÀúÁ¤º¸°¡ DBCache ¿¡ Á¸Àç : DBCache¿¡¼­ 
+	// 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DBCacheï¿½ï¿½ï¿½ï¿½ 
 	//----------------------------------
 	if ((c = GetPlayerCache(packet->player_id)))
 	{
@@ -268,13 +269,13 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 		sys_log(0, "[PLAYER_LOAD] ID %s pid %d gold %d ", pTab->name, pTab->id, pTab->gold);
 
 		//--------------------------------------------
-		// ¾ÆÀÌÅÛ & AFFECT & QUEST ·Îµù : 
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ & AFFECT & QUEST ï¿½Îµï¿½ : 
 		//--------------------------------------------
-		// 1) ¾ÆÀÌÅÛÀÌ DBCache ¿¡ Á¸Àç : DBCache ¿¡¼­ °¡Á®¿È
-		// 2) ¾ÆÀÌÅÛÀÌ DBCache ¿¡ ¾øÀ½ : DB ¿¡¼­ °¡Á®¿È 
+		// 1) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DBCache ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// 2) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 
 		/////////////////////////////////////////////
-		// 1) ¾ÆÀÌÅÛÀÌ DBCache ¿¡ Á¸Àç : DBCache ¿¡¼­ °¡Á®¿È
+		// 1) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DBCache ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		/////////////////////////////////////////////
 		if (pSet)
 		{
@@ -289,7 +290,7 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 				CItemCache * c = *it++;
 				TPlayerItem * p = c->Get();
 
-				if (p->vnum) // vnumÀÌ ¾øÀ¸¸é »èÁ¦µÈ ¾ÆÀÌÅÛÀÌ´Ù.
+				if (p->vnum) // vnumï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
 					thecore_memcpy(&s_items[dwCount++], p, sizeof(TPlayerItem));
 			}
 
@@ -316,7 +317,7 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 			CDBManager::instance().ReturnQuery(szQuery, QID_AFFECT, peer->GetHandle(), new ClientHandleInfo(dwHandle));
 		}
 		/////////////////////////////////////////////
-		// 2) ¾ÆÀÌÅÛÀÌ DBCache ¿¡ ¾øÀ½ : DB ¿¡¼­ °¡Á®¿È 
+		// 2) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DB ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		/////////////////////////////////////////////
 		else
 		{
@@ -350,7 +351,7 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 		//return;
 	}
 	//----------------------------------
-	// 2. À¯ÀúÁ¤º¸°¡ DBCache ¿¡ ¾øÀ½ : DB¿¡¼­ 
+	// 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBCache ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : DBï¿½ï¿½ï¿½ï¿½ 
 	//----------------------------------
 	else
 	{
@@ -359,7 +360,7 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 		char queryStr[QUERY_MAX_LEN];
 
 		//--------------------------------------------------------------
-		// Ä³¸¯ÅÍ Á¤º¸ ¾ò¾î¿À±â : ¹«Á¶°Ç DB¿¡¼­ 
+		// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBï¿½ï¿½ï¿½ï¿½ 
 		//--------------------------------------------------------------
 		snprintf(queryStr, sizeof(queryStr),
 				"SELECT "
@@ -375,7 +376,7 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 		CDBManager::instance().ReturnQuery(queryStr, QID_PLAYER, peer->GetHandle(), pkInfo);
 
 		//--------------------------------------------------------------
-		// ¾ÆÀÌÅÛ °¡Á®¿À±â 
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		//--------------------------------------------------------------
 		snprintf(queryStr, sizeof(queryStr),
 				"SELECT id,window+0,pos,count,vnum,socket0,socket1,socket2,attrtype0,attrvalue0,attrtype1,attrvalue1,attrtype2,attrvalue2,attrtype3,attrvalue3,attrtype4,attrvalue4,attrtype5,attrvalue5,attrtype6,attrvalue6 "
@@ -384,15 +385,15 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 		CDBManager::instance().ReturnQuery(queryStr, QID_ITEM, peer->GetHandle(), new ClientHandleInfo(dwHandle, packet->player_id));
 
 		//--------------------------------------------------------------
-		// QUEST °¡Á®¿À±â 
+		// QUEST ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		//--------------------------------------------------------------
 		snprintf(queryStr, sizeof(queryStr),
 				"SELECT dwPID,szName,szState,lValue FROM quest%s WHERE dwPID=%d",
 				GetTablePostfix(), packet->player_id);
 		CDBManager::instance().ReturnQuery(queryStr, QID_QUEST, peer->GetHandle(), new ClientHandleInfo(dwHandle, packet->player_id,packet->account_id));
-		//µ¶ÀÏ ¼±¹° ±â´É¿¡¼­ item_awardÅ×ÀÌºí¿¡¼­ login Á¤º¸¸¦ ¾ò±âÀ§ÇØ account idµµ ³Ñ°ÜÁØ´Ù
+		//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½É¿ï¿½ï¿½ï¿½ item_awardï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ï¿½ï¿½ login ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ account idï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½
 		//--------------------------------------------------------------
-		// AFFECT °¡Á®¿À±â 
+		// AFFECT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 		//--------------------------------------------------------------
 		snprintf(queryStr, sizeof(queryStr),
 				"SELECT dwPID,bType,bApplyOn,lApplyValue,dwFlag,lDuration,lSPCost FROM affect%s WHERE dwPID=%d",
@@ -409,21 +410,21 @@ void CClientManager::ItemAward(CPeer * peer,char* login)
 	std::set<TItemAward *> * pSet = ItemAwardManager::instance().GetByLogin(login_t);	
 	if(pSet == NULL)
 		return;
-	__typeof(pSet->begin()) it = pSet->begin();	//taken_timeÀÌ NULLÀÎ°Íµé ÀÐ¾î¿È	
+	__typeof(pSet->begin()) it = pSet->begin();	//taken_timeï¿½ï¿½ NULLï¿½Î°Íµï¿½ ï¿½Ð¾ï¿½ï¿½	
 	while(it != pSet->end() )
 	{				
 		TItemAward * pItemAward = *(it++);		
-		char* whyStr = pItemAward->szWhy;	//why ÄÝ·ë ÀÐ±â
-		char cmdStr[100] = "";	//whyÄÝ·ë¿¡¼­ ÀÐÀº °ªÀ» ÀÓ½Ã ¹®ÀÚ¿­¿¡ º¹»çÇØµÒ
-		strcpy(cmdStr,whyStr);	//¸í·É¾î ¾ò´Â °úÁ¤¿¡¼­ ÅäÅ«¾²¸é ¿øº»µµ ÅäÅ«È­ µÇ±â ¶§¹®
+		char* whyStr = pItemAward->szWhy;	//why ï¿½Ý·ï¿½ ï¿½Ð±ï¿½
+		char cmdStr[100] = "";	//whyï¿½Ý·ë¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½
+		strcpy(cmdStr,whyStr);	//ï¿½ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å«È­ ï¿½Ç±ï¿½ ï¿½ï¿½ï¿½ï¿½
 		char command[20] = "";
-		strcpy(command,GetCommand(cmdStr));	// command ¾ò±â		
-		if( !(strcmp(command,"GIFT") ))	// command °¡ GIFTÀÌ¸é
+		strcpy(command,GetCommand(cmdStr));	// command ï¿½ï¿½ï¿½		
+		if( !(strcmp(command,"GIFT") ))	// command ï¿½ï¿½ GIFTï¿½Ì¸ï¿½
 		{
 			TPacketItemAwardInfromer giftData;
-			strcpy(giftData.login, pItemAward->szLogin);	//·Î±×ÀÎ ¾ÆÀÌµð º¹»ç
-			strcpy(giftData.command, command);					//¸í·É¾î º¹»ç
-			giftData.vnum = pItemAward->dwVnum;				//¾ÆÀÌÅÛ vnumµµ º¹»ç
+			strcpy(giftData.login, pItemAward->szLogin);	//ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
+			strcpy(giftData.command, command);					//ï¿½ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ï¿½
+			giftData.vnum = pItemAward->dwVnum;				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ vnumï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			ForwardPacket(HEADER_DG_ITEMAWARD_INFORMER,&giftData,sizeof(TPacketItemAwardInfromer));
 		}
 	}
@@ -444,7 +445,7 @@ char* CClientManager::GetCommand(char* str)
 
 bool CreatePlayerTableFromRes(MYSQL_RES * res, TPlayerTable * pkTab)
 {
-	if (mysql_num_rows(res) == 0)	// µ¥ÀÌÅÍ ¾øÀ½
+	if (mysql_num_rows(res) == 0)	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		return false;
 
 	memset(pkTab, 0, sizeof(TPlayerTable));
@@ -531,11 +532,11 @@ bool CreatePlayerTableFromRes(MYSQL_RES * res, TPlayerTable * pkTab)
 			int max_point = pkTab->level - 9;
 
 			int skill_point = 
-				MIN(20, pkTab->skills[121].bLevel) +	// SKILL_LEADERSHIP			Åë¼Ö·Â
-				MIN(20, pkTab->skills[124].bLevel) +	// SKILL_MINING				Ã¤±¤
-				MIN(10, pkTab->skills[131].bLevel) +	// SKILL_HORSE_SUMMON		¸»¼ÒÈ¯
-				MIN(20, pkTab->skills[141].bLevel) +	// SKILL_ADD_HP				HPº¸°­
-				MIN(20, pkTab->skills[142].bLevel);		// SKILL_RESIST_PENETRATE	°üÅëÀúÇ×
+				MIN(20, pkTab->skills[121].bLevel) +	// SKILL_LEADERSHIP			ï¿½ï¿½Ö·ï¿½
+				MIN(20, pkTab->skills[124].bLevel) +	// SKILL_MINING				Ã¤ï¿½ï¿½
+				MIN(10, pkTab->skills[131].bLevel) +	// SKILL_HORSE_SUMMON		ï¿½ï¿½ï¿½ï¿½È¯
+				MIN(20, pkTab->skills[141].bLevel) +	// SKILL_ADD_HP				HPï¿½ï¿½ï¿½ï¿½
+				MIN(20, pkTab->skills[142].bLevel);		// SKILL_RESIST_PENETRATE	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 			pkTab->sub_skill_point = max_point - skill_point;
 		}
@@ -575,18 +576,16 @@ void CClientManager::RESULT_COMPOSITE_PLAYER(CPeer * peer, SQLMsg * pMsg, DWORD 
 			{
 				sys_log(0, "QID_QUEST %u", info->dwHandle);
 				RESULT_QUEST_LOAD(peer, pSQLResult, info->dwHandle, info->player_id);
-				//aid¾ò±â
+				//aidï¿½ï¿½ï¿½
 				ClientHandleInfo*  temp1 = info.get();
 				if (temp1 == NULL)
 					break;
 				
-				CLoginData* pLoginData1 = GetLoginDataByAID(temp1->account_id);	//				
-				//µ¶ÀÏ ¼±¹° ±â´É
-				if( pLoginData1->GetAccountRef().login == NULL)
-					break;
+				CLoginData* pLoginData1 = GetLoginDataByAID(temp1->account_id);
 				if( pLoginData1 == NULL )
 					break;
-				sys_log(0,"info of pLoginData1 before call ItemAwardfunction %d",pLoginData1);
+				if( pLoginData1->GetAccountRef().login == NULL)
+					break;
 				ItemAward(peer,pLoginData1->GetAccountRef().login);
 			}
 			break;
@@ -672,14 +671,14 @@ void CClientManager::RESULT_PLAYER_LOAD(CPeer * peer, MYSQL_RES * pRes, ClientHa
 void CClientManager::RESULT_ITEM_LOAD(CPeer * peer, MYSQL_RES * pRes, DWORD dwHandle, DWORD dwPID)
 {
 	static std::vector<TPlayerItem> s_items;
-	//DB¿¡¼­ ¾ÆÀÌÅÛ Á¤º¸¸¦ ÀÐ¾î¿Â´Ù.
+	//DBï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½Â´ï¿½.
 	CreateItemTableFromRes(pRes, &s_items, dwPID);
 	DWORD dwCount = s_items.size();
 
 	peer->EncodeHeader(HEADER_DG_ITEM_LOAD, dwHandle, sizeof(DWORD) + sizeof(TPlayerItem) * dwCount);
 	peer->EncodeDWORD(dwCount);
 
-	//CacheSetÀ» ¸¸µç´Ù  
+	//CacheSetï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½  
 	CreateItemCacheSet(dwPID);
 
 	// ITEM_LOAD_LOG_ATTACH_PID
@@ -691,7 +690,7 @@ void CClientManager::RESULT_ITEM_LOAD(CPeer * peer, MYSQL_RES * pRes, DWORD dwHa
 		peer->Encode(&s_items[0], sizeof(TPlayerItem) * dwCount);
 
 		for (DWORD i = 0; i < dwCount; ++i)
-			PutItemCache(&s_items[i], true); // ·ÎµåÇÑ °ÍÀº µû·Î ÀúÀåÇÒ ÇÊ¿ä ¾øÀ¸¹Ç·Î, ÀÎÀÚ bSkipQuery¿¡ true¸¦ ³Ö´Â´Ù.
+			PutItemCache(&s_items[i], true); // ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, ï¿½ï¿½ï¿½ï¿½ bSkipQueryï¿½ï¿½ trueï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 	}
 }
 
@@ -699,7 +698,7 @@ void CClientManager::RESULT_AFFECT_LOAD(CPeer * peer, MYSQL_RES * pRes, DWORD dw
 {
 	int iNumRows;
 
-	if ((iNumRows = mysql_num_rows(pRes)) == 0) // µ¥ÀÌÅÍ ¾øÀ½
+	if ((iNumRows = mysql_num_rows(pRes)) == 0) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		return;
 
 	static std::vector<TPacketAffectElement> s_elements;
@@ -796,7 +795,7 @@ void CClientManager::__QUERY_PLAYER_CREATE(CPeer *peer, DWORD dwHandle, TPlayerC
 	int		queryLen;
 	int		player_id;
 
-	// ÇÑ °èÁ¤¿¡ XÃÊ ³»·Î Ä³¸¯ÅÍ »ý¼ºÀ» ÇÒ ¼ö ¾ø´Ù.
+	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Xï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	time_by_id_map_t::iterator it = s_createTimeByAccountID.find(packet->account_id);
 
 	if (it != s_createTimeByAccountID.end())
@@ -1027,7 +1026,7 @@ void CClientManager::__QUERY_PLAYER_DELETE(CPeer* peer, DWORD dwHandle, TPlayerD
 }
 
 //
-// @version	05/06/10 Bang2ni - ÇÃ·¹ÀÌ¾î »èÁ¦½Ã °¡°ÝÁ¤º¸ ¸®½ºÆ® »èÁ¦ Ãß°¡.
+// @version	05/06/10 Bang2ni - ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½.
 //
 void CClientManager::__RESULT_PLAYER_DELETE(CPeer *peer, SQLMsg* msg)
 {
@@ -1078,14 +1077,14 @@ void CClientManager::__RESULT_PLAYER_DELETE(CPeer *peer, SQLMsg* msg)
 			return;
 		}
 
-		// »èÁ¦ ¼º°ø
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		sys_log(0, "PLAYER_DELETE SUCCESS %u", dwPID);
 
 		char account_index_string[16];
 
 		snprintf(account_index_string, sizeof(account_index_string), "player_id%d", m_iPlayerIDStart + pi->account_index);
 
-		// ÇÃ·¹ÀÌ¾î Å×ÀÌºíÀ» Ä³½¬¿¡¼­ »èÁ¦ÇÑ´Ù.
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		CPlayerTableCache * pkPlayerCache = GetPlayerCache(pi->player_id);
 
 		if (pkPlayerCache)
@@ -1094,7 +1093,7 @@ void CClientManager::__RESULT_PLAYER_DELETE(CPeer *peer, SQLMsg* msg)
 			delete pkPlayerCache;
 		}
 
-		// ¾ÆÀÌÅÛµéÀ» Ä³½¬¿¡¼­ »èÁ¦ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		TItemCacheSet * pSet = GetItemCacheSet(pi->player_id);
 
 		if (pSet)
@@ -1157,7 +1156,7 @@ void CClientManager::__RESULT_PLAYER_DELETE(CPeer *peer, SQLMsg* msg)
 	}
 	else
 	{
-		// »èÁ¦ ½ÇÆÐ
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		sys_log(0, "PLAYER_DELETE FAIL NO ROW");
 		peer->EncodeHeader(HEADER_DG_PLAYER_DELETE_FAILED, pi->dwHandle, 1);
 		peer->EncodeBYTE(pi->account_index);
@@ -1242,7 +1241,7 @@ void CClientManager::RESULT_HIGHSCORE_REGISTER(CPeer * pkPeer, SQLMsg * msg)
 
 	if (res->uiNumRows == 0)
 	{
-		// »õ·Î¿î ÇÏÀÌ½ºÄÚ¾î¸¦ »ðÀÔ
+		// ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Ì½ï¿½ï¿½Ú¾î¸¦ ï¿½ï¿½ï¿½ï¿½
 		char buf[256];
 		snprintf(buf, sizeof(buf), "INSERT INTO highscore%s VALUES('%s', %u, %d)", GetTablePostfix(), szBoard, pi->player_id, value);
 		CDBManager::instance().AsyncQuery(buf);
@@ -1277,7 +1276,7 @@ void CClientManager::RESULT_HIGHSCORE_REGISTER(CPeer * pkPeer, SQLMsg * msg)
 			CDBManager::instance().AsyncQuery(buf);
 		}
 	}
-	// TODO: ÀÌ°÷¿¡¼­ ÇÏÀÌ½ºÄÚ¾î°¡ ¾÷µ¥ÀÌÆ® µÇ¾ú´ÂÁö Ã¼Å©ÇÏ¿© °øÁö¸¦ »Ñ·Á¾ßÇÑ´Ù.
+	// TODO: ï¿½Ì°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì½ï¿½ï¿½Ú¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	delete pi;
 }
 
@@ -1285,10 +1284,10 @@ void CClientManager::InsertLogoutPlayer(DWORD pid)
 {
 	TLogoutPlayerMap::iterator it = m_map_logout.find(pid);
 
-	// Á¸ÀçÇÏÁö ¾ÊÀ»°æ¿ì Ãß°¡
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 	if (it != m_map_logout.end())
 	{
-		// Á¸ÀçÇÒ°æ¿ì ½Ã°£¸¸ °»½Å
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (g_log)
 			sys_log(0, "LOGOUT: Update player time pid(%d)", pid);
 

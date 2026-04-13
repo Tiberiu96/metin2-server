@@ -158,6 +158,7 @@ class CInputMain : public CInputProcessor
 		void		Refine(LPCHARACTER ch, const char* c_pData);
 
 		void		Roulette(LPCHARACTER ch, const char* c_pData);
+		void		ChangeChannel(LPCHARACTER ch, const char* c_pData);
 };
 
 class CInputDead : public CInputMain
@@ -181,7 +182,7 @@ protected:
 protected:
 	void		MapLocations(const char * c_pData);
 	void		LoginSuccess(DWORD dwHandle, const char *data);
-	void		PlayerCreateFailure(LPDESC d, BYTE bType);	// 0 = ÀÏ¹Ý ½ÇÆÐ 1 = ÀÌ¹Ì ÀÖÀ½
+	void		PlayerCreateFailure(LPDESC d, BYTE bType);	// 0 = ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ 1 = ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½
 	void		PlayerDeleteSuccess(LPDESC d, const char * data);
 	void		PlayerDeleteFail(LPDESC d);
 	void		PlayerLoad(LPDESC d, const char* data);
@@ -277,10 +278,10 @@ protected:
 	void		BlockException(TPacketBlockException * data);
 
 	// MYSHOP_PRICE_LIST
-	/// ¾ÆÀÌÅÛ °¡°ÝÁ¤º¸ ¸®½ºÆ® ¿äÃ»¿¡ ´ëÇÑ ÀÀ´ä ÆÐÅ¶(HEADER_DG_MYSHOP_PRICELIST_RES) Ã³¸®ÇÔ¼ö
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶(HEADER_DG_MYSHOP_PRICELIST_RES) Ã³ï¿½ï¿½ï¿½Ô¼ï¿½
 	/**
-	* @param	d ¾ÆÀÌÅÛ °¡°ÝÁ¤º¸ ¸®½ºÆ®¸¦ ¿äÃ»ÇÑ ÇÃ·¹ÀÌ¾îÀÇ descriptor
-	* @param	p ÆÐÅ¶µ¥ÀÌÅÍÀÇ Æ÷ÀÎÅÍ
+	* @param	d ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ descriptor
+	* @param	p ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	*/
 	void		MyshopPricelistRes( LPDESC d, const TPacketMyshopPricelistHeader* p );
 	// END_OF_MYSHOP_PRICE_LIST
@@ -290,7 +291,7 @@ protected:
 	//END_RELOAD_ADMIN
 
 	void		DetailLog(const TPacketNeedLoginLogInfo* info);
-	// µ¶ÀÏ ¼±¹° ±â´É Å×½ºÆ®
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®
 	void		ItemAwardInformer(TPacketItemAwardInfromer* data);
 
 	void		RespondChannelStatus(LPDESC desc, const char* pcData);
@@ -370,7 +371,7 @@ class CInputAuth : public CInputProcessor
 
 	public:
 		void		Login(LPDESC d, const char * c_pData);
-		void		LoginOpenID(LPDESC d, const char * c_pData);		//2012.07.19 OpenID : ±è¿ë¿í
+		void		LoginOpenID(LPDESC d, const char * c_pData);		//2012.07.19 OpenID : ï¿½ï¿½ï¿½ï¿½
 		void		PasspodAnswer(LPDESC d, const char * c_pData );
 
 };
