@@ -2283,3 +2283,16 @@
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";
+"You will change channel in 2 seconds";
+"2 saniye sonra kanal deðiþtireceksin";
+
+"You will change channel in 1 second";
+"1 saniye sonra kanal deðiþtireceksin";
+"You are already on channel %d";
+"Zaten %d. kanaldasýn";
+
+"Channel %d is not available";
+"%d. kanal kullanýlamýyor";
+
+"You will change channel in 3 seconds";
+"3 saniye sonra kanal deðiþtireceksin";

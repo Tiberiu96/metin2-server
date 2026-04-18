@@ -2285,3 +2285,16 @@
 "OX-Question: ";
 "°î±ªÀÌ¸¦ ÀåÂøÇÏ¼¼¿ä.";
 "Ai nevoie de o Târnãcop pentru a extrage minereu!";
+"You will change channel in 2 seconds";
+"Vei schimba canalul in 2 secunde";
+
+"You will change channel in 1 second";
+"Vei schimba canalul in 1 secunda";
+"You are already on channel %d";
+"Esti deja pe canalul %d";
+
+"Channel %d is not available";
+"Canalul %d nu este disponibil";
+
+"You will change channel in 3 seconds";
+"Vei schimba canalul in 3 secunde";

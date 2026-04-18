@@ -2283,3 +2283,16 @@
 
 "문제 입니다.";
 "OX-Question: ";
+"You will change channel in 2 seconds";
+"Je verandert over 2 seconden van kanaal";
+
+"You will change channel in 1 second";
+"Je verandert over 1 seconde van kanaal";
+"You are already on channel %d";
+"Je bent al op kanaal %d";
+
+"Channel %d is not available";
+"Kanaal %d is niet beschikbaar";
+
+"You will change channel in 3 seconds";
+"Je verandert over 3 seconden van kanaal";

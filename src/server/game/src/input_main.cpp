@@ -3405,12 +3405,12 @@ EVENTFUNC(change_channel_event)
 
 	if (info->state == 1)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Vei schimba canalul in 2 secunde");
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You will change channel in 2 seconds", ch->GetLanguage()));
 		return PASSES_PER_SEC(1);
 	}
 	else if (info->state == 2)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Vei schimba canalul in 1 secunda");
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You will change channel in 1 second", ch->GetLanguage()));
 		return PASSES_PER_SEC(1);
 	}
 
@@ -3470,7 +3470,7 @@ void CInputMain::ChangeChannel(LPCHARACTER ch, const char* c_pData)
 
 	if (bChannel == g_bChannel)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Esti deja pe canalul %d", g_bChannel);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You are already on channel %d", ch->GetLanguage()), g_bChannel);
 		return;
 	}
 
@@ -3488,11 +3488,11 @@ void CInputMain::ChangeChannel(LPCHARACTER ch, const char* c_pData)
 
 	if (!bChannelActive)
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, "Canalul %d nu este disponibil", bChannel);
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Channel %d is not available", ch->GetLanguage()), bChannel);
 		return;
 	}
 
-	ch->ChatPacket(CHAT_TYPE_INFO, "Vei schimba canalul in 3 secunde");
+	ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You will change channel in 3 seconds", ch->GetLanguage()));
 
 	change_channel_event_info* info = AllocEventInfo<change_channel_event_info>();
 	info->ch        = ch;

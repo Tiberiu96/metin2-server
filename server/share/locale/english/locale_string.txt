@@ -2292,3 +2292,16 @@
 
 "Experience percentage";
 "Experience percentage";
+"You will change channel in 2 seconds";
+"You will change channel in 2 seconds";
+
+"You will change channel in 1 second";
+"You will change channel in 1 second";
+"You are already on channel %d";
+"You are already on channel %d";
+
+"Channel %d is not available";
+"Channel %d is not available";
+
+"You will change channel in 3 seconds";
+"You will change channel in 3 seconds";

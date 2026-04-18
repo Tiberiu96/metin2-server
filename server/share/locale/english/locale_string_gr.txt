@@ -2283,3 +2283,16 @@
 
 "Ή®Α¦ ΐΤ΄Ο΄Ω.";
 "OX-Question: ";
+"You will change channel in 2 seconds";
+"Θα αλλάξεις κανάλι σε 2 δευτερόλεπτα";
+
+"You will change channel in 1 second";
+"Θα αλλάξεις κανάλι σε 1 δευτερόλεπτο";
+"You are already on channel %d";
+"Βρίσκεσαι ήδη στο κανάλι %d";
+
+"Channel %d is not available";
+"Το κανάλι %d δεν είναι διαθέσιμο";
+
+"You will change channel in 3 seconds";
+"Θα αλλάξεις κανάλι σε 3 δευτερόλεπτα";

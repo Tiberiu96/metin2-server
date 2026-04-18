@@ -2283,3 +2283,16 @@
 
 "№®Б¦ АФґПґЩ.";
 "OX-Question: ";
+"You will change channel in 2 seconds";
+"Сменишь канал через 2 секунды";
+
+"You will change channel in 1 second";
+"Сменишь канал через 1 секунду";
+"You are already on channel %d";
+"Ты уже на канале %d";
+
+"Channel %d is not available";
+"Канал %d недоступен";
+
+"You will change channel in 3 seconds";
+"Сменишь канал через 3 секунды";

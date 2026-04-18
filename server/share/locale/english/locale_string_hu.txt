@@ -2283,3 +2283,16 @@
 
 "¹®Á¦ ÀÔ´Ï´Ù.";
 "OX-Question: ";
+"You will change channel in 2 seconds";
+"Csatornát váltasz 2 másodperc múlva";
+
+"You will change channel in 1 second";
+"Csatornát váltasz 1 másodperc múlva";
+"You are already on channel %d";
+"Már a(z) %d csatornán vagy";
+
+"Channel %d is not available";
+"A(z) %d csatorna nem elérhetõ";
+
+"You will change channel in 3 seconds";
+"Csatornát váltasz 3 másodperc múlva";
