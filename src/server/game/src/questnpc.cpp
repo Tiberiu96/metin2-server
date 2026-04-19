@@ -13,6 +13,37 @@
 
 namespace quest
 {
+	// Escape pentru string literal Lua 5.0 cu patch EUC-KR:
+	// - bytes >=0x80 convertite la \DDD (altfel lexer-ul inghite 2 bytes)
+	// - " si \ escapate standard
+	static std::string EscapeLuaString(const std::string& s)
+	{
+		std::string out;
+		out.reserve(s.size() + 8);
+		for (size_t i = 0; i < s.size(); ++i)
+		{
+			unsigned char c = (unsigned char)s[i];
+			if (c >= 0x80)
+			{
+				char buf[8];
+				snprintf(buf, sizeof(buf), "\\%d", (int)c);
+				out += buf;
+			}
+			else if (c == '"' || c == '\\')
+			{
+				out += '\\';
+				out += (char)c;
+			}
+			else if (c == '\n') { out += "\\n"; }
+			else if (c == '\r') { out += "\\r"; }
+			else
+			{
+				out += (char)c;
+			}
+		}
+		return out;
+	}
+
 	NPC::NPC()
 	{
 		m_vnum = 0;
@@ -132,7 +163,7 @@ namespace quest
 			//
 
 			///////////////////////////////////////////////////////////////////////////
-			// ¼ø¼­ Index (¿©·¯°³ ÀÖÀ» ¼ö ÀÖÀ¸¹Ç·Î ÀÖ´Â °ÍÀÓ, ½ÇÁ¦ index °ªÀº ¾²Áö ¾ÊÀ½)
+			// ï¿½ï¿½ï¿½ï¿½ Index (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ index ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 			j = i;
 			i = s.find('.', i + 1);
 
@@ -411,7 +442,7 @@ namespace quest
 
 		void operator()(PC::QuestInfoIterator& itPCQuest, NPC::QuestMapType::iterator& itQuestMap)
 		{
-			// ¾øÀ¸´Ï »õ·Î ½ÃÀÛ
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			DWORD dwQuestIndex = itQuestMap->first;
 
 			if (NPC::HasStartState(itQuestMap->second) && CQuestManager::instance().CanStartQuest(dwQuestIndex))
@@ -495,8 +526,8 @@ namespace quest
 			for (int i = 0; i < fMatch.size; i++)
 			{
 				if ( i != 0 ) {
-					//2012.05.14 <±è¿ë¿í> : Äù½ºÆ® ¸Å´ÏÀúÀÇ m_pCurrentPC°¡ ¹Ù²î´Â °æ¿ì°¡ ¹ß»ıÇÏ¿©,
-					//µÎ°³ ÀÌ»óÀÇ ½ºÅ©¸³Æ®¸¦ ½ÇÇà½Ã, µÎ¹øÂ° ºÎÅÍ´Â Äù½ºÆ® ¸Å´ÏÀúÀÇ PC °ªÀ» »õ·Î ¼ÂÆÃÇÑ´Ù.
+					//2012.05.14 <ï¿½ï¿½ï¿½ï¿½> : ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ m_pCurrentPCï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½ß»ï¿½ï¿½Ï¿ï¿½,
+					//ï¿½Î°ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ PC ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 					PC * pPC = CQuestManager::instance().GetPC(pc.GetID());		
 				}
 				
@@ -806,7 +837,7 @@ namespace quest
 		QuestMapType & rmapEventOwnQuest = m_mapOwnQuest[EventIndex];
 		QuestMapType::iterator itQuestMap = rmapEventOwnQuest.find(quest_index);
 
-		// ±×·± Äù½ºÆ®°¡ ¾øÀ½
+		// ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (itQuestMap == rmapEventOwnQuest.end())
 			return false;
 
@@ -818,7 +849,7 @@ namespace quest
 		}
 		else
 		{
-			// »õ·Î ½ÃÀÛÇÒ±î¿ä?
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ï¿½ï¿½?
 			if (CQuestManager::instance().CanStartQuest(itQuestMap->first, pc) && HasStartState(itQuestMap->second))
 				iState = 0;
 			else
@@ -913,12 +944,12 @@ namespace quest
 
 			ostringstream os;
 			os << "select(";
-			os << '"' << ScriptToString(AvailScript[0]->arg.c_str()) << '"';
+			os << '"' << EscapeLuaString(ScriptToString(AvailScript[0]->arg.c_str())) << '"';
 			for (size_t i = 1; i < AvailScript.size(); i++)
 			{
-				os << ",\"" << ScriptToString(AvailScript[i]->arg.c_str()) << '"';
+				os << ",\"" << EscapeLuaString(ScriptToString(AvailScript[i]->arg.c_str())) << '"';
 			}
-			os << ", '"<<LC_TEXT("Close")<<"'";
+			os << ",\"" << EscapeLuaString(LC_TEXT("Close")) << '"';
 			os << ")";
 
 			CQuestManager::ExecuteQuestScript(pc, "QUEST_CHAT_TEMP_QUEST", 0, os.str().c_str(), os.str().size(), &AvailScript, false);
@@ -963,7 +994,7 @@ namespace quest
 		else
 			return HandleEvent(pc, QUEST_ITEM_PICK_EVENT);
 	}
-	//µ¶ÀÏ ¼±¹° ±â´É Å×½ºÆ®
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®
 	bool NPC::OnItemInformer(PC& pc, unsigned int vnum)
 	{
 		return HandleEvent(pc, QUEST_ITEM_INFORMER_EVENT);

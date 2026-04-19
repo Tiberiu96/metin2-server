@@ -57,29 +57,29 @@ namespace quest
 
 		m_pSelectedDungeon = NULL;
 
-		m_mapEventName.insert(TEventNameMap::value_type("click", QUEST_CLICK_EVENT));		// NPC¸¦ Å¬¸¯
-		m_mapEventName.insert(TEventNameMap::value_type("kill", QUEST_KILL_EVENT));		// MobÀ» »ç³É
-		m_mapEventName.insert(TEventNameMap::value_type("timer", QUEST_TIMER_EVENT));		// ¹Ì¸® ÁöÁ¤ÇØµÐ ½Ã°£ÀÌ Áö³²
-		m_mapEventName.insert(TEventNameMap::value_type("levelup", QUEST_LEVELUP_EVENT));	// ·¹º§¾÷À» ÇÔ
-		m_mapEventName.insert(TEventNameMap::value_type("login", QUEST_LOGIN_EVENT));		// ·Î±×ÀÎ ½Ã
-		m_mapEventName.insert(TEventNameMap::value_type("logout", QUEST_LOGOUT_EVENT));		// ·Î±×¾Æ¿ô ½Ã
-		m_mapEventName.insert(TEventNameMap::value_type("button", QUEST_BUTTON_EVENT));		// Äù½ºÆ® ¹öÆ°À» ´©¸§
-		m_mapEventName.insert(TEventNameMap::value_type("info", QUEST_INFO_EVENT));		// Äù½ºÆ® Á¤º¸Ã¢À» ¿°
-		m_mapEventName.insert(TEventNameMap::value_type("chat", QUEST_CHAT_EVENT));		// Æ¯Á¤ Å°¿öµå·Î ´ëÈ­¸¦ ÇÔ
-		m_mapEventName.insert(TEventNameMap::value_type("in", QUEST_ATTR_IN_EVENT));		// ¸ÊÀÇ Æ¯Á¤ ¼Ó¼º¿¡ µé¾î°¨
-		m_mapEventName.insert(TEventNameMap::value_type("out", QUEST_ATTR_OUT_EVENT));		// ¸ÊÀÇ Æ¯Á¤ ¼Ó¼º¿¡¼­ ³ª¿È
-		m_mapEventName.insert(TEventNameMap::value_type("use", QUEST_ITEM_USE_EVENT));		// Äù½ºÆ® ¾ÆÀÌÅÛÀ» »ç¿ë
-		m_mapEventName.insert(TEventNameMap::value_type("server_timer", QUEST_SERVER_TIMER_EVENT));	// ¼­¹ö Å¸ÀÌ¸Ó (¾ÆÁ÷ Å×½ºÆ® ¾ÈµÆÀ½)
-		m_mapEventName.insert(TEventNameMap::value_type("enter", QUEST_ENTER_STATE_EVENT));	// ÇöÀç ½ºÅ×ÀÌÆ®°¡ µÊ
-		m_mapEventName.insert(TEventNameMap::value_type("leave", QUEST_LEAVE_STATE_EVENT));	// ÇöÀç ½ºÅ×ÀÌÆ®¿¡¼­ ´Ù¸¥ ½ºÅ×ÀÌÆ®·Î ¹Ù²ñ
-		m_mapEventName.insert(TEventNameMap::value_type("letter", QUEST_LETTER_EVENT));		// ·Î±ä ÇÏ°Å³ª ½ºÅ×ÀÌÆ®°¡ ¹Ù²¸ »õ·Î Á¤º¸¸¦ ¼¼ÆÃÇØÁà¾ßÇÔ
-		m_mapEventName.insert(TEventNameMap::value_type("take", QUEST_ITEM_TAKE_EVENT));	// ¾ÆÀÌÅÛÀ» ¹ÞÀ½
-		m_mapEventName.insert(TEventNameMap::value_type("target", QUEST_TARGET_EVENT));		// Å¸°Ù
-		m_mapEventName.insert(TEventNameMap::value_type("party_kill", QUEST_PARTY_KILL_EVENT));	// ÆÄÆ¼ ¸â¹ö°¡ ¸ó½ºÅÍ¸¦ »ç³É (¸®´õ¿¡°Ô ¿È)
+		m_mapEventName.insert(TEventNameMap::value_type("click", QUEST_CLICK_EVENT));		// NPCï¿½ï¿½ Å¬ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("kill", QUEST_KILL_EVENT));		// Mobï¿½ï¿½ ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("timer", QUEST_TIMER_EVENT));		// ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("levelup", QUEST_LEVELUP_EVENT));	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("login", QUEST_LOGIN_EVENT));		// ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("logout", QUEST_LOGOUT_EVENT));		// ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("button", QUEST_BUTTON_EVENT));		// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("info", QUEST_INFO_EVENT));		// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("chat", QUEST_CHAT_EVENT));		// Æ¯ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("in", QUEST_ATTR_IN_EVENT));		// ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½ï¿½î°¨
+		m_mapEventName.insert(TEventNameMap::value_type("out", QUEST_ATTR_OUT_EVENT));		// ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("use", QUEST_ITEM_USE_EVENT));		// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("server_timer", QUEST_SERVER_TIMER_EVENT));	// ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½Èµï¿½ï¿½ï¿½)
+		m_mapEventName.insert(TEventNameMap::value_type("enter", QUEST_ENTER_STATE_EVENT));	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("leave", QUEST_LEAVE_STATE_EVENT));	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù²ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("letter", QUEST_LETTER_EVENT));		// ï¿½Î±ï¿½ ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("take", QUEST_ITEM_TAKE_EVENT));	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("target", QUEST_TARGET_EVENT));		// Å¸ï¿½ï¿½
+		m_mapEventName.insert(TEventNameMap::value_type("party_kill", QUEST_PARTY_KILL_EVENT));	// ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 		m_mapEventName.insert(TEventNameMap::value_type("unmount", QUEST_UNMOUNT_EVENT));
-		m_mapEventName.insert(TEventNameMap::value_type("pick", QUEST_ITEM_PICK_EVENT));	// ¶³¾îÁ®ÀÖ´Â ¾ÆÀÌÅÛÀ» ½ÀµæÇÔ.
-		m_mapEventName.insert(TEventNameMap::value_type("sig_use", QUEST_SIG_USE_EVENT));		// Special item group¿¡ ¼ÓÇÑ ¾ÆÀÌÅÛÀ» »ç¿ëÇÔ.
-		m_mapEventName.insert(TEventNameMap::value_type("item_informer", QUEST_ITEM_INFORMER_EVENT));	// µ¶ÀÏ¼±¹°±â´ÉÅ×½ºÆ®
+		m_mapEventName.insert(TEventNameMap::value_type("pick", QUEST_ITEM_PICK_EVENT));	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+		m_mapEventName.insert(TEventNameMap::value_type("sig_use", QUEST_SIG_USE_EVENT));		// Special item groupï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+		m_mapEventName.insert(TEventNameMap::value_type("item_informer", QUEST_ITEM_INFORMER_EVENT));	// ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×½ï¿½Æ®
 
 		m_bNoSend = false;
 
@@ -255,9 +255,9 @@ namespace quest
 
 			if (!pPC->GetRunningQuestState()->chat_scripts.empty())
 			{
-				// Ã¤ÆÃ ÀÌº¥Æ®ÀÎ °æ¿ì
-				// ÇöÀç Äù½ºÆ®´Â ¾î´À Äù½ºÆ®¸¦ ½ÇÇàÇÒ °ÍÀÎ°¡¸¦ °í¸£´Â Äù½ºÆ® ÀÌ¹Ç·Î
-				// ³¡³»°í ¼±ÅÃµÈ Äù½ºÆ®¸¦ ½ÇÇàÇÑ´Ù.
+				// Ã¤ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ì¹Ç·ï¿½
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 				QuestState& old_qs = *pPC->GetRunningQuestState();
 				CloseState(old_qs);
 
@@ -370,7 +370,7 @@ namespace quest
 			pPC->CancelRunning();
 		}
 
-		// Áö¿ì±â Àü¿¡ ·Î±×¾Æ¿ô ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¾Æ¿ï¿½ ï¿½Ñ´ï¿½.
 		Logout(ch->GetPlayerID());
 
 		if (ch == m_pCurrentCharacter)
@@ -382,7 +382,7 @@ namespace quest
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//
-	// Quest Event °ü·Ã
+	// Quest Event ï¿½ï¿½ï¿½ï¿½
 	//
 	///////////////////////////////////////////////////////////////////////////////////////////
 	void CQuestManager::Login(unsigned int pc, const char * c_pszQuest)
@@ -429,9 +429,9 @@ namespace quest
 			if (!CheckQuestLoaded(pPC))
 				return;
 
-			/* [hyo] ¸÷ kill½Ã Áßº¹ Ä«¿îÆÃ ÀÌ½´ °ü·ÃÇÑ ¼öÁ¤»çÇ×
-			   quest script¿¡ when 171.kill begin ... µîÀÇ ÄÚµå·Î ÀÎÇÏ¿© ½ºÅ©¸³Æ®°¡ Ã³¸®µÇ¾ú´õ¶óµµ
-			   ¹Ù·Î returnÇÏÁö ¾Ê°í ´Ù¸¥ °Ë»çµµ ¼öÇàÇÏµµ·Ï º¯°æÇÔ. (2011/07/21)
+			/* [hyo] ï¿½ï¿½ killï¿½ï¿½ ï¿½ßºï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			   quest scriptï¿½ï¿½ when 171.kill begin ... ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½
+			   ï¿½Ù·ï¿½ returnï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½Ù¸ï¿½ ï¿½Ë»çµµ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. (2011/07/21)
 			*/   
 			// call script
 			
@@ -694,7 +694,7 @@ namespace quest
 		}
 	}
 
-	// Speical Item Group¿¡ Á¤ÀÇµÈ Group Use
+	// Speical Item Groupï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ Group Use
 	bool CQuestManager::SIGUse(unsigned int pc, DWORD sig_vnum, LPITEM item, bool bReceiveAll)
 	{
 		if (test_server)
@@ -842,7 +842,7 @@ namespace quest
 		else
 			sys_err("QUEST no such pc id : %d", pc);
 	}
-	//µ¶ÀÏ ¼±¹° ±â´É Å×½ºÆ®
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®
 	void CQuestManager::ItemInformer(unsigned int pc,unsigned int vnum)
 	{
 		
@@ -852,7 +852,7 @@ namespace quest
 		m_mapNPC[QUEST_NO_NPC].OnItemInformer(*pPC,vnum);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
-	// END OF Äù½ºÆ® ÀÌº¥Æ® Ã³¸®
+	// END OF ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½
 	///////////////////////////////////////////////////////////////////////////////////////////
 
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -1277,19 +1277,19 @@ namespace quest
 					continue;
 				if (value)
 				{
-					// ¹ã
+					// ï¿½ï¿½
 					ch->ChatPacket(CHAT_TYPE_COMMAND, "DayMode dark");
 				}
 				else
 				{
-					// ³·
+					// ï¿½ï¿½
 					ch->ChatPacket(CHAT_TYPE_COMMAND, "DayMode light");
 				}
 			}
 
 			if (value && !prev_value)
 			{
-				// ¾øÀ¸¸é ¸¸µé¾îÁØ´Ù
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½
 				struct SNPCSellFireworkPosition
 				{
 					long lMapIndex;
@@ -1325,7 +1325,7 @@ namespace quest
 			}
 			else if (!value && prev_value)
 			{
-				// ÀÖÀ¸¸é Áö¿öÁØ´Ù
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½
 				CharacterVectorInteractor i;
 
 				if (CHARACTER_MANAGER::instance().GetCharactersByRaceNum(xmas::MOB_XMAS_FIRWORK_SELLER_VNUM, i))
@@ -1414,7 +1414,7 @@ namespace quest
 		}
 		else if (name == "new_xmas_event")
 		{
-			// 20126 new»êÅ¸.
+			// 20126 newï¿½ï¿½Å¸.
 			static DWORD new_santa = 20126;
 			if (value != 0)
 			{
@@ -1553,12 +1553,12 @@ namespace quest
 
 	bool CQuestManager::ExecuteQuestScript(PC& pc, const string& quest_name, const int state, const char* code, const int code_size, vector<AArgScript*>* pChatScripts, bool bUseCache)
 	{
-		// ½ÇÇà°ø°£À» »ý¼º
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		QuestState qs = CQuestManager::instance().OpenState(quest_name, state);
 		if (pChatScripts)
 			qs.chat_scripts.swap(*pChatScripts);
 
-		// ÄÚµå¸¦ ÀÐ¾îµéÀÓ
+		// ï¿½Úµå¸¦ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½
 		if (bUseCache)
 		{
 			lua_getglobal(qs.co, "__codecache");
@@ -1597,10 +1597,10 @@ namespace quest
 		else
 			luaL_loadbuffer(qs.co, code, code_size, quest_name.c_str());
 
-		// ÇÃ·¹ÀÌ¾î¿Í ¿¬°á
+		// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		pc.SetQuest(quest_name, qs);
 
-		// ½ÇÇà
+		// ï¿½ï¿½ï¿½ï¿½
 		QuestState& rqs = *pc.GetRunningQuestState();
 		if (!CQuestManager::instance().RunState(rqs))
 		{
