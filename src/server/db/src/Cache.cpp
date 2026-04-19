@@ -29,12 +29,12 @@ CItemCache::~CItemCache()
 {
 }
 
-// ÀÌ°Å ÀÌ»óÇÑµ¥...
-// Delete¸¦ ÇßÀ¸¸é, Cacheµµ ÇØÁ¦ÇØ¾ß ÇÏ´Â°Í ¾Æ´Ñ°¡???
-// ±Ùµ¥ Cache¸¦ ÇØÁ¦ÇÏ´Â ºÎºÐÀÌ ¾ø¾î.
-// ¸ø Ã£Àº °Ç°¡?
-// ÀÌ·¸°Ô ÇØ³õÀ¸¸é, °è¼Ó ½Ã°£ÀÌ µÉ ¶§¸¶´Ù ¾ÆÀÌÅÛÀ» °è¼Ó Áö¿ö...
-// ÀÌ¹Ì »ç¶óÁø ¾ÆÀÌÅÛÀÎµ¥... È®ÀÎ»ç»ì??????
+// ï¿½Ì°ï¿½ ï¿½Ì»ï¿½ï¿½Ñµï¿½...
+// Deleteï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Cacheï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´Â°ï¿½ ï¿½Æ´Ñ°ï¿½???
+// ï¿½Ùµï¿½ Cacheï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+// ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½Ç°ï¿½?
+// ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½...
+// ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½... È®ï¿½Î»ï¿½ï¿½??????
 // fixme
 // by rtsummit
 void CItemCache::Delete()
@@ -53,12 +53,12 @@ void CItemCache::Delete()
 	OnFlush();
 	
 	//m_bNeedQuery = false;
-	//m_lastUpdateTime = time(0) - m_expireTime; // ¹Ù·Î Å¸ÀÓ¾Æ¿ô µÇµµ·Ï ÇÏÀÚ.
+	//m_lastUpdateTime = time(0) - m_expireTime; // ï¿½Ù·ï¿½ Å¸ï¿½Ó¾Æ¿ï¿½ ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 }
 
 void CItemCache::OnFlush()
 {
-	if (m_data.vnum == 0) // vnumÀÌ 0ÀÌ¸é »èÁ¦ÇÏ¶ó°í Ç¥½ÃµÈ °ÍÀÌ´Ù.
+	if (m_data.vnum == 0) // vnumï¿½ï¿½ 0ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ Ç¥ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
 	{
 		char szQuery[QUERY_MAX_LEN];
 		snprintf(szQuery, sizeof(szQuery), "DELETE FROM item%s WHERE id=%u", GetTablePostfix(), m_data.id);
@@ -190,7 +190,7 @@ CItemPriceListTableCache::CItemPriceListTableCache()
 void CItemPriceListTableCache::UpdateList(const TItemPriceListTable* pUpdateList)
 {
 	//
-	// ÀÌ¹Ì Ä³½ÌµÈ ¾ÆÀÌÅÛ°ú Áßº¹µÈ ¾ÆÀÌÅÛÀ» Ã£°í Áßº¹µÇÁö ¾Ê´Â ÀÌÀü Á¤º¸´Â tmpvec ¿¡ ³Ö´Â´Ù.
+	// ï¿½Ì¹ï¿½ Ä³ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ßºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ tmpvec ï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 	//
 
 	std::vector<TItemPriceInfo> tmpvec;
@@ -206,7 +206,7 @@ void CItemPriceListTableCache::UpdateList(const TItemPriceListTable* pUpdateList
 	}
 
 	//
-	// pUpdateList ¸¦ m_data ¿¡ º¹»çÇÏ°í ³²Àº °ø°£À» tmpvec ÀÇ ¾Õ¿¡¼­ ºÎÅÍ ³²Àº ¸¸Å­ º¹»çÇÑ´Ù.
+	// pUpdateList ï¿½ï¿½ m_data ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ tmpvec ï¿½ï¿½ ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	// 
 
 	if (pUpdateList->byCount > SHOP_PRICELIST_MAX_NUM)
@@ -219,7 +219,7 @@ void CItemPriceListTableCache::UpdateList(const TItemPriceListTable* pUpdateList
 
 	thecore_memcpy(m_data.aPriceInfo, pUpdateList->aPriceInfo, sizeof(TItemPriceInfo) * pUpdateList->byCount);
 
-	int nDeletedNum;	// »èÁ¦µÈ °¡°ÝÁ¤º¸ÀÇ °¹¼ö
+	int nDeletedNum;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	if (pUpdateList->byCount < SHOP_PRICELIST_MAX_NUM)
 	{
@@ -228,7 +228,8 @@ void CItemPriceListTableCache::UpdateList(const TItemPriceListTable* pUpdateList
 		if (tmpvec.size() < sizeAddOldDataSize)
 			sizeAddOldDataSize = tmpvec.size();
 
-		thecore_memcpy(m_data.aPriceInfo + pUpdateList->byCount, &tmpvec[0], sizeof(TItemPriceInfo) * sizeAddOldDataSize);
+		if (sizeAddOldDataSize > 0)
+			thecore_memcpy(m_data.aPriceInfo + pUpdateList->byCount, &tmpvec[0], sizeof(TItemPriceInfo) * sizeAddOldDataSize);
 		m_data.byCount += sizeAddOldDataSize;
 
 		nDeletedNum = tmpvec.size() - sizeAddOldDataSize;
@@ -248,14 +249,14 @@ void CItemPriceListTableCache::OnFlush()
 	char szQuery[QUERY_MAX_LEN];
 
 	//
-	// ÀÌ Ä³½ÃÀÇ ¼ÒÀ¯ÀÚ¿¡ ´ëÇÑ ±âÁ¸¿¡ DB ¿¡ ÀúÀåµÈ ¾ÆÀÌÅÛ °¡°ÝÁ¤º¸¸¦ ¸ðµÎ »èÁ¦ÇÑ´Ù.
+	// ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DB ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	//
 
 	snprintf(szQuery, sizeof(szQuery), "DELETE FROM myshop_pricelist%s WHERE owner_id = %u", GetTablePostfix(), m_data.dwOwnerID);
 	CDBManager::instance().ReturnQuery(szQuery, QID_ITEMPRICE_DESTROY, 0, NULL);
 
 	//
-	// Ä³½ÃÀÇ ³»¿ëÀ» ¸ðµÎ DB ¿¡ ¾´´Ù.
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ DB ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	//
 
 	for (int idx = 0; idx < m_data.byCount; ++idx)

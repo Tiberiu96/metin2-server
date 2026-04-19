@@ -106,9 +106,11 @@ Sursa C++ foloseste stringuri **engleze ASCII**. Flux:
 Verifica fisierele tracked (`.cpp`, `.h`, `.txt`, `.lua`) pentru coruptie encoding:
 
 - **Semn coruptie:** secvente `?` sau `\x80-\x9F` in loc de coreene originale
-- **Verifica:** `git diff` — daca afiseaza `?` in loc de coreene, NU da commit
+- **Verifica:** `git diff` — daca afiseaza `?` in loc de coreene, analizeaza:
+  - Doar **comentarii** corupte (linii `//` sau `/* */`) → OK, commit permis
+  - Stringuri in cod, define-uri, nume variabile → NU da commit, revert + re-aplica pastrand encoding
 - **Cauza:** Edit tool scrie UTF-8 peste EUC-KR
-- **Fix:** `perl -i` sau `sed` pastrand encoding original, sau editeaza direct pe FreeBSD
+- **Fix (cand e cod afectat):** `perl -i` sau `sed` pastrand encoding original, sau editeaza direct pe FreeBSD
 - **Sensibile:** `.cpp`/`.h` din `src/` cu coreene, `locale_string*.txt`, `translate_*.lua`
 
 ## Structura runtime FreeBSD (reala)
