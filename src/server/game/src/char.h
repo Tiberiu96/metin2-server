@@ -13,9 +13,15 @@
 #include "affect_flag.h"
 #include "cube.h"
 #include "mining.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "packet.h"
+#endif
 
 class CBuffOnAttributes;
 class CPetSystem;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+class CPrivateShop;
+#endif
 
 #define INSTANT_FLAG_DEATH_PENALTY		(1 << 0)
 #define INSTANT_FLAG_SHOP			(1 << 1)
@@ -104,7 +110,7 @@ enum EPointTypes
 	POINT_HP,                   // 5
 	POINT_MAX_HP,               // 6
 	POINT_SP,                   // 7
-	POINT_MAX_SP,               // 8  
+	POINT_MAX_SP,               // 8
 	POINT_STAMINA,              // 9  스테미너
 	POINT_MAX_STAMINA,          // 10 최대 스테미너
 
@@ -159,7 +165,7 @@ enum EPointTypes
 	POINT_ATTBONUS_ASSASSIN,	// 55 자객에게 강함
 	POINT_ATTBONUS_SURA,		// 56 수라에게 강함
 	POINT_ATTBONUS_SHAMAN,		// 57 무당에게 강함
-	POINT_ATTBONUS_TREE,     	// 58 나무에게 강함 20050729.myevan UNUSED5 
+	POINT_ATTBONUS_TREE,     	// 58 나무에게 강함 20050729.myevan UNUSED5
 
 	POINT_RESIST_WARRIOR,		// 59 무사에게 저항
 	POINT_RESIST_ASSASSIN,		// 60 자객에게 저항
@@ -233,7 +239,7 @@ enum EPointTypes
 	POINT_HP_RECOVER_CONTINUE,		// 105
 	POINT_SP_RECOVER_CONTINUE,		// 106
 
-	POINT_STEAL_GOLD,			// 107 
+	POINT_STEAL_GOLD,			// 107
 	POINT_POLYMORPH,			// 108 변신한 몬스터 번호
 	POINT_MOUNT,			// 109 타고있는 몬스터 번호
 
@@ -260,7 +266,7 @@ enum EPointTypes
 	POINT_NORMAL_HIT_DEFEND_BONUS,	// 124 평타 방어 데미지
 	// END_OF_DEFEND_BONUS_ATTRIBUTES
 
-	// PC_BANG_ITEM_ADD 
+	// PC_BANG_ITEM_ADD
 	POINT_PC_BANG_EXP_BONUS,		// 125 PC방 전용 경험치 보너스
 	POINT_PC_BANG_DROP_BONUS,		// 126 PC방 전용 드롭률 보너스
 	// END_PC_BANG_ITEM_ADD
@@ -328,7 +334,7 @@ struct DynamicCharacterPtr {
 		: is_pc(o.is_pc), id(o.id) {}
 
 	// Returns the LPCHARACTER found in CHARACTER_MANAGER.
-	LPCHARACTER Get() const; 
+	LPCHARACTER Get() const;
 	// Clears the current settings.
 	void Reset() {
 		is_pc = false;
@@ -540,7 +546,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 	public:
 		DWORD GetAIFlag() const	{ return m_pointsInstant.dwAIFlag; }
-	
+
 		void				SetAggressive();
 		bool				IsAggressive() const;
 
@@ -619,7 +625,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool			IsNPC()	const		{ return m_bCharType != CHAR_TYPE_PC; }
 		bool			IsMonster()	const	{ return m_bCharType == CHAR_TYPE_MONSTER; }
 		bool			IsStone() const		{ return m_bCharType == CHAR_TYPE_STONE; }
-		bool			IsDoor() const		{ return m_bCharType == CHAR_TYPE_DOOR; } 
+		bool			IsDoor() const		{ return m_bCharType == CHAR_TYPE_DOOR; }
 		bool			IsBuilding() const	{ return m_bCharType == CHAR_TYPE_BUILDING;  }
 		bool			IsWarp() const		{ return m_bCharType == CHAR_TYPE_WARP; }
 		bool			IsGoto() const		{ return m_bCharType == CHAR_TYPE_GOTO; }
@@ -632,7 +638,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		BYTE			GetGMLevel() const;
 		BOOL 			IsGM() const;
-		void			SetGMLevel(); 
+		void			SetGMLevel();
 
 		DWORD			GetExp() const		{ return m_points.exp;	}
 		void			SetExp(DWORD exp)	{ m_points.exp = exp;	}
@@ -757,7 +763,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		DWORD			GetPolymorphVnum() const	{ return m_dwPolymorphRace; }
 		int				GetPolymorphPower() const;
 
-		// FISING	
+		// FISING
 		void			fishing();
 		void			fishing_take();
 		// END_OF_FISHING
@@ -807,7 +813,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool			IsStateIdle() const			{ return IsState((CState&)m_stateIdle); }
 		bool			IsWalking() const			{ return m_bNowWalking || GetStamina()<=0; }
 		void			SetWalking(bool bWalkFlag)	{ m_bWalking=bWalkFlag; }
-		void			SetNowWalking(bool bWalkFlag);	
+		void			SetNowWalking(bool bWalkFlag);
 		void			ResetWalking()			{ SetNowWalking(m_bWalking); }
 
 		bool			Goto(long x, long y);	// 바로 이동 시키지 않고 목표 위치로 BLENDING 시킨다.
@@ -909,7 +915,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void			SaveAffect();
 
 		// Affect loading이 끝난 상태인가?
-		bool			IsLoadedAffect() const	{ return m_bIsLoadedAffect; }		
+		bool			IsLoadedAffect() const	{ return m_bIsLoadedAffect; }
 
 		bool			IsGoodAffect(BYTE bAffectType) const;
 
@@ -1050,7 +1056,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		////////////////////////////////////////////////////////////////////////////////////////
 		// Item related
 	public:
-		bool			CanHandleItem(bool bSkipRefineCheck = false, bool bSkipObserver = false); // 아이템 관련 행위를 할 수 있는가?
+		bool			CanHandleItem(bool bSkipRefineCheck = false, bool bSkipObserver = false, bool bSkipPrivateShopCheck = false); // 아이템 관련 행위를 할 수 있는가?
 
 		bool			IsItemLoaded() const	{ return m_bItemLoaded; }
 		void			SetItemLoaded()	{ m_bItemLoaded = true; }
@@ -1110,7 +1116,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool			GiveItem(LPCHARACTER victim, TItemPos Cell);
 		bool			CanReceiveItem(LPCHARACTER from, LPITEM item) const;
 		void			ReceiveItem(LPCHARACTER from, LPITEM item);
-		bool			GiveItemFromSpecialItemGroup(DWORD dwGroupNum, std::vector <DWORD> &dwItemVnums, 
+		bool			GiveItemFromSpecialItemGroup(DWORD dwGroupNum, std::vector <DWORD> &dwItemVnums,
 							std::vector <DWORD> &dwItemCounts, std::vector <LPITEM> &item_gets, int &count);
 
 		bool			MoveItem(TItemPos pos, TItemPos change_pos, BYTE num);
@@ -1127,7 +1133,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		bool			SwapItem(BYTE bCell, BYTE bDestCell);
 		LPITEM			AutoGiveItem(DWORD dwItemVnum, BYTE bCount=1, int iRarePct = -1, bool bMsg = true);
 		void			AutoGiveItem(LPITEM item, bool longOwnerShip = false);
-		
+
 		int				GetEmptyInventory(BYTE size) const;
 		int				GetEmptyDragonSoulInventory(LPITEM pItem) const;
 		void			CopyDragonSoulItemGrid(std::vector<WORD>& vDragonSoulItemGrid) const;
@@ -1199,7 +1205,95 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		LPCHARACTER		m_pkChrShopOwner;
 		// End of shop
 
-		////////////////////////////////////////////////////////////////////////////////////////
+
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	private:
+		LPPRIVATE_SHOP		m_pPrivateShop;
+		LPPRIVATE_SHOP		m_pMyPrivateShop;
+		DWORD				m_dwPrivateShopOwner;
+		TPrivateShop		m_privateShopTable;
+		bool				m_bIsEditingPrivateShop;
+		BYTE				m_bShopSearchMode;
+
+		time_t				m_tLastPrivateShopModify;
+		time_t				m_tLastPrivateShopWithdraw;
+		time_t				m_tLastPrivateShopClose;
+		time_t				m_tLastPrivateShopBuy;
+		time_t				m_tLastPrivateShopSearch;
+		time_t				m_tLastPrivateShopStateChange;
+		time_t				m_tLastPrivateShopBuild;
+
+		std::vector<TPlayerPrivateShopItem>		m_vec_privateShopItem;
+
+	public:
+		bool				BuildPrivateShop(const char* c_szTitle, DWORD dwPolyVnum, BYTE bTitleType, BYTE bPageCount, WORD wItemCount, TPrivateShopItem* pShopItemTable);
+		void				ClosePrivateShop();
+
+		void				SetViewingPrivateShop(LPPRIVATE_SHOP pShop) { m_pPrivateShop = pShop; }
+		LPPRIVATE_SHOP		GetViewingPrivateShop() const { return m_pPrivateShop; }
+
+		void				SetMyPrivateShop(LPPRIVATE_SHOP pShop) { m_pMyPrivateShop = pShop; }
+		LPPRIVATE_SHOP		GetMyPrivateShop() const { return m_pMyPrivateShop; }
+
+		void				SetPrivateShopOwner(DWORD dwPID) { m_dwPrivateShopOwner = dwPID; }
+		DWORD				GetPrivateShopOwner() { return m_dwPrivateShopOwner; }
+
+		void				SetPrivateShopTable(const TPrivateShop& rPrivateShopTable);
+		TPrivateShop*		GetPrivateShopTable() { return &m_privateShopTable; }
+		bool				IsPrivateShopOwner() { return m_privateShopTable.dwOwner != 0; }
+		bool				CanModifyPrivateShop() { return m_privateShopTable.bState == STATE_MODIFY; }
+
+		void				SetEditingPrivateShop(bool bEditingPrivateShop) { m_bIsEditingPrivateShop = bEditingPrivateShop; }
+		bool				IsEditingPrivateShop() const { return m_bIsEditingPrivateShop; }
+		void				OpenPrivateShopPanel();
+		void				ClosePrivateShopPanel(bool bSendClient = false);
+
+		void				OpenShopSearch(BYTE bMode);
+		void				CloseShopSearch();
+		bool				IsShopSearch() const { return m_bShopSearchMode != MODE_NONE; }
+		BYTE				GetShopSearchMode() { return m_bShopSearchMode; }
+
+		long long						GetPrivateShopTotalGold();
+		DWORD							GetPrivateShopTotalCheque();
+
+		void							SetPrivateShopItem(const TPlayerPrivateShopItem& c_rPrivateShopItem);
+		bool							RemovePrivateShopItem(WORD wPos);
+		const TPlayerPrivateShopItem*	GetPrivateShopItem(WORD wPos);
+		WORD							GetPrivateShopItemCount() { return m_vec_privateShopItem.size(); }
+
+		void							ChangePrivateShopItemPrice(WORD wPos, long long llGold, DWORD dwCheque);
+		void							ChangePrivateShopItemPos(WORD wPos, WORD wChangePos);
+		void							ChangePrivateShopTitle(const char* c_szTitle);
+		void							SaleUpdate(const TPlayerPrivateShopItem& c_rPrivateShopItem, const char* c_szCustomerName);
+		void							ItemExpireUpdate(WORD wPos);
+		void							SetPrivateShopState(BYTE bState, bool bIsMainPlayerPrivateShop);
+		void							WithdrawPrivateShop(long long llGold, DWORD dwCheque);
+
+		bool							SetPremiumPrivateShopBonus(time_t tDuration);
+
+		int								GetLastPrivateShopModifyTime() const { return m_tLastPrivateShopModify; }
+		void							SetLastPrivateShopModifyTime() { m_tLastPrivateShopModify = thecore_pulse(); }
+
+		int								GetLastPrivateShopWithdrawTime() const { return m_tLastPrivateShopWithdraw; }
+		void							SetLastPrivateShopWithdrawTime() { m_tLastPrivateShopWithdraw = thecore_pulse(); }
+
+		int								GetLastPrivateShopCloseTime() const { return m_tLastPrivateShopClose; }
+		void							SetLastPrivateShopCloseTime() { m_tLastPrivateShopClose = thecore_pulse(); }
+
+		int								GetLastPrivateShopBuildTime() const { return m_tLastPrivateShopBuild; }
+		void							SetLastPrivateShopBuildTime() { m_tLastPrivateShopBuild = thecore_pulse(); }
+
+		int								GetLastPrivateShopBuyTime() const { return m_tLastPrivateShopBuy; }
+		void							SetLastPrivateShopBuyTime() { m_tLastPrivateShopBuy = thecore_pulse(); }
+
+		int								GetLastPrivateShopSearchTime() const { return m_tLastPrivateShopSearch; }
+		void							SetLastPrivateShopSearchTime() { m_tLastPrivateShopSearch = thecore_pulse(); }
+
+		int								GetLastPrivateShopStateChangeTime() const { return m_tLastPrivateShopStateChange; }
+		void							SetLastPrivateShopStateChangeTime() { m_tLastPrivateShopStateChange = thecore_pulse(); }
+#endif
+////////////////////////////////////////////////////////////////////////////////////////
 		// Exchange related
 	public:
 		bool			ExchangeStart(LPCHARACTER victim);
@@ -1272,7 +1366,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void				UpdateAlignment(int iAmount);
 		int					GetAlignment() const;
 
-		//선악치 얻기 
+		//선악치 얻기
 		int					GetRealAlignment() const;
 		void				ShowAlignment(bool bShow);
 
@@ -1289,7 +1383,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		//
 		// HACK
-		// 
+		//
 	public:
 		void SetComboSequence(BYTE seq);
 		BYTE GetComboSequence() const;
@@ -1390,7 +1484,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		int					ComputeSkillAtPosition(DWORD dwVnum, const PIXEL_POSITION& posTarget, BYTE bSkillLevel = 0);
 		void				ComputeSkillPoints();
 
-		void				SetSkillGroup(BYTE bSkillGroup); 
+		void				SetSkillGroup(BYTE bSkillGroup);
 		BYTE				GetSkillGroup() const		{ return m_points.skill_group; }
 
 		int					ComputeCooltime(int time);
@@ -1587,7 +1681,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		CPetSystem*			m_petSystem;
 
 	public:
-#endif 
+#endif
 
 	protected:
 		LPCHARACTER			m_chHorse;
@@ -1645,7 +1739,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 		////////////////////////////////////////////////////////////////////////////////////////
 		// QUEST
-		// 
+		//
 	public:
 		void				SetQuestNPCID(DWORD vid);
 		DWORD				GetQuestNPCID() const { return m_dwQuestNPCVID; }
@@ -1805,10 +1899,10 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 	public:
 		int		GetSkillPowerByLevel(int level, bool bMob = false) const;
-		
+
 		//PREVENT_REFINE_HACK
 		int		GetRefineTime() const { return m_iRefineTime; }
-		void	SetRefineTime() { m_iRefineTime = thecore_pulse(); } 
+		void	SetRefineTime() { m_iRefineTime = thecore_pulse(); }
 		int		m_iRefineTime;
 		//END_PREVENT_REFINE_HACK
 
@@ -1817,13 +1911,13 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		void  	SetUseSeedOrMoonBottleTime() { m_iSeedTime = thecore_pulse(); }
 		int 	m_iSeedTime;
 		//END_RESTRICT_USE_SEED_OR_MOONBOTTLE
-		
+
 		//PREVENT_PORTAL_AFTER_EXCHANGE
 		int		GetExchangeTime() const { return m_iExchangeTime; }
 		void	SetExchangeTime() { m_iExchangeTime = thecore_pulse(); }
 		int		m_iExchangeTime;
 		//END_PREVENT_PORTAL_AFTER_EXCHANGE
-		
+
 		int 	m_iMyShopTime;
 		int		GetMyShopTime() const	{ return m_iMyShopTime; }
 		void	SetMyShopTime() { m_iMyShopTime = thecore_pulse(); }
@@ -1846,7 +1940,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		};
 
 		enum MONARCH_INDEX
-		{ 
+		{
 			MI_HEAL = 0,
 			MI_WARP,
 			MI_TRANSFER,
@@ -1902,7 +1996,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		{
 			DWORD 	dwPID;
 			DWORD	dwAttackedTime;
-			
+
 			AttackedLog() : dwPID(0), dwAttackedTime(0)
 			{
 			}
@@ -2011,7 +2105,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 
 	public:
 		//용혼석
-		
+
 		// 캐릭터의 affect, quest가 load 되기 전에 DragonSoul_Initialize를 호출하면 안된다.
 		// affect가 가장 마지막에 로드되어 LoadAffect에서 호출함.
 		void	DragonSoul_Initialize();
@@ -2028,7 +2122,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 		// 왜냐하면....
 		// 용혼석 하나 하나를 deactivate할 때마다 덱에 active인 용혼석이 있는지 확인하고,
 		// active인 용혼석이 하나도 없다면, 캐릭터의 용혼석 affect와, 활성 상태를 제거한다.
-		// 
+		//
 		// 하지만 ClearItem 시, 캐릭터가 착용하고 있는 모든 아이템을 unequip하는 바람에,
 		// 용혼석 Affect가 제거되고, 결국 로그인 시, 용혼석이 활성화되지 않는다.
 		// (Unequip할 때에는 로그아웃 상태인지, 아닌지 알 수 없다.)
@@ -2054,7 +2148,7 @@ class CHARACTER : public CEntity, public CFSM, public CHorseRider
 	public:
 		int					LastDropTime;
 		int					CountDrops;
-		void ClearPMCounter(void)       { m_iPMCounter = 0;      } 
+		void ClearPMCounter(void)       { m_iPMCounter = 0;      }
 		void IncreasePMCounter(void)    { m_iPMCounter++;        }
 		void SetLastPMPulse(void);
 		int  GetPMCounter(void)   const { return m_iPMCounter;   }

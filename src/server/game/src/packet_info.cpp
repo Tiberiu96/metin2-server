@@ -228,6 +228,9 @@ CPacketInfoCG::CPacketInfoCG()
 	// Set(HEADER_CG_XTRAP_ACK, sizeof(TPacketXTrapCSVerify), "XTrapResponse", false);
 	Set(HEADER_CG_DRAGON_SOUL_REFINE, sizeof(TPacketCGDragonSoulRefine), "DragonSoulRefine", false);
 	Set(HEADER_CG_STATE_CHECKER, sizeof(BYTE), "ServerStateCheck", false);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	Set(HEADER_CG_PRIVATE_SHOP, sizeof(TPacketCGPrivateShop), "PrivateShop", true);
+#endif
 	Set(HEADER_CG_SET_LANGUAGE, sizeof(TPacketCGSetLanguage), "SetLanguage", false);
 	Set(HEADER_CG_CHANGE_CHANNEL, sizeof(TPacketCGChangeChannel), "ChangeChannel", false);
 }
@@ -271,10 +274,13 @@ CPacketInfoGG::CPacketInfoGG()
 	Set(HEADER_GG_MONARCH_TRANSFER,		sizeof(TPacketMonarchGGTransfer),	"MonarchTransfer", false);
 	Set(HEADER_GG_PCBANG_UPDATE,		sizeof(TPacketPCBangUpdate),		"PCBangUpdate",		false);
 	Set(HEADER_GG_CHECK_AWAKENESS,		sizeof(TPacketGGCheckAwakeness),	"CheckAwakeness",		false);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	Set(HEADER_GG_PRIVATE_SHOP_ITEM_SEARCH, sizeof(TPacketGGPrivateShopItemSearch), "PrivateShopItemSearch", false);
+	Set(HEADER_GG_PRIVATE_SHOP_ITEM_SEARCH_RESULT, sizeof(TPacketGGPrivateShopItemSearchResult), "PrivateShopItemSearchResult", false);
+#endif
 }
 
 CPacketInfoGG::~CPacketInfoGG()
 {
 	Log("p2p_packet_info.txt");
 }
-

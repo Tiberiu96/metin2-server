@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Csatornát váltasz 3 másodperc múlva";
+
+"You have increased available space on your personal shop.";
+"Megnövelted a boltodban rendelkezésre álló helyet.";
+
+"Your personal shop is currently unavailable.";
+"A boltod jelenleg nem elérhetõ.";
+
+"You cannot place any more items in your personal shop.";
+"Nem tehetsz több tárgyat a boltba.";
+
+"You cannot move the item to that position.";
+"Nem helyezheted a tárgyat erre a helyre.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"A boltnak kezelési módban kell lennie.";
+
+"There is no money to collect.";
+"Nincs kivehetõ pénz.";
+
+"Refresh your search result to sync price of the item.";
+"Frissítsd a keresést az aktuális ár megjelenítéséhez.";
+
+"This item is currently unavailable.";
+"Ez a tárgy jelenleg nem elérhetõ.";
+
+"You do not have an open personal shop.";
+"Nincs nyitott boltod.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"A bolt bezárása elõtt vedd ki a bevételt.";
+
+"You cannot use a personal shop now.";
+"Most nem használhatod a boltot.";
+
+"You cannot open a personal shop without a Bundle.";
+"A bolt megnyitásához batyura van szükséged.";
+
+"You have already opened your personal shop.";
+"Már megnyitottad a boltodat.";
+
+"You cannot open a personal shop in a dungeon.";
+"Kazamatában nem nyithatsz boltot.";
+
+"Please choose another title name for your personal shop.";
+"Válassz másik nevet a boltodnak.";
+
+"The entered name is too short.";
+"Válassz hosszabb nevet.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Nem árulhatsz Tárgypiacról származó tárgyakat a boltban.";
+
+"You cannot sell equipped items in a personal shop.";
+"Nem árulhatsz viselt tárgyakat a boltban.";
+
+"You cannot sell locked items in a personal shop.";
+"Nem árulhatsz zárolt tárgyakat a boltban.";
+
+"Your personal shop has been closed.";
+"A boltodat bezárták.";
+
+"Teleport to the private shop has been canceled.";
+"A bolthoz teleportálás megszakítva.";
+
+"%u seconds until teleport.";
+"Teleportálás %u másodperc múlva.";
+
+"Your logout has been canceled.";
+"A kijelentkezésed megszakítva.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Eladtál x%lld %s tárgyat %s Yangért.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s eltávolítva a boltból, mert lejárt az ideje.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Nem veheted ki: túllépnéd a 2 milliárd Yangot.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Kivettél %lld Yangot a boltod bevételébõl.";
+
+"You cannot trade while another window is open.";
+"A folytatáshoz zárd be a többi kereskedési ablakot.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Elérted a bolt maximális prémium idejét.";
+
+"You have increased Premium Personal Shop duration.";
+"Meghosszabbítottad a prémium bolt idõtartamát.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Elérted a bolt maximális prémium idejét.";
+
+"You cannot use items while editing your personal shop.";
+"A bolt kezelése közben nem használhatsz tárgyakat.";
+
+"Please wait a few moments before building your personal shop again.";
+"Várj egy kicsit, mielõtt újra boltot hozol létre.";
+
+"You cannot open a personal shop while another window is open.";
+"A folytatáshoz zárd be a többi kereskedési ablakot.";
+
+"You cannot close a personal shop while another window is open.";
+"A folytatáshoz zárd be a többi kereskedési ablakot.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"A folytatáshoz zárd be a többi kereskedési ablakot.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Várj egy kicsit, mielõtt újra vásárolsz egy boltban.";
+
+"You cannot buy an item from your own personal shop.";
+"Nem vásárolhatsz a saját boltodban.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Várj egy kicsit, mielõtt újra bevételt veszel ki.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"A folytatáshoz zárd be a többi kereskedési ablakot.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"Az eladó tárgyak összértéke meghaladja az engedélyezett határt.";
+
+"Please wait a moment before searching other personal shops again.";
+"Várj egy kicsit, mielõtt újra boltokat keresel.";
+
+"Close your current personal shop before opening a new one.";
+"Új bolt megnyitása elõtt zárd be a jelenlegi boltodat.";
+
+"You have sold x%d %s for %s Yangs.";
+"Eladtál x%d %s tárgyat %s Yangért.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Eladtál x%d %s tárgyat %s Yangért és %s Wonért.";
+
+"You cannot build a personal shop at this moment. ";
+"Most nem használhatod a boltot.";
+
+"You are too far away from your personal shop.";
+"Túl messze vagy a boltodtól.";
+
+"You cannot close a personal shop from a different location.";
+"Nem zárhatod be a boltot másik helyszínrõl.";
+
+"This personal shop item has an invalid price.";
+"Ennek a bolti tárgynak érvénytelen az ára.";
+
+"You have bought x%d %s.";
+"Megvettél x%d %s tárgyat.";
+
+"You have bought %s.";
+"Megvetted: %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"A bolt létrehozásakor nem tehetsz batyukat eladásra.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Nem árulhatsz Tárgypiacról származó tárgyakat a boltban.";
+
+"Equipped items cannot be sold in a private shop.";
+"Nem árulhatsz viselt tárgyakat a boltban.";
+
+"Items in use cannot be sold in a private shop.";
+"Nem árulhatsz használatban lévõ tárgyakat.";
+
+"Private Shop";
+"Magánbolt";
+
+"You don't have enough space in your inventory.";
+"Nincs elég hely a leltáradban.";
+
+"You don't have enough Yang.";
+"Nincs elég Yangod.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Kivettél %u Wont a boltod bevételébõl.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Kivettél %lld Yangot és %u Wont a boltod bevételébõl.";
+
+"Please wait before another personal shop action.";
+"Várj egy kicsit a következõ bolti mûvelet elõtt.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Nem vásárolhatsz, amíg a bolt kezelési módban van.";
+
+"You cannot open a private shop in this area.";
+"Itt nem nyithatsz boltot.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Várj egy kicsit a következõ bolti mûvelet elõtt.";
+
+"You cannot open a private shop while another window is open.";
+"A folytatáshoz zárd be a többi kereskedési ablakot.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Várj egy kicsit a következõ bolti mûvelet elõtt.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Várj egy kicsit a következõ bolti mûvelet elõtt.";
+
+"You can't use a private shop now.";
+"Most nem használhatod a boltot.";

@@ -43,6 +43,11 @@
 #include "target.h"
 #include "wedding.h"
 #include "mob_manager.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "private_shop_manager.h"
+#include "private_shop.h"
+#include "private_shop_util.h"
+#endif
 #include "mining.h"
 #include "monarch.h"
 #include "castle.h"
@@ -142,7 +147,7 @@ void CHARACTER::Initialize()
 
 	CountDrops    = 0;
 	LastDropTime  = 0;
-	
+
 	m_iLastPMPulse = 0;
 	m_iPMCounter = 0;
 
@@ -325,11 +330,11 @@ void CHARACTER::Initialize()
 	//PREVENT_TRADE_WINDOW
 	m_isOpenSafebox = 0;
 	//END_PREVENT_TRADE_WINDOW
-	
+
 	//PREVENT_REFINE_HACK
 	m_iRefineTime = 0;
 	//END_PREVENT_REFINE_HACK
-	
+
 	//RESTRICT_USE_SEED_OR_MOONBOTTLE
 	m_iSeedTime = 0;
 	//END_RESTRICT_USE_SEED_OR_MOONBOTTLE
@@ -381,6 +386,21 @@ void CHARACTER::Initialize()
 
 	memset(&m_tvLastSyncTime, 0, sizeof(m_tvLastSyncTime));
 	m_iSyncHackCount = 0;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	m_pPrivateShop = nullptr;
+	m_pMyPrivateShop = nullptr;
+	m_dwPrivateShopOwner = 0;
+	m_bIsEditingPrivateShop = false;
+	memset(&m_privateShopTable, 0, sizeof(TPrivateShop));
+	m_bShopSearchMode = MODE_NONE;
+	m_tLastPrivateShopModify = 0;
+	m_tLastPrivateShopWithdraw = 0;
+	m_tLastPrivateShopClose = 0;
+	m_tLastPrivateShopBuild = 0;
+	m_tLastPrivateShopBuy = 0;
+	m_tLastPrivateShopSearch = 0;
+	m_tLastPrivateShopStateChange = 0;
+#endif
 }
 
 void CHARACTER::Create(const char * c_pszName, DWORD vid, bool isPC)
@@ -478,13 +498,13 @@ void CHARACTER::Destroy()
 		}
 		else
 		{
-			party->Unlink(this); 
+			party->Unlink(this);
 
 			if (!IsPC())
 				party->Quit(GetVID());
 		}
 
-		SetParty(NULL); // ¾ÈÇØµµ µÇÁö¸¸ ¾ÈÀüÇÏ°Ô.
+		SetParty(NULL); // ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½.
 	}
 
 	if (m_pkMobInst)
@@ -656,16 +676,16 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 		return;
 	}
 
-	if (GetMyShop())	// ÀÌ¹Ì ¼¥ÀÌ ¿­·Á ÀÖÀ¸¸é ´Ý´Â´Ù.
+	if (GetMyShop())	// ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý´Â´ï¿½.
 	{
 		CloseMyShop();
 		return;
 	}
 
-	// ÁøÇàÁßÀÎ Äù½ºÆ®°¡ ÀÖÀ¸¸é »óÁ¡À» ¿­ ¼ö ¾ø´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	quest::PC * pPC = quest::CQuestManager::instance().GetPCForce(GetPlayerID());
 
-	// GetPCForce´Â NULLÀÏ ¼ö ¾øÀ¸¹Ç·Î µû·Î È®ÀÎÇÏÁö ¾ÊÀ½
+	// GetPCForceï¿½ï¿½ NULLï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (pPC->IsRunning())
 		return;
 
@@ -700,14 +720,14 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	{
 		if (CBanwordManager::instance().CheckString(m_stShopSign.c_str(), m_stShopSign.length()))
 		{
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You can't give your shop an invalid name.", GetLanguage()));	
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You can't give your shop an invalid name.", GetLanguage()));
 			return;
 		}
 	}
 
 	// MYSHOP_PRICE_LIST
-	std::map<DWORD, DWORD> itemkind;  // ¾ÆÀÌÅÛ Á¾·ùº° °¡°Ý, first: vnum, second: ´ÜÀÏ ¼ö·® °¡°Ý
-	// END_OF_MYSHOP_PRICE_LIST	
+	std::map<DWORD, DWORD> itemkind;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, first: vnum, second: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// END_OF_MYSHOP_PRICE_LIST
 
 	std::set<TItemPos> cont;
 	for (BYTE i = 0; i < bItemCount; ++i)
@@ -752,17 +772,17 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	}
 
 	// MYSHOP_PRICE_LIST
-	// º¸µû¸® °³¼ö¸¦ °¨¼Ò½ÃÅ²´Ù. 
-	if (CountSpecifyItem(71049)) { // ºñ´Ü º¸µû¸®´Â ¾ø¾ÖÁö ¾Ê°í °¡°ÝÁ¤º¸¸¦ ÀúÀåÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½.
+	if (CountSpecifyItem(71049)) { // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
 		//
-		// ¾ÆÀÌÅÛ °¡°ÝÁ¤º¸¸¦ ÀúÀåÇÏ±â À§ÇØ ¾ÆÀÌÅÛ °¡°ÝÁ¤º¸ ÆÐÅ¶À» ¸¸µé¾î DB Ä³½Ã¿¡ º¸³½´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ DB Ä³ï¿½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		//
-		
+
 		// Old code:
 		// TPacketMyshopPricelistHeader header;
 		// TItemPriceInfo info;
-		
+
 		// header.dwOwnerID = GetPlayerID();
 		// header.byCount = itemkind.size();
 
@@ -778,7 +798,7 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 		// }
 
 		// db_clientdesc->DBPacket(HEADER_GD_MYSHOP_PRICELIST_UPDATE, 0, buf.read_peek(), buf.size());
-		
+
 		// Fixed code:
 		TItemPriceListTable header;
 		memset(&header, 0, sizeof(TItemPriceListTable));
@@ -795,12 +815,17 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 		}
 
 		db_clientdesc->DBPacket(HEADER_GD_MYSHOP_PRICELIST_UPDATE, GetDesc()->GetHandle(), &header, sizeof(TItemPriceListTable));
-	} 
+	}
 	// END_OF_MYSHOP_PRICE_LIST
 	else if (CountSpecifyItem(50200))
+	{
 		RemoveSpecifyItem(50200, 1);
+		SetPolymorph(30000, true);
+	}
+	else if (CountSpecifyItem(71221))
+		sys_log(0, "PRIVATESHOP_GAME: classic_bundle_retained pid=%u bundle_vnum=71221", GetPlayerID());
 	else
-		return; // º¸µû¸®°¡ ¾øÀ¸¸é Áß´Ü.
+		return; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß´ï¿½.
 
 	if (m_pkExchange)
 		m_pkExchange->Cancel();
@@ -824,15 +849,14 @@ void CHARACTER::OpenMyShop(const char * c_pszSign, TShopItemTable * pTable, BYTE
 	{
 		HorseSummon( false, true );
 	}
-	// new mount ÀÌ¿ë Áß¿¡, °³ÀÎ »óÁ¡ ¿­¸é ÀÚµ¿ unmount
-	// StopRidingÀ¸·Î ´º¸¶¿îÆ®±îÁö Ã³¸®ÇÏ¸é ÁÁÀºµ¥ ¿Ö ±×·¸°Ô ¾ÈÇØ³ù´ÂÁö ¾Ë ¼ö ¾ø´Ù.
+	// new mount ï¿½Ì¿ï¿½ ï¿½ß¿ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ unmount
+	// StopRidingï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	else if (GetMountVnum())
 	{
 		RemoveAffect(AFFECT_MOUNT);
 		RemoveAffect(AFFECT_MOUNT_BONUS);
 	}
-	//if (!LC_IsNewCIBN())
-		SetPolymorph(30000, true);
+	// Standard private shop (50200): restore the normal polymorph form while the shop is open.
 
 }
 
@@ -851,8 +875,9 @@ void CHARACTER::CloseMyShop()
 		p.szSign[0] = '\0';
 
 		PacketAround(&p, sizeof(p));
-		
-		//if (!LC_IsNewCIBN())
+
+		// Restore form only if polymorphed (covers premium shop deco). Standard shop no longer polymorphs.
+		if (IsPolymorphed())
 			SetPolymorph(GetJob(), true);
 	}
 }
@@ -908,7 +933,7 @@ void CHARACTER::RestartAtSamePos()
 }
 
 
-// Entity¿¡ ³»°¡ ³ªÅ¸³µ´Ù°í ÆÐÅ¶À» º¸³½´Ù.
+// Entityï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 void CHARACTER::EncodeInsertPacket(LPENTITY entity)
 {
 
@@ -917,10 +942,10 @@ void CHARACTER::EncodeInsertPacket(LPENTITY entity)
 	if (!(d = entity->GetDesc()))
 		return;
 
-	// ±æµåÀÌ¸§ ¹ö±× ¼öÁ¤ ÄÚµå
+	// ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
 	LPCHARACTER ch = (LPCHARACTER) entity;
 	ch->SendGuildName(GetGuild());
-	// ±æµåÀÌ¸§ ¹ö±× ¼öÁ¤ ÄÚµå
+	// ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
 
 	TPacketGCCharacterAdd pack;
 
@@ -1017,7 +1042,7 @@ void CHARACTER::EncodeInsertPacket(LPENTITY entity)
 			}
 
 			if (GetGuild() != NULL)
-			{	
+			{
 				addPacket.dwGuildID = GetGuild()->GetID();
 			}
 			else
@@ -1389,7 +1414,7 @@ void CHARACTER::SaveReal()
 
 void CHARACTER::FlushDelayedSaveItem()
 {
-	// ÀúÀå ¾ÈµÈ ¼ÒÁöÇ°À» ÀüºÎ ÀúÀå½ÃÅ²´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Èµï¿½ ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½.
 	LPITEM item;
 
 	for (int i = 0; i < INVENTORY_AND_EQUIP_SLOT_MAX; ++i)
@@ -1409,6 +1434,27 @@ void CHARACTER::Disconnect(const char * c_pszReason)
 		SetShop(NULL);
 	}
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	if (GetViewingPrivateShop())
+	{
+		GetViewingPrivateShop()->RemoveShopViewer(this);
+		SetViewingPrivateShop(nullptr);
+	}
+
+	CPrivateShopManager::Instance().PreservePendingBuild(this);
+	if (IsPrivateShopOwner())
+	{
+		BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_LOGOUT;
+		DWORD dwPID = GetPlayerID();
+
+		// A core transfer is provisional offline until the destination rebinds the owner.
+		db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(DWORD));
+		db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+		db_clientdesc->Packet(&dwPID, sizeof(DWORD));
+		sys_log(0, "PRIVATESHOP_GAME: owner_disconnected pid=%u transfer=%d reason=%s", dwPID, m_lWarpMapIndex != 0, c_pszReason ? c_pszReason : "unset");
+	}
+#endif
+
 	if (GetArena() != NULL)
 	{
 		GetArena()->OnDisconnect(GetPlayerID());
@@ -1427,7 +1473,7 @@ void CHARACTER::Disconnect(const char * c_pszReason)
 	strlcpy(p.szName, GetName(), sizeof(p.szName));
 	P2P_MANAGER::instance().Send(&p, sizeof(TPacketGGLogout));
 	char buf[51];
-	snprintf(buf, sizeof(buf), "%s %d %d %ld %d", 
+	snprintf(buf, sizeof(buf), "%s %d %d %ld %d",
 		inet_ntoa(GetDesc()->GetAddr().sin_addr), GetGold(), g_bChannel, GetMapIndex(), GetAlignment());
 
 	LogManager::instance().CharLog(this, 0, "LOGOUT", buf);
@@ -1457,7 +1503,7 @@ void CHARACTER::Disconnect(const char * c_pszReason)
 	if (GetParty())
 		GetParty()->Unlink(this);
 
-	// Á×¾úÀ» ¶§ Á¢¼Ó²÷À¸¸é °æÇèÄ¡ ÁÙ°Ô ÇÏ±â
+	// ï¿½×¾ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Ù°ï¿½ ï¿½Ï±ï¿½
 	if (IsStun() || IsDead())
 	{
 		DeathPenalty(0);
@@ -1475,7 +1521,7 @@ void CHARACTER::Disconnect(const char * c_pszReason)
 	SaveAffect();
 	m_bIsLoadedAffect = false;
 
-	m_bSkipSave = true; // ÀÌ ÀÌÈÄ¿¡´Â ´õÀÌ»ó ÀúÀåÇÏ¸é ¾ÈµÈ´Ù.
+	m_bSkipSave = true; // ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½.
 
 	quest::CQuestManager::instance().DisconnectPC(this);
 
@@ -1585,7 +1631,7 @@ bool CHARACTER::Show(long lMapIndex, long x, long y, long z, bool bShowSpawnMoti
 	}
 
 	REMOVE_BIT(m_bAddChrState, ADD_CHARACTER_STATE_SPAWN);
-	
+
 	SetValidComboInterval(0);
 	return true;
 }
@@ -1604,7 +1650,7 @@ static bool		gs_bgmVolEnable = false;
 
 void CHARACTER_SetBGMVolumeEnable()
 {
-	gs_bgmVolEnable = true;	
+	gs_bgmVolEnable = true;
 	sys_log(0, "bgm_info.set_bgm_volume_enable");
 }
 
@@ -1846,7 +1892,7 @@ void CHARACTER::SetPlayerProto(const TPlayerTable * t)
 
 	m_points.voice = t->voice;
 
-	m_points.skill_group = t->skill_group; 
+	m_points.skill_group = t->skill_group;
 
 	m_pointsInstant.bBasePart = t->part_base;
 	SetPart(PART_HAIR, t->parts[PART_HAIR]);
@@ -1906,7 +1952,7 @@ void CHARACTER::SetPlayerProto(const TPlayerTable * t)
 	SetSP(t->sp);
 	SetStamina(t->stamina);
 
-	//GMÀÏ¶§ º¸È£¸ðµå  
+	//GMï¿½Ï¶ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½
 	if (!test_server)
 	{
 		if (GetGMLevel() > GM_LOW_WIZARD)
@@ -1932,14 +1978,14 @@ void CHARACTER::SetPlayerProto(const TPlayerTable * t)
 
 	sys_log(0, "PLAYER_LOAD: %s PREMIUM %d %d, LOGGOFF_INTERVAL %u PTR: %p", t->name, m_aiPremiumTimes[0], m_aiPremiumTimes[1], t->logoff_interval, this);
 
-	if (GetGMLevel() != GM_PLAYER) 
+	if (GetGMLevel() != GM_PLAYER)
 	{
 		LogManager::instance().CharLog(this, GetGMLevel(), "GM_LOGIN", "");
 		sys_log(0, "GM_LOGIN(gmlevel=%d, name=%s(%d), pos=(%d, %d)", GetGMLevel(), GetName(), GetPlayerID(), GetX(), GetY());
 	}
 
 #ifdef __PET_SYSTEM__
-	// NOTE: ÀÏ´Ü Ä³¸¯ÅÍ°¡ PCÀÎ °æ¿ì¿¡¸¸ PetSystemÀ» °®µµ·Ï ÇÔ. À¯·´ ¸Ó½Å´ç ¸Þ¸ð¸® »ç¿ë·ü¶§¹®¿¡ NPC±îÁö ÇÏ±ä Á»..
+	// NOTE: ï¿½Ï´ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ PCï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ PetSystemï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½Å´ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NPCï¿½ï¿½ï¿½ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½..
 	if (m_petSystem)
 	{
 		m_petSystem->Destroy();
@@ -1962,7 +2008,7 @@ EVENTFUNC(kill_ore_load_event)
 	LPCHARACTER	ch = info->ch;
 	if (ch == NULL) { // <Factor>
 		return 0;
-	}	
+	}
 
 	ch->m_pkMiningEvent = NULL;
 	M2_DESTROY_CHARACTER(ch);
@@ -2026,9 +2072,9 @@ void CHARACTER::SetProto(const CMob * pkMob)
 		else
 			SetPoint(POINT_DEF_GRADE_BONUS, 15);
 
-		//»êÅ¸¿ë
+		//ï¿½ï¿½Å¸ï¿½ï¿½
 		//m_dwPlayStartTime = get_dword_time() + 10 * 60 * 1000;
-		//½Å¼±ÀÚ ³ëÇØ 
+		//ï¿½Å¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		m_dwPlayStartTime = get_dword_time() + 30 * 1000;
 		if (test_server)
 			m_dwPlayStartTime = get_dword_time() + 30 * 1000;
@@ -2049,7 +2095,7 @@ void CHARACTER::SetProto(const CMob * pkMob)
 		m_stateBattle.Set(this, &CHARACTER::BeginStateEmpty, &CHARACTER::StateFlagBase, &CHARACTER::EndStateEmpty);
 	}
 
-	if (m_bCharType == CHAR_TYPE_HORSE || 
+	if (m_bCharType == CHAR_TYPE_HORSE ||
 			GetRaceNum() == 20101 ||
 			GetRaceNum() == 20102 ||
 			GetRaceNum() == 20103 ||
@@ -2103,7 +2149,7 @@ float CHARACTER::GetMobDamageMultiply() const
 	float fDamMultiply = GetMobTable().fDamMultiply;
 
 	if (IsBerserk())
-		fDamMultiply = fDamMultiply * 2.0f; // BALANCE: ±¤ÆøÈ­ ½Ã µÎ¹è
+		fDamMultiply = fDamMultiply * 2.0f; // BALANCE: ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Î¹ï¿½
 
 	return fDamMultiply;
 }
@@ -2136,7 +2182,7 @@ DWORD CHARACTER::GetMonsterDrainSPPoint() const
 BYTE CHARACTER::GetMobRank() const
 {
 	if (!m_pkMobData)
-		return MOB_RANK_KNIGHT;	// PCÀÏ °æ¿ì KNIGHT±Þ
+		return MOB_RANK_KNIGHT;	// PCï¿½ï¿½ ï¿½ï¿½ï¿½ KNIGHTï¿½ï¿½
 
 	return m_pkMobData->m_table.bRank;
 }
@@ -2150,14 +2196,14 @@ BYTE CHARACTER::GetMobSize() const
 }
 
 WORD CHARACTER::GetMobAttackRange() const
-{ 
+{
 	switch (GetMobBattleType())
 	{
 		case BATTLE_TYPE_RANGE:
 		case BATTLE_TYPE_MAGIC:
-			return m_pkMobData->m_table.wAttackRange + GetPoint(POINT_BOW_DISTANCE);  
+			return m_pkMobData->m_table.wAttackRange + GetPoint(POINT_BOW_DISTANCE);
 		default:
-			return m_pkMobData->m_table.wAttackRange; 
+			return m_pkMobData->m_table.wAttackRange;
 	}
 }
 
@@ -2187,7 +2233,7 @@ void CHARACTER::ComputeBattlePoints()
 
 		SetPoint(POINT_ATT_GRADE, iAtt);
 		SetPoint(POINT_DEF_GRADE, iDef);
-		SetPoint(POINT_MAGIC_ATT_GRADE, GetPoint(POINT_ATT_GRADE)); 
+		SetPoint(POINT_MAGIC_ATT_GRADE, GetPoint(POINT_ATT_GRADE));
 		SetPoint(POINT_MAGIC_DEF_GRADE, GetPoint(POINT_DEF_GRADE));
 	}
 	else if (IsPC())
@@ -2199,7 +2245,7 @@ void CHARACTER::ComputeBattlePoints()
 		SetPoint(POINT_MAGIC_DEF_GRADE, GetPoint(POINT_DEF_GRADE));
 
 		//
-		// ±âº» ATK = 2lev + 2str, Á÷¾÷¿¡ ¸¶´Ù 2strÀº ¹Ù²ð ¼ö ÀÖÀ½
+		// ï¿½âº» ATK = 2lev + 2str, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2strï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		//
 		int iAtk = GetLevel() * 2;
 		int iStatAtk = 0;
@@ -2225,14 +2271,14 @@ void CHARACTER::ComputeBattlePoints()
 				break;
 		}
 
-		// ¸»À» Å¸°í ÀÖ°í, ½ºÅÈÀ¸·Î ÀÎÇÑ °ø°Ý·ÂÀÌ ST*2 º¸´Ù ³·À¸¸é ST*2·Î ÇÑ´Ù.
-		// ½ºÅÈÀ» Àß¸ø ÂïÀº »ç¶÷ °ø°Ý·ÂÀÌ ´õ ³·Áö ¾Ê°Ô ÇÏ±â À§ÇØ¼­´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ ST*2 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ST*2ï¿½ï¿½ ï¿½Ñ´ï¿½.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½.
 		if (GetMountVnum() && iStatAtk < 2 * GetPoint(POINT_ST))
 			iStatAtk = (2 * GetPoint(POINT_ST));
 
 		iAtk += iStatAtk;
 
-		// ½Â¸¶(¸») : °Ë¼ö¶ó µ¥¹ÌÁö °¨¼Ò  
+		// ï¿½Â¸ï¿½(ï¿½ï¿½) : ï¿½Ë¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if (GetMountVnum())
 		{
 			if (GetJob() == JOB_SURA && GetSkillGroup() == 1)
@@ -2244,7 +2290,7 @@ void CHARACTER::ComputeBattlePoints()
 				iAtk += (iAtk * GetHorseLevel()) / 30;
 			}
 		}
-		
+
 		//
 		// ATK Setting
 		//
@@ -2253,7 +2299,7 @@ void CHARACTER::ComputeBattlePoints()
 		PointChange(POINT_ATT_GRADE, iAtk);
 
 		// DEF = LEV + CON + ARMOR
-		int iShowDef = GetLevel() + GetPoint(POINT_HT); // For Ymir(Ãµ¸¶)
+		int iShowDef = GetLevel() + GetPoint(POINT_HT); // For Ymir(Ãµï¿½ï¿½)
 		int iDef = GetLevel() + (int) (GetPoint(POINT_HT) / 1.25); // For Other
 		int iArmor = 0;
 
@@ -2269,7 +2315,7 @@ void CHARACTER::ComputeBattlePoints()
 				}
 			}
 
-		// ¸» Å¸°í ÀÖÀ» ¶§ ¹æ¾î·ÂÀÌ ¸»ÀÇ ±âÁØ ¹æ¾î·Âº¸´Ù ³·À¸¸é ±âÁØ ¹æ¾î·ÂÀ¸·Î ¼³Á¤
+		// ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Âºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		if( true == IsHorseRiding() )
 		{
 			if (iArmor < GetHorseArmor())
@@ -2310,7 +2356,7 @@ void CHARACTER::ComputeBattlePoints()
 
 		SetPoint(POINT_ATT_GRADE, iAtt);
 		SetPoint(POINT_DEF_GRADE, iDef);
-		SetPoint(POINT_MAGIC_ATT_GRADE, GetPoint(POINT_ATT_GRADE)); 
+		SetPoint(POINT_MAGIC_ATT_GRADE, GetPoint(POINT_ATT_GRADE));
 		SetPoint(POINT_MAGIC_DEF_GRADE, GetPoint(POINT_DEF_GRADE));
 	}
 }
@@ -2375,7 +2421,7 @@ void CHARACTER::ComputePoints()
 
 	if (IsPC())
 	{
-		// ÃÖ´ë »ý¸í·Â/Á¤½Å·Â
+		// ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½Å·ï¿½
 		iMaxHP = JobInitialPoints[GetJob()].max_hp + m_points.iRandomHP + GetPoint(POINT_HT) * JobInitialPoints[GetJob()].hp_per_ht;
 		iMaxSP = JobInitialPoints[GetJob()].max_sp + m_points.iRandomSP + GetPoint(POINT_IQ) * JobInitialPoints[GetJob()].sp_per_iq;
 		iMaxStamina = JobInitialPoints[GetJob()].max_stamina + GetPoint(POINT_HT) * JobInitialPoints[GetJob()].stamina_per_con;
@@ -2391,7 +2437,7 @@ void CHARACTER::ComputePoints()
 			}
 		}
 
-		// ±âº» °ªµé
+		// ï¿½âº» ï¿½ï¿½ï¿½ï¿½
 		SetPoint(POINT_MOV_SPEED,	100);
 		SetPoint(POINT_ATT_SPEED,	100);
 		PointChange(POINT_ATT_SPEED, GetPoint(POINT_PARTY_HASTE_BONUS));
@@ -2410,10 +2456,10 @@ void CHARACTER::ComputePoints()
 
 	if (IsPC())
 	{
-		// ¸» Å¸°í ÀÖÀ» ¶§´Â ±âº» ½ºÅÈÀÌ ¸»ÀÇ ±âÁØ ½ºÅÈº¸´Ù ³·À¸¸é ³ô°Ô ¸¸µç´Ù.
-		// µû¶ó¼­ ¸»ÀÇ ±âÁØ ½ºÅÈÀÌ ¹«»ç ±âÁØÀÌ¹Ç·Î, ¼ö¶ó/¹«´çÀº ÀüÃ¼ ½ºÅÈ ÇÕÀÌ
-		// ´ëÃ¤ÀûÀ¸·Î ´õ ¿Ã¶ó°¡°Ô µÉ °ÍÀÌ´Ù.
-		if (GetMountVnum()) 
+		// ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Èºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹Ç·ï¿½, ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ï¿½ï¿½Ã¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã¶ó°¡°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
+		if (GetMountVnum())
 		{
 			if (GetHorseST() > GetPoint(POINT_ST))
 				PointChange(POINT_ST, GetHorseST() - GetPoint(POINT_ST));
@@ -2432,17 +2478,17 @@ void CHARACTER::ComputePoints()
 
 	ComputeBattlePoints();
 
-	// ±âº» HP/SP ¼³Á¤
+	// ï¿½âº» HP/SP ï¿½ï¿½ï¿½ï¿½
 	if (iMaxHP != GetMaxHP())
 	{
-		SetRealPoint(POINT_MAX_HP, iMaxHP); // ±âº»HP¸¦ RealPoint¿¡ ÀúÀåÇØ ³õ´Â´Ù.
+		SetRealPoint(POINT_MAX_HP, iMaxHP); // ï¿½âº»HPï¿½ï¿½ RealPointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
 	}
 
 	PointChange(POINT_MAX_HP, 0);
 
 	if (iMaxSP != GetMaxSP())
 	{
-		SetRealPoint(POINT_MAX_SP, iMaxSP); // ±âº»SP¸¦ RealPoint¿¡ ÀúÀåÇØ ³õ´Â´Ù.
+		SetRealPoint(POINT_MAX_SP, iMaxSP); // ï¿½âº»SPï¿½ï¿½ RealPointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
 	}
 
 	PointChange(POINT_MAX_SP, 0);
@@ -2451,7 +2497,7 @@ void CHARACTER::ComputePoints()
 
 	m_pointsInstant.dwImmuneFlag = 0;
 
-	for (int i = 0 ; i < WEAR_MAX_NUM; i++) 
+	for (int i = 0 ; i < WEAR_MAX_NUM; i++)
 	{
 		LPITEM pItem = GetWear(i);
 		if (pItem)
@@ -2461,14 +2507,14 @@ void CHARACTER::ComputePoints()
 		}
 	}
 
-	// ¿ëÈ¥¼® ½Ã½ºÅÛ
-	// ComputePoints¿¡¼­´Â ÄÉ¸¯ÅÍÀÇ ¸ðµç ¼Ó¼º°ªÀ» ÃÊ±âÈ­ÇÏ°í,
-	// ¾ÆÀÌÅÛ, ¹öÇÁ µî¿¡ °ü·ÃµÈ ¸ðµç ¼Ó¼º°ªÀ» Àç°è»êÇÏ±â ¶§¹®¿¡,
-	// ¿ëÈ¥¼® ½Ã½ºÅÛµµ ActiveDeck¿¡ ÀÖ´Â ¸ðµç ¿ëÈ¥¼®ÀÇ ¼Ó¼º°ªÀ» ´Ù½Ã Àû¿ë½ÃÄÑ¾ß ÇÑ´Ù.
+	// ï¿½ï¿½È¥ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½
+	// ComputePointsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ï°ï¿½,
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½î¿¡ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+	// ï¿½ï¿½È¥ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Ûµï¿½ ActiveDeckï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ ï¿½Ñ´ï¿½.
 	if (DragonSoul_IsDeckActivated())
 	{
-		for (int i = WEAR_MAX_NUM + DS_SLOT_MAX * DragonSoul_GetActiveDeck(); 
-			i < WEAR_MAX_NUM + DS_SLOT_MAX * (DragonSoul_GetActiveDeck() + 1); i++)	
+		for (int i = WEAR_MAX_NUM + DS_SLOT_MAX * DragonSoul_GetActiveDeck();
+			i < WEAR_MAX_NUM + DS_SLOT_MAX * (DragonSoul_GetActiveDeck() + 1); i++)
 		{
 			LPITEM pItem = GetWear(i);
 			if (pItem)
@@ -2502,9 +2548,9 @@ void CHARACTER::ComputePoints()
 	UpdatePacket();
 }
 
-// m_dwPlayStartTimeÀÇ ´ÜÀ§´Â milisecond´Ù. µ¥ÀÌÅÍº£ÀÌ½º¿¡´Â ºÐ´ÜÀ§·Î ±â·ÏÇÏ±â
-// ¶§¹®¿¡ ÇÃ·¹ÀÌ½Ã°£À» °è»êÇÒ ¶§ / 60000 À¸·Î ³ª´²¼­ ÇÏ´Âµ¥, ±× ³ª¸ÓÁö °ªÀÌ ³²¾Ò
-// À» ¶§ ¿©±â¿¡ dwTimeRemainÀ¸·Î ³Ö¾î¼­ Á¦´ë·Î °è»êµÇµµ·Ï ÇØÁÖ¾î¾ß ÇÑ´Ù.
+// m_dwPlayStartTimeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ milisecondï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ / 60000 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´Âµï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¿¡ dwTimeRemainï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½.
 void CHARACTER::ResetPlayTime(DWORD dwTimeRemain)
 {
 	m_dwPlayStartTime = get_dword_time() - dwTimeRemain;
@@ -2525,12 +2571,12 @@ EVENTFUNC(recovery_event)
 
 	if (ch == NULL) { // <Factor>
 		return 0;
-	}	
+	}
 
 	if (!ch->IsPC())
 	{
 		//
-		// ¸ó½ºÅÍ È¸º¹
+		// ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
 		//
 		if (ch->IsAffectFlag(AFF_POISON))
 			return PASSES_PER_SEC(MAX(1, ch->GetMobTable().bRegenCycle));
@@ -2588,23 +2634,23 @@ EVENTFUNC(recovery_event)
 	else
 	{
 		//
-		// PC È¸º¹
+		// PC È¸ï¿½ï¿½
 		//
 		ch->CheckTarget();
-		//ch->UpdateSectree(); // ¿©±â¼­ ÀÌ°É ¿ÖÇÏÁö?
+		//ch->UpdateSectree(); // ï¿½ï¿½ï¿½â¼­ ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
 		ch->UpdateKillerMode();
 
 		if (ch->IsAffectFlag(AFF_POISON) == true)
 		{
-			// Áßµ¶ÀÎ °æ¿ì ÀÚµ¿È¸º¹ ±ÝÁö
-			// ÆÄ¹ý¼úÀÎ °æ¿ì ÀÚµ¿È¸º¹ ±ÝÁö
+			// ï¿½ßµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµï¿½È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµï¿½È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			return 3;
 		}
 
 		int iSec = (get_dword_time() - ch->GetLastMoveTime()) / 3000;
 
-		// SP È¸º¹ ·çÆ¾.
-		// ¿Ö ÀÌ°É·Î ÇØ¼­ ÇÔ¼ö·Î »©³ù´Â°¡ ?!
+		// SP È¸ï¿½ï¿½ ï¿½ï¿½Æ¾.
+		// ï¿½ï¿½ ï¿½Ì°É·ï¿½ ï¿½Ø¼ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â°ï¿½ ?!
 		ch->DistributeSP(ch);
 
 		if (ch->GetMaxHP() <= ch->GetHP())
@@ -2612,12 +2658,12 @@ EVENTFUNC(recovery_event)
 
 		int iPercent = 0;
 		int iAmount = 0;
-		
+
 		{
 			iPercent = aiRecoveryPercents[MIN(9, iSec)];
 			iAmount = 15 + (ch->GetMaxHP() * iPercent) / 100;
 		}
-		
+
 		iAmount += (iAmount * ch->GetPoint(POINT_HP_REGEN)) / 100;
 
 		sys_log(1, "RECOVERY_EVENT: %s %d HP_REGEN %d HP +%d", ch->GetName(), iPercent, ch->GetPoint(POINT_HP_REGEN), iAmount);
@@ -2635,7 +2681,7 @@ void CHARACTER::StartRecoveryEvent()
 	if (IsDead() || IsStun())
 		return;
 
-	if (IsNPC() && GetHP() >= GetMaxHP()) // ¸ó½ºÅÍ´Â Ã¼·ÂÀÌ ´Ù Â÷ÀÖÀ¸¸é ½ÃÀÛ ¾ÈÇÑ´Ù.
+	if (IsNPC() && GetHP() >= GetMaxHP()) // ï¿½ï¿½ï¿½Í´ï¿½ Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
 		return;
 
 	char_event_info* info = AllocEventInfo<char_event_info>();
@@ -2685,7 +2731,7 @@ void CHARACTER::SetRotation(float fRot)
 	m_pointsInstant.fRot = fRot;
 }
 
-// x, y ¹æÇâÀ¸·Î º¸°í ¼±´Ù.
+// x, y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 void CHARACTER::SetRotationToXY(long x, long y)
 {
 	SetRotation(GetDegreeFromPositionXY(GetX(), GetY(), x, y));
@@ -2701,10 +2747,10 @@ bool CHARACTER::CanMove() const
 	if (CannotMoveByAffect())
 		return false;
 
-	if (GetMyShop())	// »óÁ¡ ¿¬ »óÅÂ¿¡¼­´Â ¿òÁ÷ÀÏ ¼ö ¾øÀ½
+	if (GetMyShop())	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		return false;
 
-	// 0.2ÃÊ ÀüÀÌ¶ó¸é ¿òÁ÷ÀÏ ¼ö ¾ø´Ù.
+	// 0.2ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	/*
 	   if (get_float_time() - m_fSyncTime < 0.2f)
 	   return false;
@@ -2712,7 +2758,7 @@ bool CHARACTER::CanMove() const
 	return true;
 }
 
-// ¹«Á¶°Ç x, y À§Ä¡·Î ÀÌµ¿ ½ÃÅ²´Ù.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ x, y ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Å²ï¿½ï¿½.
 bool CHARACTER::Sync(long x, long y)
 {
 	if (!GetSectree())
@@ -2741,7 +2787,7 @@ bool CHARACTER::Sync(long x, long y)
 
 	if (GetDungeon())
 	{
-		// ´øÁ¯¿ë ÀÌº¥Æ® ¼Ó¼º º¯È­
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½Ó¼ï¿½ ï¿½ï¿½È­
 		int iLastEventAttr = m_iEventAttr;
 		m_iEventAttr = new_tree->GetEventAttribute(x, y);
 
@@ -2794,8 +2840,8 @@ void CHARACTER::Stop()
 
 bool CHARACTER::Goto(long x, long y)
 {
-	// TODO °Å¸®Ã¼Å© ÇÊ¿ä
-	// °°Àº À§Ä¡¸é ÀÌµ¿ÇÒ ÇÊ¿ä ¾øÀ½ (ÀÚµ¿ ¼º°ø)
+	// TODO ï¿½Å¸ï¿½Ã¼Å© ï¿½Ê¿ï¿½
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½)
 	if (GetX() == x && GetY() == y)
 		return false;
 
@@ -2816,7 +2862,7 @@ bool CHARACTER::Goto(long x, long y)
 
 	m_dwStateDuration = 4;
 
-	
+
 	if (!IsState(m_stateMove))
 	{
 		MonsterLog("[MOVE] %s", GetVictim() ? "´ë»óÃßÀû" : "±×³ÉÀÌµ¿");
@@ -2925,14 +2971,14 @@ void CHARACTER::CalculateMoveDuration()
 	m_dwMoveStartTime = get_dword_time();
 }
 
-// x y À§Ä¡·Î ÀÌµ¿ ÇÑ´Ù. (ÀÌµ¿ÇÒ ¼ö ÀÖ´Â °¡ ¾ø´Â °¡¸¦ È®ÀÎ ÇÏ°í Sync ¸Þ¼Òµå·Î ½ÇÁ¦ ÀÌµ¿ ÇÑ´Ù)
-// ¼­¹ö´Â charÀÇ x, y °ªÀ» ¹Ù·Î ¹Ù²ÙÁö¸¸,
-// Å¬¶ó¿¡¼­´Â ÀÌÀü À§Ä¡¿¡¼­ ¹Ù²Û x, y±îÁö interpolationÇÑ´Ù.
-// °È°Å³ª ¶Ù´Â °ÍÀº charÀÇ m_bNowWalking¿¡ ´Þ·ÁÀÖ´Ù.
-// Warp¸¦ ÀÇµµÇÑ °ÍÀÌ¶ó¸é Show¸¦ »ç¿ëÇÒ °Í.
+// x y ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½Ñ´ï¿½. (ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ï°ï¿½ Sync ï¿½Þ¼Òµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½Ñ´ï¿½)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ charï¿½ï¿½ x, y ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½ï¿½ï¿½,
+// Å¬ï¿½ó¿¡¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ x, yï¿½ï¿½ï¿½ï¿½ interpolationï¿½Ñ´ï¿½.
+// ï¿½È°Å³ï¿½ ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ charï¿½ï¿½ m_bNowWalkingï¿½ï¿½ ï¿½Þ·ï¿½ï¿½Ö´ï¿½.
+// Warpï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ Showï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½.
 bool CHARACTER::Move(long x, long y)
 {
-	// °°Àº À§Ä¡¸é ÀÌµ¿ÇÒ ÇÊ¿ä ¾øÀ½ (ÀÚµ¿ ¼º°ø)
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½)
 	if (GetX() == x && GetY() == y)
 		return true;
 
@@ -3094,7 +3140,7 @@ void CHARACTER::SetPoint(BYTE type, int val)
 
 	m_pointsInstant.points[type] = val;
 
-	// ¾ÆÁ÷ ÀÌµ¿ÀÌ ´Ù ¾È³¡³µ´Ù¸é ÀÌµ¿ ½Ã°£ °è»êÀ» ´Ù½Ã ÇØ¾ß ÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½È³ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Ìµï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
 	if (type == POINT_MOV_SPEED && get_dword_time() < m_dwMoveStartTime + m_dwMoveDuration)
 	{
 		CalculateMoveDuration();
@@ -3162,7 +3208,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 
 		case POINT_NEXT_EXP:
 			val = GetNextExp();
-			bAmount = false;	// ¹«Á¶°Ç bAmount´Â false ¿©¾ß ÇÑ´Ù.
+			bAmount = false;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ bAmountï¿½ï¿½ false ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 			break;
 
 		case POINT_EXP:
@@ -3170,7 +3216,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 				DWORD exp = GetExp();
 				DWORD next_exp = GetNextExp();
 
-				// Ã»¼Ò³âº¸È£
+				// Ã»ï¿½Ò³âº¸È£
 				if (LC_IsNewCIBN())
 				{
 					if (IsOverTime(OT_NONE))
@@ -3189,7 +3235,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 					}
 				}
 
-				// exp°¡ 0 ÀÌÇÏ·Î °¡Áö ¾Êµµ·Ï ÇÑ´Ù
+				// expï¿½ï¿½ 0 ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½
 				if (amount < 0 && exp < -amount)
 				{
 					sys_log(1, "%s AMOUNT < 0 %d, CUR EXP: %d", GetName(), -amount, exp);
@@ -3208,7 +3254,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 
 					DWORD iExpBalance = 0;
 
-					// ·¹º§ ¾÷!
+					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½!
 					if (exp + amount >= next_exp)
 					{
 						iExpBalance = (exp + amount) - next_exp;
@@ -3226,7 +3272,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 					DWORD q = DWORD(next_exp / 4.0f);
 					int iLevStep = GetRealPoint(POINT_LEVEL_STEP);
 
-					// iLevStepÀÌ 4 ÀÌ»óÀÌ¸é ·¹º§ÀÌ ¿Ã¶ú¾î¾ß ÇÏ¹Ç·Î ¿©±â¿¡ ¿Ã ¼ö ¾ø´Â °ªÀÌ´Ù.
+					// iLevStepï¿½ï¿½ 4 ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
 					if (iLevStep >= 4)
 					{
 						sys_err("%s LEVEL_STEP bigger than 4! (%d)", GetName(), iLevStep);
@@ -3363,19 +3409,19 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 				amount = MIN(GetMaxStamina() - GetStamina(), amount);
 				SetStamina(GetStamina() + amount);
 				val = GetStamina();
-				
+
 				if (val == 0)
 				{
-					// Stamina°¡ ¾øÀ¸´Ï °ÈÀÚ!
+					// Staminaï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!
 					SetNowWalking(true);
 				}
 				else if (prev_val == 0)
 				{
-					// ¾ø´ø ½ºÅ×¹Ì³ª°¡ »ý°åÀ¸´Ï ÀÌÀü ¸ðµå º¹±Í
+					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½×¹Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 					ResetWalking();
 				}
 
-				if (amount < 0 && val != 0) // °¨¼Ò´Â º¸³»Áö¾Ê´Â´Ù.
+				if (amount < 0 && val != 0) // ï¿½ï¿½ï¿½Ò´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.
 					return;
 			}
 			break;
@@ -3385,7 +3431,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 				SetPoint(type, GetPoint(type) + amount);
 
 				//SetMaxHP(GetMaxHP() + amount);
-				// ÃÖ´ë »ý¸í·Â = (±âº» ÃÖ´ë »ý¸í·Â + Ãß°¡) * ÃÖ´ë»ý¸í·Â%
+				// ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ = (ï¿½âº» ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ß°ï¿½) * ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½%
 				int hp = GetRealPoint(POINT_MAX_HP);
 				int add_hp = MIN(3500, hp * GetPoint(POINT_MAX_HP_PCT) / 100);
 				add_hp += GetPoint(POINT_MAX_HP);
@@ -3402,7 +3448,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 				SetPoint(type, GetPoint(type) + amount);
 
 				//SetMaxSP(GetMaxSP() + amount);
-				// ÃÖ´ë Á¤½Å·Â = (±âº» ÃÖ´ë Á¤½Å·Â + Ãß°¡) * ÃÖ´ëÁ¤½Å·Â%
+				// ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ = (ï¿½âº» ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ + ï¿½ß°ï¿½) * ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Å·ï¿½%
 				int sp = GetRealPoint(POINT_MAX_SP);
 				int add_sp = MIN(800, sp * GetPoint(POINT_MAX_SP_PCT) / 100);
 				add_sp += GetPoint(POINT_MAX_SP);
@@ -3444,7 +3490,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 					return;
 				}
 
-				// Ã»¼Ò³âº¸È£
+				// Ã»ï¿½Ò³âº¸È£
 				if (LC_IsNewCIBN() && amount > 0)
 				{
 					if (IsOverTime(OT_NONE))
@@ -3507,12 +3553,12 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 		case POINT_HP_RECOVERY:
 		case POINT_SP_RECOVERY:
 
-		case POINT_ATTBONUS_HUMAN:	// 42 ÀÎ°£¿¡°Ô °­ÇÔ
-		case POINT_ATTBONUS_ANIMAL:	// 43 µ¿¹°¿¡°Ô µ¥¹ÌÁö % Áõ°¡
-		case POINT_ATTBONUS_ORC:		// 44 ¿õ±Í¿¡°Ô µ¥¹ÌÁö % Áõ°¡
-		case POINT_ATTBONUS_MILGYO:	// 45 ¹Ð±³¿¡°Ô µ¥¹ÌÁö % Áõ°¡
-		case POINT_ATTBONUS_UNDEAD:	// 46 ½ÃÃ¼¿¡°Ô µ¥¹ÌÁö % Áõ°¡
-		case POINT_ATTBONUS_DEVIL:	// 47 ¸¶±Í(¾Ç¸¶)¿¡°Ô µ¥¹ÌÁö % Áõ°¡
+		case POINT_ATTBONUS_HUMAN:	// 42 ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		case POINT_ATTBONUS_ANIMAL:	// 43 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ % ï¿½ï¿½ï¿½ï¿½
+		case POINT_ATTBONUS_ORC:		// 44 ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ % ï¿½ï¿½ï¿½ï¿½
+		case POINT_ATTBONUS_MILGYO:	// 45 ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ % ï¿½ï¿½ï¿½ï¿½
+		case POINT_ATTBONUS_UNDEAD:	// 46 ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ % ï¿½ï¿½ï¿½ï¿½
+		case POINT_ATTBONUS_DEVIL:	// 47 ï¿½ï¿½ï¿½ï¿½(ï¿½Ç¸ï¿½)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ % ï¿½ï¿½ï¿½ï¿½
 
 		case POINT_ATTBONUS_MONSTER:
 		case POINT_ATTBONUS_SURA:
@@ -3533,17 +3579,17 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 		case POINT_RESIST_PENETRATE:
 		case POINT_CURSE_PCT:
 
-		case POINT_STEAL_HP:		// 48 »ý¸í·Â Èí¼ö
-		case POINT_STEAL_SP:		// 49 Á¤½Å·Â Èí¼ö
+		case POINT_STEAL_HP:		// 48 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		case POINT_STEAL_SP:		// 49 ï¿½ï¿½ï¿½Å·ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-		case POINT_MANA_BURN_PCT:	// 50 ¸¶³ª ¹ø
-		case POINT_DAMAGE_SP_RECOVER:	// 51 °ø°Ý´çÇÒ ½Ã Á¤½Å·Â È¸º¹ È®·ü
+		case POINT_MANA_BURN_PCT:	// 50 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		case POINT_DAMAGE_SP_RECOVER:	// 51 ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Å·ï¿½ È¸ï¿½ï¿½ È®ï¿½ï¿½
 		case POINT_RESIST_NORMAL_DAMAGE:
 		case POINT_RESIST_SWORD:
 		case POINT_RESIST_TWOHAND:
 		case POINT_RESIST_DAGGER:
-		case POINT_RESIST_BELL: 
-		case POINT_RESIST_FAN: 
+		case POINT_RESIST_BELL:
+		case POINT_RESIST_FAN:
 		case POINT_RESIST_BOW:
 		case POINT_RESIST_FIRE:
 		case POINT_RESIST_ELEC:
@@ -3552,11 +3598,11 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 		case POINT_RESIST_ICE:
 		case POINT_RESIST_EARTH:
 		case POINT_RESIST_DARK:
-		case POINT_REFLECT_MELEE:	// 67 °ø°Ý ¹Ý»ç
-		case POINT_REFLECT_CURSE:	// 68 ÀúÁÖ ¹Ý»ç
-		case POINT_POISON_REDUCE:	// 69 µ¶µ¥¹ÌÁö °¨¼Ò
-		case POINT_KILL_SP_RECOVER:	// 70 Àû ¼Ò¸ê½Ã MP È¸º¹
-		case POINT_KILL_HP_RECOVERY:	// 75  
+		case POINT_REFLECT_MELEE:	// 67 ï¿½ï¿½ï¿½ï¿½ ï¿½Ý»ï¿½
+		case POINT_REFLECT_CURSE:	// 68 ï¿½ï¿½ï¿½ï¿½ ï¿½Ý»ï¿½
+		case POINT_POISON_REDUCE:	// 69 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		case POINT_KILL_SP_RECOVER:	// 70 ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½ MP È¸ï¿½ï¿½
+		case POINT_KILL_HP_RECOVERY:	// 75
 		case POINT_HIT_HP_RECOVERY:
 		case POINT_HIT_SP_RECOVERY:
 		case POINT_MANASHIELD:
@@ -3565,7 +3611,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 		case POINT_SKILL_DAMAGE_BONUS:
 		case POINT_NORMAL_HIT_DAMAGE_BONUS:
 
-			// DEPEND_BONUS_ATTRIBUTES 
+			// DEPEND_BONUS_ATTRIBUTES
 		case POINT_SKILL_DEFEND_BONUS:
 		case POINT_NORMAL_HIT_DEFEND_BONUS:
 			SetPoint(type, GetPoint(type) + amount);
@@ -3605,18 +3651,18 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 			val = GetPoint(type);
 			break;
 
-			// PC_BANG_ITEM_ADD		
+			// PC_BANG_ITEM_ADD
 		case POINT_PC_BANG_EXP_BONUS :
 		case POINT_PC_BANG_DROP_BONUS :
 		case POINT_RAMADAN_CANDY_BONUS_EXP:
 			SetPoint(type, amount);
 			val = GetPoint(type);
 			break;
-			// END_PC_BANG_ITEM_ADD		
+			// END_PC_BANG_ITEM_ADD
 
-		case POINT_EXP_DOUBLE_BONUS:	// 71  
-		case POINT_GOLD_DOUBLE_BONUS:	// 72  
-		case POINT_ITEM_DROP_BONUS:	// 73  
+		case POINT_EXP_DOUBLE_BONUS:	// 71
+		case POINT_GOLD_DOUBLE_BONUS:	// 72
+		case POINT_ITEM_DROP_BONUS:	// 73
 		case POINT_POTION_BONUS:	// 74
 			if (GetPoint(type) + amount > 100)
 			{
@@ -3628,7 +3674,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 			val = GetPoint(type);
 			break;
 
-		case POINT_IMMUNE_STUN:		// 76 
+		case POINT_IMMUNE_STUN:		// 76
 			SetPoint(type, GetPoint(type) + amount);
 			val = GetPoint(type);
 			if (val)
@@ -3641,7 +3687,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 			}
 			break;
 
-		case POINT_IMMUNE_SLOW:		// 77  
+		case POINT_IMMUNE_SLOW:		// 77
 			SetPoint(type, GetPoint(type) + amount);
 			val = GetPoint(type);
 			if (val)
@@ -3654,7 +3700,7 @@ void CHARACTER::PointChange(BYTE type, int amount, bool bAmount, bool bBroadcast
 			}
 			break;
 
-		case POINT_IMMUNE_FALL:	// 78   
+		case POINT_IMMUNE_FALL:	// 78
 			SetPoint(type, GetPoint(type) + amount);
 			val = GetPoint(type);
 			if (val)
@@ -3776,7 +3822,7 @@ void CHARACTER::ApplyPoint(BYTE bApplyType, int iVal)
 			PointChange(POINT_MAX_STAMINA, (iVal * JobInitialPoints[GetJob()].stamina_per_con));
 			break;
 
-		case APPLY_INT: 
+		case APPLY_INT:
 			PointChange(POINT_IQ, iVal);
 			PointChange(POINT_MAX_SP, (iVal * JobInitialPoints[GetJob()].sp_per_iq));
 			break;
@@ -3784,7 +3830,7 @@ void CHARACTER::ApplyPoint(BYTE bApplyType, int iVal)
 		case APPLY_SKILL:
 			// SKILL_DAMAGE_BONUS
 			{
-				// ÃÖ»óÀ§ ºñÆ® ±âÁØÀ¸·Î 8ºñÆ® vnum, 9ºñÆ® add, 15ºñÆ® change
+				// ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 8ï¿½ï¿½Æ® vnum, 9ï¿½ï¿½Æ® add, 15ï¿½ï¿½Æ® change
 				// 00000000 00000000 00000000 00000000
 				// ^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^
 				// vnum     ^ add       change
@@ -3864,9 +3910,9 @@ void CHARACTER::ApplyPoint(BYTE bApplyType, int iVal)
 		case APPLY_ITEM_DROP_BONUS:
 		case APPLY_POTION_BONUS:
 		case APPLY_KILL_HP_RECOVER:
-		case APPLY_IMMUNE_STUN:	
-		case APPLY_IMMUNE_SLOW:	
-		case APPLY_IMMUNE_FALL:	
+		case APPLY_IMMUNE_STUN:
+		case APPLY_IMMUNE_SLOW:
+		case APPLY_IMMUNE_FALL:
 		case APPLY_BOW_DISTANCE:
 		case APPLY_ATT_GRADE_BONUS:
 		case APPLY_DEF_GRADE_BONUS:
@@ -3893,12 +3939,12 @@ void CHARACTER::ApplyPoint(BYTE bApplyType, int iVal)
 		case APPLY_RESIST_WARRIOR :
 		case APPLY_RESIST_ASSASSIN :
 		case APPLY_RESIST_SURA :
-		case APPLY_RESIST_SHAMAN :	
-		case APPLY_ENERGY:					// 82 ±â·Â
-		case APPLY_DEF_GRADE:				// 83 ¹æ¾î·Â. DEF_GRADE_BONUS´Â Å¬¶ó¿¡¼­ µÎ¹è·Î º¸¿©Áö´Â ÀÇµµµÈ ¹ö±×(...)°¡ ÀÖ´Ù.
-		case APPLY_COSTUME_ATTR_BONUS:		// 84 ÄÚ½ºÆ¬ ¾ÆÀÌÅÛ¿¡ ºÙÀº ¼Ó¼ºÄ¡ º¸³Ê½º
-		case APPLY_MAGIC_ATTBONUS_PER:		// 85 ¸¶¹ý °ø°Ý·Â +x%
-		case APPLY_MELEE_MAGIC_ATTBONUS_PER:			// 86 ¸¶¹ý + ¹Ð¸® °ø°Ý·Â +x%
+		case APPLY_RESIST_SHAMAN :
+		case APPLY_ENERGY:					// 82 ï¿½ï¿½ï¿½
+		case APPLY_DEF_GRADE:				// 83 ï¿½ï¿½ï¿½ï¿½. DEF_GRADE_BONUSï¿½ï¿½ Å¬ï¿½ó¿¡¼ï¿½ ï¿½Î¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(...)ï¿½ï¿½ ï¿½Ö´ï¿½.
+		case APPLY_COSTUME_ATTR_BONUS:		// 84 ï¿½Ú½ï¿½Æ¬ ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½Ä¡ ï¿½ï¿½ï¿½Ê½ï¿½
+		case APPLY_MAGIC_ATTBONUS_PER:		// 85 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ +x%
+		case APPLY_MELEE_MAGIC_ATTBONUS_PER:			// 86 ï¿½ï¿½ï¿½ï¿½ + ï¿½Ð¸ï¿½ ï¿½ï¿½ï¿½Ý·ï¿½ +x%
 			PointChange(aApplyInfo[bApplyType].bPointType, iVal);
 			break;
 
@@ -3940,7 +3986,7 @@ EVENTFUNC(save_event)
 
 	if (ch == NULL) { // <Factor>
 		return 0;
-	}	
+	}
 	sys_log(1, "SAVE_EVENT: %s", ch->GetName());
 	ch->Save();
 	ch->FlushDelayedSaveItem();
@@ -3983,7 +4029,7 @@ void CHARACTER::MonsterLog(const char* format, ...)
 	else
 		len += len2;
 
-	// \0 ¹®ÀÚ Æ÷ÇÔ
+	// \0 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	++len;
 
 	va_end(args);
@@ -4073,9 +4119,9 @@ void CHARACTER::mining(LPCHARACTER chLoad)
 		return;
 	}
 
-	int count = number(5, 15); // µ¿ÀÛ È½¼ö, ÇÑ µ¿ÀÛ´ç 2ÃÊ
+	int count = number(5, 15); // ï¿½ï¿½ï¿½ï¿½ È½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½Û´ï¿½ 2ï¿½ï¿½
 
-	// Ã¤±¤ µ¿ÀÛÀ» º¸¿©ÁÜ
+	// Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	TPacketGCDigMotion p;
 	p.header = HEADER_GC_DIG_MOTION;
 	p.vid = GetVID();
@@ -4096,7 +4142,7 @@ void CHARACTER::fishing()
 		return;
 	}
 
-	// ¸ø°¨ ¼Ó¼º¿¡¼­ ³¬½Ã¸¦ ½ÃµµÇÑ´Ù?
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ ï¿½Ãµï¿½ï¿½Ñ´ï¿½?
 	{
 		LPSECTREE_MAP pkSectreeMap = SECTREE_MANAGER::instance().GetMap(GetMapIndex());
 
@@ -4115,7 +4161,7 @@ void CHARACTER::fishing()
 
 	LPITEM rod = GetWear(WEAR_WEAPON);
 
-	// ³¬½Ã´ë ÀåÂø
+	// ï¿½ï¿½ï¿½Ã´ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (!rod || rod->GetType() != ITEM_ROD)
 	{
 		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please choose a Fishing Pole.", GetLanguage()));
@@ -4194,7 +4240,7 @@ void CHARACTER::SetNextStatePulse(int iNextPulse)
 }
 
 
-// Ä³¸¯ÅÍ ÀÎ½ºÅÏ½º ¾÷µ¥ÀÌÆ® ÇÔ¼ö.
+// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ô¼ï¿½.
 void CHARACTER::UpdateCharacter(DWORD dwPulse)
 {
 	CFSM::Update();
@@ -4206,7 +4252,7 @@ void CHARACTER::SetShop(LPSHOP pkShop)
 		SET_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_SHOP);
 	else
 	{
-		REMOVE_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_SHOP); 
+		REMOVE_BIT(m_pointsInstant.instant_flag, INSTANT_FLAG_SHOP);
 		SetShopOwner(NULL);
 	}
 }
@@ -4233,7 +4279,7 @@ WORD CHARACTER::GetOriginalPart(BYTE bPartPos) const
 	switch (bPartPos)
 	{
 		case PART_MAIN:
-			if (!IsPC()) // PC°¡ ¾Æ´Ñ °æ¿ì ÇöÀç ÆÄÆ®¸¦ ±×´ë·Î ¸®ÅÏ
+			if (!IsPC()) // PCï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				return GetPart(PART_MAIN);
 			else
 				return m_pointsInstant.bBasePart;
@@ -4274,7 +4320,7 @@ bool CHARACTER::SetSyncOwner(LPCHARACTER ch, bool bRemoveFromList)
 		if (m_pkChrSyncOwner)
 			sys_log(1, "SyncRelease %s %p from %s", GetName(), this, m_pkChrSyncOwner->GetName());
 
-		// ¸®½ºÆ®¿¡¼­ Á¦°ÅÇÏÁö ¾Ê´õ¶óµµ Æ÷ÀÎÅÍ´Â NULL·Î ¼ÂÆÃµÇ¾î¾ß ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ NULLï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÇ¾ï¿½ï¿½ ï¿½Ñ´ï¿½.
 		m_pkChrSyncOwner = NULL;
 	}
 	else
@@ -4282,12 +4328,12 @@ bool CHARACTER::SetSyncOwner(LPCHARACTER ch, bool bRemoveFromList)
 		if (!IsSyncOwner(ch))
 			return false;
 
-		// °Å¸®°¡ 200 ÀÌ»óÀÌ¸é SyncOwner°¡ µÉ ¼ö ¾ø´Ù.
+		// ï¿½Å¸ï¿½ï¿½ï¿½ 200 ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ SyncOwnerï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		if (DISTANCE_APPROX(GetX() - ch->GetX(), GetY() - ch->GetY()) > 250)
 		{
 			sys_log(1, "SetSyncOwner distance over than 250 %s %s", GetName(), ch->GetName());
 
-			// SyncOwnerÀÏ °æ¿ì Owner·Î Ç¥½ÃÇÑ´Ù.
+			// SyncOwnerï¿½ï¿½ ï¿½ï¿½ï¿½ Ownerï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.
 			if (m_pkChrSyncOwner == ch)
 				return true;
 
@@ -4305,7 +4351,7 @@ bool CHARACTER::SetSyncOwner(LPCHARACTER ch, bool bRemoveFromList)
 			m_pkChrSyncOwner = ch;
 			m_pkChrSyncOwner->m_kLst_pkChrSyncOwned.push_back(this);
 
-			// SyncOwner°¡ ¹Ù²î¸é LastSyncTimeÀ» ÃÊ±âÈ­ÇÑ´Ù.
+			// SyncOwnerï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ LastSyncTimeï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ñ´ï¿½.
 			static const timeval zero_tv = {0, 0};
 			SetLastSyncTime(zero_tv);
 
@@ -4315,9 +4361,9 @@ bool CHARACTER::SetSyncOwner(LPCHARACTER ch, bool bRemoveFromList)
 		m_fSyncTime = get_float_time();
 	}
 
-	// TODO: Sync Owner°¡ °°´õ¶óµµ °è¼Ó ÆÐÅ¶À» º¸³»°í ÀÖÀ¸¹Ç·Î,
-	//       µ¿±âÈ­ µÈ ½Ã°£ÀÌ 3ÃÊ ÀÌ»ó Áö³µÀ» ¶§ Ç®¾îÁÖ´Â ÆÐÅ¶À»
-	//       º¸³»´Â ¹æ½ÄÀ¸·Î ÇÏ¸é ÆÐÅ¶À» ÁÙÀÏ ¼ö ÀÖ´Ù.
+	// TODO: Sync Ownerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½,
+	//       ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç®ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½
+	//       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 	TPacketGCOwnership pack;
 
 	pack.bHeader	= HEADER_GC_OWNERSHIP;
@@ -4333,7 +4379,7 @@ struct FuncClearSync
 	void operator () (LPCHARACTER ch)
 	{
 		assert(ch != NULL);
-		ch->SetSyncOwner(NULL, false);	// false ÇÃ·¡±×·Î ÇØ¾ß for_each °¡ Á¦´ë·Î µ·´Ù.
+		ch->SetSyncOwner(NULL, false);	// false ï¿½Ã·ï¿½ï¿½×·ï¿½ ï¿½Ø¾ï¿½ for_each ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	}
 };
 
@@ -4341,7 +4387,7 @@ void CHARACTER::ClearSync()
 {
 	SetSyncOwner(NULL);
 
-	// ¾Æ·¡ for_each¿¡¼­ ³ª¸¦ m_pkChrSyncOwner·Î °¡Áø ÀÚµéÀÇ Æ÷ÀÎÅÍ¸¦ NULL·Î ÇÑ´Ù.
+	// ï¿½Æ·ï¿½ for_eachï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ m_pkChrSyncOwnerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ NULLï¿½ï¿½ ï¿½Ñ´ï¿½.
 	std::for_each(m_kLst_pkChrSyncOwned.begin(), m_kLst_pkChrSyncOwned.end(), FuncClearSync());
 	m_kLst_pkChrSyncOwned.clear();
 }
@@ -4351,8 +4397,8 @@ bool CHARACTER::IsSyncOwner(LPCHARACTER ch) const
 	if (m_pkChrSyncOwner == ch)
 		return true;
 
-	// ¸¶Áö¸·À¸·Î µ¿±âÈ­ µÈ ½Ã°£ÀÌ 3ÃÊ ÀÌ»ó Áö³µ´Ù¸é ¼ÒÀ¯±ÇÀÌ ¾Æ¹«¿¡°Ôµµ
-	// ¾ø´Ù. µû¶ó¼­ ¾Æ¹«³ª SyncOwnerÀÌ¹Ç·Î true ¸®ÅÏ
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½Ôµï¿½
+	// ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ SyncOwnerï¿½Ì¹Ç·ï¿½ true ï¿½ï¿½ï¿½ï¿½
 	if (get_float_time() - m_fSyncTime >= 3.0f)
 		return true;
 
@@ -4389,13 +4435,13 @@ void CHARACTER::SetParty(LPPARTY pkParty)
 }
 
 // PARTY_JOIN_BUG_FIX
-/// ÆÄÆ¼ °¡ÀÔ event Á¤º¸
+/// ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ event ï¿½ï¿½ï¿½ï¿½
 EVENTINFO(TPartyJoinEventInfo)
 {
-	DWORD	dwGuestPID;		///< ÆÄÆ¼¿¡ Âü¿©ÇÒ Ä³¸¯ÅÍÀÇ PID
-	DWORD	dwLeaderPID;		///< ÆÄÆ¼ ¸®´õÀÇ PID
+	DWORD	dwGuestPID;		///< ï¿½ï¿½Æ¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PID
+	DWORD	dwLeaderPID;		///< ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PID
 
-	TPartyJoinEventInfo() 
+	TPartyJoinEventInfo()
 	: dwGuestPID( 0 )
 	, dwLeaderPID( 0 )
 	{
@@ -4436,7 +4482,7 @@ bool CHARACTER::RequestToParty(LPCHARACTER leader)
 	}
 
 	if (m_pkPartyRequestEvent)
-		return false; 
+		return false;
 
 	if (!IsPC() || !leader->IsPC())
 		return false;
@@ -4460,15 +4506,15 @@ bool CHARACTER::RequestToParty(LPCHARACTER leader)
 			return false;
 
 		case PERR_DUNGEON:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite players while you are in a dungeon.", GetLanguage())); 
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite players while you are in a dungeon.", GetLanguage()));
 			return false;
 
 		case PERR_OBSERVER:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite a player while you are in observer mode.", GetLanguage())); 
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite a player while you are in observer mode.", GetLanguage()));
 			return false;
 
 		case PERR_LVBOUNDARY:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] Only players with a level difference of -30 to +30 can be invited.", GetLanguage())); 
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] Only players with a level difference of -30 to +30 can be invited.", GetLanguage()));
 			return false;
 
 		case PERR_LOWLEVEL:
@@ -4476,18 +4522,18 @@ bool CHARACTER::RequestToParty(LPCHARACTER leader)
 			return false;
 
 		case PERR_HILEVEL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite this player, as their level is too high.", GetLanguage())); 
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite this player, as their level is too high.", GetLanguage()));
 			return false;
 
-		case PERR_ALREADYJOIN: 	
+		case PERR_ALREADYJOIN:
 			return false;
 
 		case PERR_PARTYISFULL:
-			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite any more players into your group.", GetLanguage())); 
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] You cannot invite any more players into your group.", GetLanguage()));
 			return false;
 
 		default:
-			sys_err("Do not process party join error(%d)", errcode); 
+			sys_err("Do not process party join error(%d)", errcode);
 			return false;
 	}
 
@@ -4554,13 +4600,13 @@ void CHARACTER::AcceptToParty(LPCHARACTER member)
 
 	if (!GetParty())
 		member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("This player is not in this group.", member->GetLanguage()));
-	else 
+	else
 	{
 		if (GetPlayerID() != GetParty()->GetLeaderPID())
 			return;
 
 		PartyJoinErrCode errcode = IsPartyJoinableCondition(this, member);
-		switch (errcode) 
+		switch (errcode)
 		{
 			case PERR_NONE: 		member->PartyJoin(this); return;
 			case PERR_SERVER:		member->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] The server cannot execute this group request.", member->GetLanguage())); break;
@@ -4583,8 +4629,8 @@ void CHARACTER::AcceptToParty(LPCHARACTER member)
 }
 
 /**
- * ÆÄÆ¼ ÃÊ´ë event callback ÇÔ¼ö.
- * event °¡ ¹ßµ¿ÇÏ¸é ÃÊ´ë °ÅÀý·Î Ã³¸®ÇÑ´Ù.
+ * ï¿½ï¿½Æ¼ ï¿½Ê´ï¿½ event callback ï¿½Ô¼ï¿½.
+ * event ï¿½ï¿½ ï¿½ßµï¿½ï¿½Ï¸ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
  */
 EVENTFUNC(party_invite_event)
 {
@@ -4672,8 +4718,8 @@ void CHARACTER::PartyInvite(LPCHARACTER pchInvitee)
 		return;
 
 	//
-	// EventMap ¿¡ ÀÌº¥Æ® Ãß°¡
-	// 
+	// EventMap ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ß°ï¿½
+	//
 	TPartyJoinEventInfo* info = AllocEventInfo<TPartyJoinEventInfo>();
 
 	info->dwGuestPID = pchInvitee->GetPlayerID();
@@ -4682,8 +4728,8 @@ void CHARACTER::PartyInvite(LPCHARACTER pchInvitee)
 	m_PartyInviteEventMap.insert(EventMap::value_type(pchInvitee->GetPlayerID(), event_create(party_invite_event, info, PASSES_PER_SEC(10))));
 
 	//
-	// ÃÊ´ë ¹Þ´Â character ¿¡°Ô ÃÊ´ë ÆÐÅ¶ Àü¼Û
-	// 
+	// ï¿½Ê´ï¿½ ï¿½Þ´ï¿½ character ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½
+	//
 
 	TPacketGCPartyInvite p;
 	p.header = HEADER_GC_PARTY_INVITE;
@@ -4756,8 +4802,8 @@ void CHARACTER::PartyInviteAccept(LPCHARACTER pchInvitee)
 	}
 
 	//
-	// ÆÄÆ¼ °¡ÀÔ Ã³¸®
-	// 
+	// ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+	//
 
 	if (GetParty())
 		pchInvitee->PartyJoin(this);
@@ -4969,17 +5015,17 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 	DWORD vid = GetVID();
 	sys_log(0, "OnClick %s[vnum %d ServerUniqueID %d, pid %d] by %s", GetName(), GetRaceNum(), vid, GetPlayerID(), pkChrCauser->GetName());
 
-	// »óÁ¡À» ¿¬»óÅÂ·Î Äù½ºÆ®¸¦ ÁøÇàÇÒ ¼ö ¾ø´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	{
-		// ´Ü, ÀÚ½ÅÀº ÀÚ½ÅÀÇ »óÁ¡À» Å¬¸¯ÇÒ ¼ö ÀÖ´Ù.
-		if (pkChrCauser->GetMyShop() && pkChrCauser != this) 
+		// ï¿½ï¿½, ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+		if (pkChrCauser->GetMyShop() && pkChrCauser != this)
 		{
 			sys_err("OnClick Fail (%s->%s) - pc has shop", pkChrCauser->GetName(), GetName());
 			return;
 		}
 	}
 
-	// ±³È¯ÁßÀÏ¶§ Äù½ºÆ®¸¦ ÁøÇàÇÒ ¼ö ¾ø´Ù.
+	// ï¿½ï¿½È¯ï¿½ï¿½ï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	{
 		if (pkChrCauser->GetExchange())
 		{
@@ -4990,16 +5036,16 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 
 	if (IsPC())
 	{
-		// Å¸°ÙÀ¸·Î ¼³Á¤µÈ °æ¿ì´Â PC¿¡ ÀÇÇÑ Å¬¸¯µµ Äù½ºÆ®·Î Ã³¸®ÇÏµµ·Ï ÇÕ´Ï´Ù.
+		// Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ PCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.
 		if (!CTargetManager::instance().GetTargetInfo(pkChrCauser->GetPlayerID(), TARGET_TYPE_VID, GetVID()))
 		{
-			// 2005.03.17.myevan.Å¸°ÙÀÌ ¾Æ´Ñ °æ¿ì´Â °³ÀÎ »óÁ¡ Ã³¸® ±â´ÉÀ» ÀÛµ¿½ÃÅ²´Ù.
+			// 2005.03.17.myevan.Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½ï¿½Å²ï¿½ï¿½.
 			if (GetMyShop())
 			{
 				if (pkChrCauser->IsDead() == true) return;
 
 				//PREVENT_TRADE_WINDOW
-				if (pkChrCauser == this) // ÀÚ±â´Â °¡´É
+				if (pkChrCauser == this) // ï¿½Ú±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				{
 					if ((GetExchange() || IsOpenSafebox() || GetShopOwner()) || IsCubeOpen())
 					{
@@ -5007,16 +5053,16 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 						return;
 					}
 				}
-				else // ´Ù¸¥ »ç¶÷ÀÌ Å¬¸¯ÇßÀ»¶§
+				else // ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					// Å¬¸¯ÇÑ »ç¶÷ÀÌ ±³È¯/Ã¢°í/°³ÀÎ»óÁ¡/»óÁ¡ÀÌ¿ëÁßÀÌ¶ó¸é ºÒ°¡
+					// Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯/Ã¢ï¿½ï¿½/ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½Ò°ï¿½
 					if ((pkChrCauser->GetExchange() || pkChrCauser->IsOpenSafebox() || pkChrCauser->GetMyShop() || pkChrCauser->GetShopOwner()) || pkChrCauser->IsCubeOpen() )
 					{
 						pkChrCauser->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You can't use a private shop now.", pkChrCauser->GetLanguage()));
 						return;
 					}
 
-					// Å¬¸¯ÇÑ ´ë»óÀÌ ±³È¯/Ã¢°í/»óÁ¡ÀÌ¿ëÁßÀÌ¶ó¸é ºÒ°¡
+					// Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯/Ã¢ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½Ò°ï¿½
 					//if ((GetExchange() || IsOpenSafebox() || GetShopOwner()))
 					if ((GetExchange() || IsOpenSafebox() || IsCubeOpen()))
 					{
@@ -5044,7 +5090,7 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 		}
 	}
 
-	// Ã»¼Ò³âÀº Äù½ºÆ® ¸øÇÔ
+	// Ã»ï¿½Ò³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 	if (LC_IsNewCIBN())
 	{
 		if (pkChrCauser->IsOverTime(OT_3HOUR))
@@ -5068,13 +5114,13 @@ void CHARACTER::OnClick(LPCHARACTER pkChrCauser)
 	}
 
 
-	// NPC Àü¿ë ±â´É ¼öÇà : »óÁ¡ ¿­±â µî
+	// NPC ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	if (!IsPC())
 	{
 		if (!m_triggerOnClick.pFunc)
 		{
-			// NPC Æ®¸®°Å ½Ã½ºÅÛ ·Î±× º¸±â
-			//sys_err("%s.OnClickFailure(%s) : triggerOnClick.pFunc is EMPTY(pid=%d)", 
+			// NPC Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½
+			//sys_err("%s.OnClickFailure(%s) : triggerOnClick.pFunc is EMPTY(pid=%d)",
 			//			pkChrCauser->GetName(),
 			//			GetName(),
 			//			pkChrCauser->GetPlayerID());
@@ -5138,7 +5184,7 @@ void CHARACTER::ClearStone()
 {
 	if (!m_set_pkChrSpawnedBy.empty())
 	{
-		// ³»°¡ ½ºÆù½ÃÅ² ¸ó½ºÅÍµéÀ» ¸ðµÎ Á×ÀÎ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å² ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½.
 		FuncDeadSpawnedByStone f;
 		std::for_each(m_set_pkChrSpawnedBy.begin(), m_set_pkChrSpawnedBy.end(), f);
 		m_set_pkChrSpawnedBy.clear();
@@ -5211,7 +5257,7 @@ void CHARACTER::SetTarget(LPCHARACTER pkChrTarget)
 
 		if (m_pkChrTarget->IsPC() && !m_pkChrTarget->IsPolymorphed() || m_pkChrTarget->GetMaxHP() <= 0)
 			p.bHPPercent = 0;
-		else 
+		else
 		{
 			if (m_pkChrTarget->GetRaceNum() == 20101 ||
 					m_pkChrTarget->GetRaceNum() == 20102 ||
@@ -5313,10 +5359,10 @@ void CHARACTER::ExitToSavedLocation()
 	m_lExitMapIndex = 0;
 }
 
-// fixme 
-// Áö±Ý±îÁø privateMapIndex °¡ ÇöÀç ¸Ê ÀÎµ¦½º¿Í °°ÀºÁö Ã¼Å© ÇÏ´Â °ÍÀ» ¿ÜºÎ¿¡¼­ ÇÏ°í,
-// ´Ù¸£¸é warpsetÀ» ºÒ·¶´Âµ¥
-// ÀÌ¸¦ warpset ¾ÈÀ¸·Î ³ÖÀÚ.
+// fixme
+// ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ privateMapIndex ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¼Å© ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ÜºÎ¿ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½,
+// ï¿½Ù¸ï¿½ï¿½ï¿½ warpsetï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Âµï¿½
+// ï¿½Ì¸ï¿½ warpset ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 bool CHARACTER::WarpSet(long x, long y, long lPrivateMapIndex)
 {
 	if (!IsPC())
@@ -5345,7 +5391,7 @@ bool CHARACTER::WarpSet(long x, long y, long lPrivateMapIndex)
 		{
 			const TMapRegion * rMapRgn = SECTREE_MANAGER::instance().GetMapRegion(lMapIndex);
 			{
-				DESC_MANAGER::instance().SendClientPackageSDBToLoadMap( GetDesc(), rMapRgn->strMapName.c_str() );	
+				DESC_MANAGER::instance().SendClientPackageSDBToLoadMap( GetDesc(), rMapRgn->strMapName.c_str() );
 			}
 		}
 	}
@@ -5419,7 +5465,7 @@ void CHARACTER::WarpEnd()
 
 	if (!map_allow_find(index))
 	{
-		// ÀÌ °÷À¸·Î ¿öÇÁÇÒ ¼ö ¾øÀ¸¹Ç·Î ¿öÇÁÇÏ±â Àü ÁÂÇ¥·Î µÇµ¹¸®ÀÚ.
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½.
 		sys_err("location %d %d not allowed to login this server", m_posWarp.x, m_posWarp.y);
 		GetDesc()->SetPhase(PHASE_CLOSE);
 		return;
@@ -5493,14 +5539,14 @@ bool CHARACTER::Follow(LPCHARACTER pkChr, float fMinDistance)
 	// TRENT_MONSTER
 	if (IS_SET(m_pointsInstant.dwAIFlag, AIFLAG_NOMOVE))
 	{
-		if (pkChr->IsPC()) // ÂÑ¾Æ°¡´Â »ó´ë°¡ PCÀÏ ¶§
+		if (pkChr->IsPC()) // ï¿½Ñ¾Æ°ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ PCï¿½ï¿½ ï¿½ï¿½
 		{
 			// If i'm in a party. I must obey party leader's AI.
 			if (!GetParty() || !GetParty()->GetLeader() || GetParty()->GetLeader() == this)
 			{
-				if (get_dword_time() - m_pkMobInst->m_dwLastAttackedTime >= 15000) // ¸¶Áö¸·À¸·Î °ø°Ý¹ÞÀºÁö 15ÃÊ°¡ Áö³µ°í
+				if (get_dword_time() - m_pkMobInst->m_dwLastAttackedTime >= 15000) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý¹ï¿½ï¿½ï¿½ï¿½ï¿½ 15ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				{
-					// ¸¶Áö¸· ¸ÂÀº °÷À¸·Î ºÎÅÍ 50¹ÌÅÍ ÀÌ»ó Â÷ÀÌ³ª¸é Æ÷±âÇÏ°í µ¹¾Æ°£´Ù.
+					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 50ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½.
 					if (m_pkMobData->m_table.wAttackRange < DISTANCE_APPROX(pkChr->GetX() - GetX(), pkChr->GetY() - GetY()))
 						if (Return())
 							return true;
@@ -5514,14 +5560,14 @@ bool CHARACTER::Follow(LPCHARACTER pkChr, float fMinDistance)
 	long x = pkChr->GetX();
 	long y = pkChr->GetY();
 
-	if (pkChr->IsPC()) // ÂÑ¾Æ°¡´Â »ó´ë°¡ PCÀÏ ¶§
+	if (pkChr->IsPC()) // ï¿½Ñ¾Æ°ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ PCï¿½ï¿½ ï¿½ï¿½
 	{
 		// If i'm in a party. I must obey party leader's AI.
 		if (!GetParty() || !GetParty()->GetLeader() || GetParty()->GetLeader() == this)
 		{
-			if (get_dword_time() - m_pkMobInst->m_dwLastAttackedTime >= 15000) // ¸¶Áö¸·À¸·Î °ø°Ý¹ÞÀºÁö 15ÃÊ°¡ Áö³µ°í
+			if (get_dword_time() - m_pkMobInst->m_dwLastAttackedTime >= 15000) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý¹ï¿½ï¿½ï¿½ï¿½ï¿½ 15ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			{
-				// ¸¶Áö¸· ¸ÂÀº °÷À¸·Î ºÎÅÍ 50¹ÌÅÍ ÀÌ»ó Â÷ÀÌ³ª¸é Æ÷±âÇÏ°í µ¹¾Æ°£´Ù.
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 50ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½.
 				if (5000 < DISTANCE_APPROX(m_pkMobInst->m_posLastAttacked.x - GetX(), m_pkMobInst->m_posLastAttacked.y - GetY()))
 					if (Return())
 						return true;
@@ -5536,14 +5582,14 @@ bool CHARACTER::Follow(LPCHARACTER pkChr, float fMinDistance)
 				return true;
 	}
 
-	if (pkChr->IsState(pkChr->m_stateMove) && 
-		GetMobBattleType() != BATTLE_TYPE_RANGE && 
+	if (pkChr->IsState(pkChr->m_stateMove) &&
+		GetMobBattleType() != BATTLE_TYPE_RANGE &&
 		GetMobBattleType() != BATTLE_TYPE_MAGIC &&
 		false == IsPet())
 	{
-		// ´ë»óÀÌ ÀÌµ¿ÁßÀÌ¸é ¿¹Ãø ÀÌµ¿À» ÇÑ´Ù
-		// ³ª¿Í »ó´ë¹æÀÇ ¼ÓµµÂ÷¿Í °Å¸®·ÎºÎÅÍ ¸¸³¯ ½Ã°£À» ¿¹»óÇÑ ÈÄ
-		// »ó´ë¹æÀÌ ±× ½Ã°£±îÁö Á÷¼±À¸·Î ÀÌµ¿ÇÑ´Ù°í °¡Á¤ÇÏ¿© °Å±â·Î ÀÌµ¿ÇÑ´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ñ´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Å±ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ñ´ï¿½.
 		float rot = pkChr->GetRotation();
 		float rot_delta = GetDegreeDelta(rot, GetDegreeFromPositionXY(GetX(), GetY(), pkChr->GetX(), pkChr->GetY()));
 
@@ -5575,7 +5621,7 @@ bool CHARACTER::Follow(LPCHARACTER pkChr, float fMinDistance)
 		}
 	}
 
-	// °¡·Á´Â À§Ä¡¸¦ ¹Ù¶óºÁ¾ß ÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 	SetRotationToXY(x, y);
 
 	float fDist = DISTANCE_SQRT(x - GetX(), y - GetY());
@@ -5587,7 +5633,7 @@ bool CHARACTER::Follow(LPCHARACTER pkChr, float fMinDistance)
 
 	if (IsChangeAttackPosition(pkChr) && GetMobRank() < MOB_RANK_BOSS)
 	{
-		// »ó´ë¹æ ÁÖº¯ ·£´ýÇÑ °÷À¸·Î ÀÌµ¿
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½Öºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
 		SetChangeAttackPositionTime();
 
 		int retry = 16;
@@ -5613,23 +5659,23 @@ bool CHARACTER::Follow(LPCHARACTER pkChr, float fMinDistance)
 				break;
 		}
 
-		//sys_log(0, "±ÙÃ³ ¾îµò°¡·Î ÀÌµ¿ %s retry %d", GetName(), retry);
+		//sys_log(0, "ï¿½ï¿½Ã³ ï¿½ï¿½ò°¡·ï¿½ ï¿½Ìµï¿½ %s retry %d", GetName(), retry);
 		if (!Goto(dx, dy))
 			return false;
 	}
 	else
 	{
-		// Á÷¼± µû¶ó°¡±â
+		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ó°¡±ï¿½
 		float fDistToGo = fDist - fMinDistance;
 		GetDeltaByDegree(GetRotation(), fDistToGo, &fx, &fy);
 
-		//sys_log(0, "Á÷¼±À¸·Î ÀÌµ¿ %s", GetName());
+		//sys_log(0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ %s", GetName());
 		if (!Goto(GetX() + (int) fx, GetY() + (int) fy))
 			return false;
 	}
 
 	SendMovePacket(FUNC_WAIT, 0, 0, 0, 0);
-	//MonsterLog("ÂÑ¾Æ°¡±â; %s", pkChr->GetName());
+	//MonsterLog("ï¿½Ñ¾Æ°ï¿½ï¿½ï¿½; %s", pkChr->GetName());
 	return true;
 }
 
@@ -5884,7 +5930,7 @@ bool CHARACTER::BuildUpdatePartyPacket(TPacketGCPartyUpdate & out)
 }
 
 int CHARACTER::GetLeadershipSkillLevel() const
-{ 
+{
 	return GetSkillLevel(SKILL_LEADERSHIP);
 }
 
@@ -5894,7 +5940,7 @@ void CHARACTER::QuerySafeboxSize()
 	{
 		DBManager::instance().ReturnQuery(QID_SAFEBOX_SIZE,
 				GetPlayerID(),
-				NULL, 
+				NULL,
 				"SELECT size FROM safebox%s WHERE account_id = %u",
 				get_table_postfix(),
 				GetDesc()->GetAccountTable().id);
@@ -6022,7 +6068,7 @@ void CHARACTER::ResetPoint(int iLv)
 
 	ComputePoints();
 
-	// È¸º¹
+	// È¸ï¿½ï¿½
 	PointChange(POINT_HP, GetMaxHP() - GetHP());
 	PointChange(POINT_SP, GetMaxSP() - GetSP());
 
@@ -6032,17 +6078,17 @@ void CHARACTER::ResetPoint(int iLv)
 }
 
 bool CHARACTER::IsChangeAttackPosition(LPCHARACTER target) const
-{ 
+{
 	if (!IsNPC())
 		return true;
 
 	DWORD dwChangeTime = AI_CHANGE_ATTACK_POISITION_TIME_NEAR;
 
-	if (DISTANCE_APPROX(GetX() - target->GetX(), GetY() - target->GetY()) > 
+	if (DISTANCE_APPROX(GetX() - target->GetX(), GetY() - target->GetY()) >
 		AI_CHANGE_ATTACK_POISITION_DISTANCE + GetMobAttackRange())
 		dwChangeTime = AI_CHANGE_ATTACK_POISITION_TIME_FAR;
 
-	return get_dword_time() - m_dwLastChangeAttackPositionTime > dwChangeTime; 
+	return get_dword_time() - m_dwLastChangeAttackPositionTime > dwChangeTime;
 }
 
 void CHARACTER::GiveRandomSkillBook()
@@ -6246,7 +6292,7 @@ LPITEM CHARACTER::GetQuestItemPtr() const
 }
 
 LPDUNGEON CHARACTER::GetDungeonForce() const
-{ 
+{
 	if (m_lWarpMapIndex > 10000)
 		return CDungeonManager::instance().FindByMapIndex(m_lWarpMapIndex);
 
@@ -6323,11 +6369,11 @@ void CHARACTER::SetPolymorph(DWORD dwRaceNum, bool bMaintainStat)
 		PointChange(POINT_HT, 0);
 	}
 
-	// Æú¸®¸ðÇÁ »óÅÂ¿¡¼­ Á×´Â °æ¿ì, Æú¸®¸ðÇÁ°¡ Ç®¸®°Ô µÇ´Âµ¥
-	// Æú¸® ¸ðÇÁ ÀüÈÄ·Î valid combo intervalÀÌ ´Ù¸£±â ¶§¹®¿¡
-	// Combo ÇÙ ¶Ç´Â Hacker·Î ÀÎ½ÄÇÏ´Â °æ¿ì°¡ ÀÖ´Ù.
-	// µû¶ó¼­ Æú¸®¸ðÇÁ¸¦ Ç®°Å³ª Æú¸®¸ðÇÁ ÇÏ°Ô µÇ¸é,
-	// valid combo intervalÀ» resetÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½ ï¿½×´ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´Âµï¿½
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä·ï¿½ valid combo intervalï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Combo ï¿½ï¿½ ï¿½Ç´ï¿½ Hackerï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ ï¿½Ç¸ï¿½,
+	// valid combo intervalï¿½ï¿½ resetï¿½Ñ´ï¿½.
 	SetValidComboInterval(0);
 	SetComboSequence(0);
 
@@ -6351,7 +6397,7 @@ void CHARACTER::SetQuestFlag(const std::string& flag, int value)
 void CHARACTER::DetermineDropMetinStone()
 {
 	const int METIN_STONE_NUM = 14;
-	static DWORD c_adwMetin[METIN_STONE_NUM] = 
+	static DWORD c_adwMetin[METIN_STONE_NUM] =
 	{
 		28030,
 		28031,
@@ -6391,7 +6437,7 @@ void CHARACTER::DetermineDropMetinStone()
 				else
 				{
 					iGradePct -= iLevelGradePortion;
-					m_dwDropMetinStone += 100; // µ¹ +a -> +(a+1)ÀÌ µÉ¶§¸¶´Ù 100¾¿ Áõ°¡
+					m_dwDropMetinStone += 100; // ï¿½ï¿½ +a -> +(a+1)ï¿½ï¿½ ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½ 100ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				}
 			}
 		}
@@ -6439,9 +6485,9 @@ void CHARACTER::MountVnum(DWORD vnum)
 	if (m_bIsObserver)
 		return;
 
-	//NOTE : MountÇÑ´Ù°í ÇØ¼­ Client SideÀÇ °´Ã¼¸¦ »èÁ¦ÇÏÁø ¾Ê´Â´Ù.
-	//±×¸®°í ¼­¹öSide¿¡¼­ ÅÀÀ»¶§ À§Ä¡ ÀÌµ¿Àº ÇÏÁö ¾Ê´Â´Ù. ¿Ö³ÄÇÏ¸é Client Side¿¡¼­ Coliision Adjust¸¦ ÇÒ¼ö ÀÖ´Âµ¥
-	//°´Ã¼¸¦ ¼Ò¸ê½ÃÄ×´Ù°¡ ¼­¹öÀ§Ä¡·Î ÀÌµ¿½ÃÅ°¸é ÀÌ¶§ collision check¸¦ ÇÏÁö´Â ¾ÊÀ¸¹Ç·Î ¹è°æ¿¡ ³¢°Å³ª ¶Õ°í ³ª°¡´Â ¹®Á¦°¡ Á¸ÀçÇÑ´Ù.
+	//NOTE : Mountï¿½Ñ´Ù°ï¿½ ï¿½Ø¼ï¿½ Client Sideï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+	//ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Sideï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½Ö³ï¿½ï¿½Ï¸ï¿½ Client Sideï¿½ï¿½ï¿½ï¿½ Coliision Adjustï¿½ï¿½ ï¿½Ò¼ï¿½ ï¿½Ö´Âµï¿½
+	//ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½ï¿½×´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ì¶ï¿½ collision checkï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½æ¿¡ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½Õ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	m_posDest.x = m_posStart.x = GetX();
 	m_posDest.y = m_posStart.y = GetY();
 	//EncodeRemovePacket(this);
@@ -6453,7 +6499,7 @@ void CHARACTER::MountVnum(DWORD vnum)
 	{
 		LPENTITY entity = (it++)->first;
 
-		//MountÇÑ´Ù°í ÇØ¼­ Client SideÀÇ °´Ã¼¸¦ »èÁ¦ÇÏÁø ¾Ê´Â´Ù.
+		//Mountï¿½Ñ´Ù°ï¿½ ï¿½Ø¼ï¿½ Client Sideï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
 		//EncodeRemovePacket(entity);
 		//if (!m_bIsObserver)
 		EncodeInsertPacket(entity);
@@ -6539,8 +6585,8 @@ namespace {
 					return;
 
 				if (!pkChr->CanHandleItem(false, true))
-					return;	
-				
+					return;
+
 				if (m_bUseWarp)
 					pkChr->WarpSet(m_lTargetX, m_lTargetY);
 				else
@@ -6575,7 +6621,7 @@ EVENTFUNC(warp_npc_event)
 
 	if (ch == NULL) { // <Factor>
 		return 0;
-	}	
+	}
 
 	if (!ch->GetSectree())
 	{
@@ -6699,10 +6745,10 @@ bool CHARACTER::WarpToPID(DWORD dwPID)
 	}
 	else
 	{
-		// ´Ù¸¥ ¼­¹ö¿¡ ·Î±×ÀÎµÈ »ç¶÷ÀÌ ÀÖÀ½ -> ¸Þ½ÃÁö º¸³» ÁÂÇ¥¸¦ ¹Þ¾Æ¿ÀÀÚ
-		// 1. A.pid, B.pid ¸¦ »Ñ¸²
-		// 2. B.pid¸¦ °¡Áø ¼­¹ö°¡ »Ñ¸°¼­¹ö¿¡°Ô A.pid, ÁÂÇ¥ ¸¦ º¸³¿
-		// 3. ¿öÇÁ
+		// ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ -> ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½
+		// 1. A.pid, B.pid ï¿½ï¿½ ï¿½Ñ¸ï¿½
+		// 2. B.pidï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ A.pid, ï¿½ï¿½Ç¥ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// 3. ï¿½ï¿½ï¿½ï¿½
 		CCI * pcci = P2P_MANAGER::instance().FindByPID(dwPID);
 
 		if (!pcci)
@@ -6735,7 +6781,7 @@ bool CHARACTER::WarpToPID(DWORD dwPID)
 			p.dwTargetPID = dwPID;
 			pcci->pkDesc->Packet(&p, sizeof(TPacketGGFindPosition));
 
-			if (test_server) 
+			if (test_server)
 				ChatPacket(CHAT_TYPE_PARTY, "sent find position packet for teleport");
 		}
 	}
@@ -6763,7 +6809,7 @@ int CHARACTER::ComputeRefineFee(int iCost, int iMultiply) const
 		if (pGuild == GetGuild())
 			return iCost * iMultiply * 9 / 10;
 
-		// ´Ù¸¥ Á¦±¹ »ç¶÷ÀÌ ½ÃµµÇÏ´Â °æ¿ì Ãß°¡·Î 3¹è ´õ
+		// ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½
 		LPCHARACTER chRefineNPC = CHARACTER_MANAGER::instance().Find(m_dwRefineNPCVID);
 		if (chRefineNPC && chRefineNPC->GetEmpire() != GetEmpire())
 			return iCost * iMultiply * 3;
@@ -6783,7 +6829,7 @@ void CHARACTER::PayRefineFee(int iTotalMoney)
 
 	if (pGuild)
 	{
-		// ÀÚ±â ±æµåÀÌ¸é iTotalMoney¿¡ ÀÌ¹Ì 10%°¡ Á¦¿ÜµÇ¾îÀÖ´Ù
+		// ï¿½Ú±ï¿½ ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ iTotalMoneyï¿½ï¿½ ï¿½Ì¹ï¿½ 10%ï¿½ï¿½ ï¿½ï¿½ï¿½ÜµÇ¾ï¿½ï¿½Ö´ï¿½
 		if (pGuild != GetGuild())
 		{
 			pGuild->RequestDepositMoney(this, iFee);
@@ -6795,7 +6841,7 @@ void CHARACTER::PayRefineFee(int iTotalMoney)
 }
 // END_OF_ADD_REFINE_BUILDING
 
-//Hack ¹æÁö¸¦ À§ÇÑ Ã¼Å©.
+//Hack ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©.
 bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 {
 	const int iPulse = thecore_pulse();
@@ -6803,7 +6849,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 	if (test_server)
 		bSendMsg = true;
 
-	//Ã¢°í ¿¬ÈÄ Ã¼Å©
+	//Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 	if (iPulse - GetSafeboxLoadTime() < PASSES_PER_SEC(limittime))
 	{
 		if (bSendMsg)
@@ -6811,10 +6857,10 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 
 		if (test_server)
 			ChatPacket(CHAT_TYPE_INFO, "[TestOnly]Pulse %d LoadTime %d PASS %d", iPulse, GetSafeboxLoadTime(), PASSES_PER_SEC(limittime));
-		return true; 
+		return true;
 	}
 
-	//°Å·¡°ü·Ã Ã¢ Ã¼Å©
+	//ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¢ Ã¼Å©
 	if (bCheckShopOwner)
 	{
 		if (GetExchange() || GetMyShop() || GetShopOwner() || IsOpenSafebox() || IsCubeOpen())
@@ -6837,7 +6883,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 	}
 
 	//PREVENT_PORTAL_AFTER_EXCHANGE
-	//±³È¯ ÈÄ ½Ã°£Ã¼Å©
+	//ï¿½ï¿½È¯ ï¿½ï¿½ ï¿½Ã°ï¿½Ã¼Å©
 	if (iPulse - GetExchangeTime()  < PASSES_PER_SEC(limittime))
 	{
 		if (bSendMsg)
@@ -6858,7 +6904,7 @@ bool CHARACTER::IsHack(bool bSendMsg, bool bCheckShopOwner, int limittime)
 	{
 		if (bSendMsg)
 			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("After a trade, you cannot use a scroll for another %d seconds.", GetLanguage()), limittime);
-		return true; 
+		return true;
 	}
 	//END_PREVENT_ITEM_COPY
 
@@ -6883,7 +6929,7 @@ void CHARACTER::Say(const std::string & s)
 	packet_script.skin = 1;
 	packet_script.src_size = s.size();
 	packet_script.size = packet_script.src_size + sizeof(struct packet_script);
-	
+
 	TEMP_BUFFER buf;
 
 	buf.write(&packet_script, sizeof(struct packet_script));
@@ -6902,7 +6948,7 @@ void CHARACTER::InitMC()
 {
 	for (int n = 0; n < MI_MAX; ++n)
 	{
-		m_dwMonarchCooltime[n] = thecore_pulse(); 
+		m_dwMonarchCooltime[n] = thecore_pulse();
 	}
 
 	m_dwMonarchCooltimelimit[MI_HEAL] = PASSES_PER_SEC(MC_HEAL);
@@ -6936,10 +6982,10 @@ bool CHARACTER::IsMCOK(enum MONARCH_INDEX e) const
 	{
 		if (test_server)
 			sys_log(0, " Pulse %d cooltime %d, limit %d", iPulse, GetMC(e), GetMCL(e));
-		
+
 		return false;
 	}
-	
+
 	if (test_server)
 		sys_log(0, " Pulse %d cooltime %d, limit %d", iPulse, GetMC(e), GetMCL(e));
 
@@ -6969,7 +7015,7 @@ bool CHARACTER::IsSiegeNPC() const
 //------------------------------------------------
 void CHARACTER::UpdateDepositPulse()
 {
-	m_deposit_pulse = thecore_pulse() + PASSES_PER_SEC(60*5);	// 5ºÐ
+	m_deposit_pulse = thecore_pulse() + PASSES_PER_SEC(60*5);	// 5ï¿½ï¿½
 }
 
 bool CHARACTER::CanDeposit() const
@@ -7066,7 +7112,7 @@ struct FFindReviver
 		pChar = NULL;
 		HasReviver = false;
 	}
-	
+
 	void operator() (LPCHARACTER ch)
 	{
 		if (ch->IsMonster() != true)
@@ -7171,7 +7217,7 @@ void CHARACTER::StartCheckSpeedHackEvent()
 
 	info->ch = this;
 
-	m_pkCheckSpeedHackEvent = event_create(check_speedhack_event, info, PASSES_PER_SEC(60));	// 1ºÐ
+	m_pkCheckSpeedHackEvent = event_create(check_speedhack_event, info, PASSES_PER_SEC(60));	// 1ï¿½ï¿½
 }
 
 void CHARACTER::GoHome()
@@ -7219,7 +7265,7 @@ EVENTFUNC(destroy_when_idle_event)
 	LPCHARACTER ch = info->ch;
 	if (ch == NULL) { // <Factor>
 		return 0;
-	}	
+	}
 
 	if (ch->GetVictim())
 	{
@@ -7325,7 +7371,7 @@ BYTE CHARACTER::GetChatCounter() const
 	return m_bChatCounter;
 }
 
-// ¸»ÀÌ³ª ´Ù¸¥°ÍÀ» Å¸°í ÀÖ³ª?
+// ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½Ö³ï¿½?
 bool CHARACTER::IsRiding() const
 {
 	return IsHorseRiding() || GetMountVnum();
@@ -7364,10 +7410,751 @@ DWORD CHARACTER::GetNextExp() const
 
 int	CHARACTER::GetSkillPowerByLevel(int level, bool bMob) const
 {
-	return CTableBySkill::instance().GetSkillPowerByLevelFromType(GetJob(), GetSkillGroup(), MINMAX(0, level, SKILL_MAX_LEVEL), bMob); 
+	return CTableBySkill::instance().GetSkillPowerByLevelFromType(GetJob(), GetSkillGroup(), MINMAX(0, level, SKILL_MAX_LEVEL), bMob);
 }
 
 void CHARACTER::SetLastPMPulse(void)
 {
       m_iLastPMPulse = thecore_pulse() + 25;
 }
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+namespace
+{
+LPITEM FindPrivateShopBundleItem(LPCHARACTER ch, DWORD dwBundleVnum)
+{
+	if (!ch)
+		return NULL;
+
+	const long lNow = get_global_time();
+	for (int i = 0; i < INVENTORY_MAX_NUM; ++i)
+	{
+		LPITEM pItem = ch->GetInventoryItem(i);
+		if (!pItem || pItem->GetVnum() != dwBundleVnum)
+			continue;
+
+		if (pItem->IsRealTimeItem() && pItem->GetSocket(0) <= lNow)
+		{
+			sys_log(0, "PRIVATESHOP_GAME: bundle_expired_skip pid=%u item_id=%u bundle_vnum=%u expire_time=%ld now=%ld",
+				ch->GetPlayerID(), pItem->GetID(), dwBundleVnum, pItem->GetSocket(0), lNow);
+			continue;
+		}
+
+		return pItem;
+	}
+
+	return NULL;
+}
+
+void ConsumePrivateShopBundleItem(LPITEM pItem)
+{
+	if (!pItem)
+		return;
+
+	if (pItem->GetCount() > 1)
+		pItem->SetCount(pItem->GetCount() - 1);
+	else
+		pItem->SetCount(0);
+}
+}
+
+bool CHARACTER::BuildPrivateShop(const char* c_szTitle, DWORD dwPolyVnum, BYTE bTitleType, BYTE bPageCount, WORD wItemCount, TPrivateShopItem* pShopItemTable)
+{
+	sys_log(0, "PRIVATESHOP_GAME: build_begin pid=%u name=%s title=%s poly=%u title_type=%u page_count=%u item_count=%u",
+		GetPlayerID(), GetName(), c_szTitle ? c_szTitle : "", dwPolyVnum, bTitleType, bPageCount, wItemCount);
+
+	if (!CanHandleItem(false, false, true))
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot use a personal shop now.", GetLanguage()));
+		return false;
+	}
+
+	if (bPageCount == 0 || bPageCount > PRIVATE_SHOP_PAGE_MAX_NUM)
+	{
+		sys_err("PRIVATESHOP_GAME: build_fail pid=%u reason=invalid_page_count page_count=%u", GetPlayerID(), bPageCount);
+		return false;
+	}
+
+	if (dwPolyVnum < 30000 || dwPolyVnum > 30008)
+		dwPolyVnum = 30000;
+
+	const DWORD dwRequiredBundleVnum = GetPrivateShopBundleVnum(dwPolyVnum, bTitleType, bPageCount);
+	LPITEM pRequiredBundle = FindPrivateShopBundleItem(this, dwRequiredBundleVnum);
+	if (!pRequiredBundle)
+	{
+		sys_log(0, "PRIVATESHOP_GAME: build_fail pid=%u reason=missing_or_expired_bundle required_vnum=%u poly=%u title_type=%u page_count=%u",
+			GetPlayerID(), dwRequiredBundleVnum, dwPolyVnum, bTitleType, bPageCount);
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot open a personal shop without a Bundle.", GetLanguage()));
+		return false;
+	}
+
+	if (IsPrivateShopOwner())
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have already opened your personal shop.", GetLanguage()));
+		return false;
+	}
+
+	if (GetDungeon())
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot open a personal shop in a dungeon.", GetLanguage()));
+		return false;
+	}
+
+	if (m_pkExchange)
+		m_pkExchange->Cancel();
+
+	quest::PC* pPC = quest::CQuestManager::instance().GetPCForce(GetPlayerID());
+	if (pPC->IsRunning())
+		return false;
+
+	if (wItemCount == 0)
+	{
+		sys_err("Item count is equal to zero for player %d", GetPlayerID());
+		return false;
+	}
+
+	if (CBanwordManager::instance().CheckString(c_szTitle, strlen(c_szTitle)))
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please choose another title name for your personal shop.", GetLanguage()));
+		return false;
+	}
+
+	if (strlen(c_szTitle) < TITLE_MIN_LEN)
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The entered name is too short.", GetLanguage()));
+		return false;
+	}
+
+	std::vector<TPrivateShopItem> s_vec_shopItem;
+	std::set<TItemPos> s_set_item;
+
+	for (BYTE i = 0; i < wItemCount; ++i, ++pShopItemTable)
+	{
+		if (s_set_item.find(pShopItemTable->TPos) != s_set_item.end())
+		{
+			sys_err("Duplicated item in private shop detected! (name: %s)", GetName());
+			return false;
+		}
+
+		const LPITEM pItem = GetItem(pShopItemTable->TPos);
+		if (!pItem)
+		{
+			sys_err("Could not find an item in position: %d", pShopItemTable->TPos.cell);
+			return false;
+		}
+
+		if (pItem->GetVnum() == 50200 || pItem->GetVnum() == 71221)
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot put Bundles items in a personal shop when building it.", GetLanguage()));
+			return false;
+		}
+
+		const TItemTable* pItemTable = pItem->GetProto();
+		if (!pItemTable)
+		{
+			sys_err("Could not find an item table for an item at position: %d vnum: %d", pShopItemTable->TPos.cell, pItem->GetVnum());
+			return false;
+		}
+
+		if (pItemTable && (IS_SET(pItemTable->dwAntiFlags, ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP)))
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot sell Item-Shop items in a personal shop.", GetLanguage()));
+			return false;
+		}
+
+		if (pItem->IsEquipped())
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot sell equipped items in a personal shop.", GetLanguage()));
+			return false;
+		}
+
+#ifdef WJ_SOULBINDING_SYSTEM
+		if (pItem->IsBind() || pItem->IsUntilBind())
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't sell this item because is binded!"));
+			return false;
+		}
+#endif
+
+		if (pItem->isLocked())
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot sell locked items in a personal shop.", GetLanguage()));
+			return false;
+		}
+
+		if (pShopItemTable->TPrice.llGold <= 0 || pShopItemTable->TPrice.llGold > GOLD_MAX || pShopItemTable->TPrice.dwCheque != 0)
+		{
+			sys_err("Player %u is trying to build private shop with negative prices", GetPlayerID());
+			return false;
+		}
+
+
+		if (pShopItemTable->wDisplayPos >= PRIVATE_SHOP_HOST_ITEM_MAX_NUM)
+		{
+			sys_err("PRIVATESHOP_GAME: build_fail pid=%u reason=display_pos_invalid item_id=%u display_pos=%u max=%u",
+				GetPlayerID(), pItem->GetID(), pShopItemTable->wDisplayPos, PRIVATE_SHOP_HOST_ITEM_MAX_NUM);
+			return false;
+		}
+
+		if (pShopItemTable->wDisplayPos >= static_cast<WORD>(bPageCount * PRIVATE_SHOP_PAGE_ITEM_MAX_NUM))
+		{
+			sys_err("PRIVATESHOP_GAME: build_fail pid=%u reason=display_pos_outside_page_count item_id=%u display_pos=%u page_count=%u page_size=%u",
+				GetPlayerID(), pItem->GetID(), pShopItemTable->wDisplayPos, bPageCount, PRIVATE_SHOP_PAGE_ITEM_MAX_NUM);
+			return false;
+		}
+
+		s_set_item.insert(pShopItemTable->TPos);
+		s_vec_shopItem.push_back(*pShopItemTable);
+	}
+
+	sys_log(0, "PRIVATESHOP_GAME: build_validated pid=%u item_count=%u", GetPlayerID(), static_cast<unsigned>(s_vec_shopItem.size()));
+
+	const bool bBuildSuccess = CPrivateShopManager::Instance().BuildPrivateShop(this, c_szTitle, dwPolyVnum, bTitleType, bPageCount, s_vec_shopItem);
+	if (bBuildSuccess)
+	{
+		const DWORD dwRequiredBundleID = pRequiredBundle->GetID();
+		if (dwRequiredBundleVnum == 71221)
+		{
+			sys_log(0, "PRIVATESHOP_GAME: build_bundle_retained pid=%u bundle_vnum=%u item_id=%u",
+				GetPlayerID(), dwRequiredBundleVnum, dwRequiredBundleID);
+		}
+		else
+		{
+			TPlayerItem bundleSnapshot{};
+			CopyItemData(pRequiredBundle, bundleSnapshot);
+			CPrivateShopManager::Instance().SetPendingBuildBundle(GetPlayerID(), bundleSnapshot);
+			ConsumePrivateShopBundleItem(pRequiredBundle);
+			sys_log(0, "PRIVATESHOP_GAME: build_bundle_consumed pid=%u bundle_vnum=%u item_id=%u",
+				GetPlayerID(), dwRequiredBundleVnum, dwRequiredBundleID);
+		}
+		sys_log(0, "PRIVATESHOP_GAME: build_sent_db pid=%u item_count=%u", GetPlayerID(), static_cast<unsigned>(s_vec_shopItem.size()));
+	}
+	else
+	{
+		sys_err("PRIVATESHOP_GAME: build_fail pid=%u reason=manager_build_failed", GetPlayerID());
+
+		for (const auto& rShopItem : s_vec_shopItem)
+		{
+			LPITEM pItem = GetItem(rShopItem.TPos);
+			if (pItem)
+				pItem->Lock(false);
+		}
+	}
+
+	return bBuildSuccess;
+}
+
+void CHARACTER::ClosePrivateShop()
+{
+	memset(&m_privateShopTable, 0, sizeof(m_privateShopTable));
+	m_vec_privateShopItem.clear();
+
+	ClosePrivateShopPanel();
+
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_CLOSE;
+
+		GetDesc()->Packet(&mainPacket, sizeof(mainPacket));
+	}
+
+	ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your personal shop has been closed.", GetLanguage()));
+}
+
+void CHARACTER::SetPrivateShopTable(const TPrivateShop& rPrivateShopTable)
+{
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(TPacketGCPrivateShopLoad);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_LOAD;
+
+		TPacketGCPrivateShopLoad subPacket{};
+		strlcpy(subPacket.szTitle, rPrivateShopTable.szTitle, sizeof(subPacket.szTitle));
+		subPacket.llGold = rPrivateShopTable.llGold;
+		subPacket.dwCheque = rPrivateShopTable.dwCheque;
+		subPacket.lX = rPrivateShopTable.lX;
+		subPacket.lY = rPrivateShopTable.lY;
+		subPacket.bChannel = rPrivateShopTable.bChannel;
+		subPacket.bState = rPrivateShopTable.bState;
+		subPacket.bPageCount = rPrivateShopTable.bPageCount;
+
+		GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+		GetDesc()->Packet(&subPacket, sizeof(TPacketGCPrivateShopLoad));
+	}
+
+	m_privateShopTable = rPrivateShopTable;
+}
+
+void CHARACTER::OpenPrivateShopPanel()
+{
+	if (GetViewingPrivateShop())
+		GetViewingPrivateShop()->RemoveShopViewer(this);
+
+	SetEditingPrivateShop(true);
+
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_OPEN_PANEL;
+
+		GetDesc()->Packet(&mainPacket, sizeof(mainPacket));
+	}
+}
+
+void CHARACTER::ClosePrivateShopPanel(bool bSendClient /* = false */)
+{
+	if (!IsEditingPrivateShop())
+		return;
+
+	SetEditingPrivateShop(false);
+	SetMyShopTime();
+
+	if (bSendClient)
+	{
+		if (GetDesc())
+		{
+			TPacketGCPrivateShop mainPacket{};
+			mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+			mainPacket.wSize = sizeof(TPacketGCPrivateShop);
+			mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_CLOSE_PANEL;
+
+			GetDesc()->Packet(&mainPacket, sizeof(mainPacket));
+		}
+	}
+}
+
+long long CHARACTER::GetPrivateShopTotalGold()
+{
+	long long llGold = GetPrivateShopTable()->llGold;
+
+	for (const auto& rShopItem : m_vec_privateShopItem)
+		llGold += rShopItem.TPrice.llGold;
+
+	return llGold;
+}
+
+DWORD CHARACTER::GetPrivateShopTotalCheque()
+{
+	long long dwCheque = GetPrivateShopTable()->dwCheque;
+
+	for (const auto& rShopItem : m_vec_privateShopItem)
+		dwCheque += rShopItem.TPrice.dwCheque;
+
+	return dwCheque;
+}
+
+void CHARACTER::SetPrivateShopItem(const TPlayerPrivateShopItem& c_rPrivateShopItem)
+{
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(TPrivateShopItemData);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_SET_ITEM;
+
+		TPrivateShopItemData subPacket{};
+		CopyItemData(c_rPrivateShopItem, subPacket);
+
+		GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+		GetDesc()->Packet(&subPacket, sizeof(TPrivateShopItemData));
+	}
+
+	m_vec_privateShopItem.push_back(c_rPrivateShopItem);
+}
+
+bool CHARACTER::RemovePrivateShopItem(WORD wPos)
+{
+	for (auto it = m_vec_privateShopItem.begin(); it != m_vec_privateShopItem.end(); ++it)
+	{
+		const TPlayerPrivateShopItem& r_shopItem = *it;
+		if (r_shopItem.wPos == wPos)
+		{
+			TPacketGCPrivateShop mainPacket{};
+			mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+			mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(WORD);
+			mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_REMOVE_MY_ITEM;
+
+			GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+			GetDesc()->Packet(&wPos, sizeof(WORD));
+
+			m_vec_privateShopItem.erase(it);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+const TPlayerPrivateShopItem* CHARACTER::GetPrivateShopItem(WORD wPos)
+{
+	for (auto it = m_vec_privateShopItem.begin(); it != m_vec_privateShopItem.end(); ++it)
+	{
+		const TPlayerPrivateShopItem& rShopItem = *it;
+		if (rShopItem.wPos == wPos)
+			return &rShopItem;
+	}
+	return nullptr;
+}
+
+void CHARACTER::ChangePrivateShopItemPrice(WORD wPos, long long llGold, DWORD dwCheque)
+{
+	for (auto it = m_vec_privateShopItem.begin(); it != m_vec_privateShopItem.end(); ++it)
+	{
+		TPlayerPrivateShopItem& r_shopItem = *it;
+		if (r_shopItem.wPos == wPos)
+		{
+			// Update prices of the item
+			r_shopItem.TPrice.llGold = llGold;
+			r_shopItem.TPrice.dwCheque = dwCheque;
+
+			// Send information to client
+			TPacketGCPrivateShop mainPacket{};
+			mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+			mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(TPacketGCPrivateShopItemPriceChange);
+			mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_ITEM_PRICE_CHANGE;
+
+			TPacketGCPrivateShopItemPriceChange subPacket{};
+			subPacket.wPos = wPos;
+			subPacket.TPrice.llGold = llGold;
+			subPacket.TPrice.dwCheque = dwCheque;
+
+			GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+			GetDesc()->Packet(&subPacket, sizeof(TPacketGCPrivateShopItemPriceChange));
+
+			break;
+		}
+	}
+}
+
+void CHARACTER::ChangePrivateShopItemPos(WORD wPos, WORD wChangePos)
+{
+	for (auto it = m_vec_privateShopItem.begin(); it != m_vec_privateShopItem.end(); ++it)
+	{
+		TPlayerPrivateShopItem& r_shopItem = *it;
+		if (r_shopItem.wPos == wPos)
+		{
+			// Update position of the item
+			r_shopItem.wPos = wChangePos;
+
+			// Send information to client
+			TPacketGCPrivateShop mainPacket{};
+			mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+			mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(TPacketGCPrivateShopItemMove);
+			mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_ITEM_MOVE;
+
+			TPacketGCPrivateShopItemMove subPacket{};
+			subPacket.wPos = wPos;
+			subPacket.wChangePos = wChangePos;
+
+			GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+			GetDesc()->Packet(&subPacket, sizeof(TPacketGCPrivateShopItemMove));
+
+			break;
+		}
+	}
+}
+
+void CHARACTER::ChangePrivateShopTitle(const char* c_szTitle)
+{
+	strlcpy(m_privateShopTable.szTitle, c_szTitle, sizeof(m_privateShopTable.szTitle));
+
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(m_privateShopTable.szTitle);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_TITLE_CHANGE;
+
+		GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+		GetDesc()->Packet(&m_privateShopTable.szTitle, sizeof(m_privateShopTable.szTitle));
+	}
+}
+
+void CHARACTER::SaleUpdate(const TPlayerPrivateShopItem& c_rPrivateShopItem, const char* c_szCustomerName)
+{
+	const TPlayerPrivateShopItem* pShopItem = GetPrivateShopItem(c_rPrivateShopItem.wPos);
+	if (pShopItem)
+	{
+		// Update the stash values at table
+		GetPrivateShopTable()->llGold += c_rPrivateShopItem.TPrice.llGold;
+		GetPrivateShopTable()->dwCheque += c_rPrivateShopItem.TPrice.dwCheque;
+
+		// Remove the bought item
+		RemovePrivateShopItem(c_rPrivateShopItem.wPos);
+
+		// Send the balance update
+		if (GetDesc())
+		{
+			// Send a notification to the player
+			TItemTable* pItemTable = ITEM_MANAGER::Instance().GetTable(c_rPrivateShopItem.dwVnum);
+			if (pItemTable)
+			{
+				char szMsg[256 + 1]{};
+
+				int len = 0;
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+				{
+					len = snprintf(szMsg, sizeof(szMsg), LC_TEXT_LANG("You have sold x%d %s for %s Yangs and %s Wons.", GetLanguage()),
+						c_rPrivateShopItem.dwCount, ITEM_MANAGER::instance().GetLocaleName(c_rPrivateShopItem.dwVnum, GetLanguage()),
+						format_number(c_rPrivateShopItem.TPrice.llGold).c_str(), format_number(c_rPrivateShopItem.TPrice.dwCheque).c_str());
+				}
+#else
+				{
+					len = snprintf(szMsg, sizeof(szMsg), LC_TEXT_LANG("You have sold x%d %s for %s Yangs.", GetLanguage()),
+						c_rPrivateShopItem.dwCount, ITEM_MANAGER::instance().GetLocaleName(c_rPrivateShopItem.dwVnum, GetLanguage()), format_number(c_rPrivateShopItem.TPrice.llGold).c_str());
+				}
+#endif
+				len = MINMAX(0, len, static_cast<int>(sizeof(szMsg) - 1));
+				TPacketGCWhisper packet{};
+
+				packet.bHeader = HEADER_GC_WHISPER;
+				packet.wSize = sizeof(TPacketGCWhisper) + len;
+				packet.bType = EWhisperType::WHISPER_TYPE_SYSTEM;
+				strlcpy(packet.szNameFrom, LC_TEXT_LANG("Private Shop", GetLanguage()), sizeof(packet.szNameFrom));
+				sys_log(0, "PRIVATESHOP_GAME: sale_notice pid=%u lang=%s item=%u", GetPlayerID(), GetLanguage(), c_rPrivateShopItem.dwVnum);
+
+				TEMP_BUFFER buf;
+
+				buf.write(&packet, sizeof(packet));
+				buf.write(szMsg, len);
+
+				GetDesc()->Packet(buf.read_peek(), buf.size());
+			}
+
+			TPacketGCPrivateShop mainPacket{};
+			mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+			mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(TPacketGCPrivateShopBalanceUpdate);
+			mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_BALANCE_UPDATE;
+
+			TPacketGCPrivateShopBalanceUpdate subPacket{};
+			subPacket.TPrice = c_rPrivateShopItem.TPrice;
+
+			GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+			GetDesc()->Packet(&subPacket, sizeof(TPacketGCPrivateShopBalanceUpdate));
+		}
+	}
+}
+
+void CHARACTER::ItemExpireUpdate(WORD wPos)
+{
+	const TPlayerPrivateShopItem* pShopItem = GetPrivateShopItem(wPos);
+
+	if (!pShopItem)
+	{
+		sys_err("Could not find item on pos %u for player %u", wPos, GetPlayerID());
+		return;
+	}
+
+	// Send a notification to the player
+	TItemTable* pItemTable = ITEM_MANAGER::Instance().GetTable(pShopItem->dwVnum);
+	if (pItemTable)
+	{
+		char szMsg[128 + 1]{};
+
+		int len = snprintf(szMsg, sizeof(szMsg), LC_TEXT_LANG("%s has been removed from the shop as the time has expired.", GetLanguage()),
+			ITEM_MANAGER::instance().GetLocaleName(pShopItem->dwVnum, GetLanguage()));
+		len = MINMAX(0, len, static_cast<int>(sizeof(szMsg) - 1));
+
+		TPacketGCWhisper packet{};
+
+		packet.bHeader = HEADER_GC_WHISPER;
+		packet.wSize = sizeof(TPacketGCWhisper) + len;
+		packet.bType = EWhisperType::WHISPER_TYPE_SYSTEM;
+		strlcpy(packet.szNameFrom, LC_TEXT_LANG("Private Shop", GetLanguage()), sizeof(packet.szNameFrom));
+
+		TEMP_BUFFER buf;
+
+		buf.write(&packet, sizeof(packet));
+		buf.write(szMsg, len);
+
+		GetDesc()->Packet(buf.read_peek(), buf.size());
+	}
+
+	RemovePrivateShopItem(wPos);
+}
+
+void CHARACTER::SetPrivateShopState(BYTE bState, bool bIsMainPlayerPrivateShop)
+{
+	if (bIsMainPlayerPrivateShop)
+		GetPrivateShopTable()->bState = bState;
+
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop) + sizeof(TPacketGCPrivateStateUpdate);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_STATE_UPDATE;
+
+		TPacketGCPrivateStateUpdate subPacket{};
+		subPacket.bState = bState;
+		subPacket.bIsMainPlayerPrivateShop = bIsMainPlayerPrivateShop;
+
+		GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+		GetDesc()->Packet(&subPacket, sizeof(TPacketGCPrivateStateUpdate));
+	}
+}
+
+void CHARACTER::WithdrawPrivateShop(long long llGold, DWORD dwCheque)
+{
+	if (llGold != GetPrivateShopTable()->llGold || dwCheque != GetPrivateShopTable()->dwCheque)
+	{
+		sys_err("Withdraw values mismatch gold: %lld | %lld cheque: %u | %u for player %u", llGold, GetPrivateShopTable()->llGold, dwCheque, GetPrivateShopTable()->dwCheque, GetPlayerID());
+		return;
+
+	}
+	long long llCurrentGold = static_cast<long long>(GetGold());
+
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	DWORD dwCurrentCheque = GetCheque();
+#endif
+
+	llGold = MIN(llGold, static_cast<long long>(GOLD_MAX) - 1 - llCurrentGold);
+#ifndef WJ_PRIVATE_SHOP_CHEQUE
+	// Preserve legacy Won balances when this currency is disabled.
+	dwCheque = 0;
+#endif
+	if (llGold <= 0 && !dwCheque)
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot collect the money, because you would then have more than 2 billion Yang.", GetLanguage()));
+		return;
+	}
+
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	if ((dwCurrentCheque + GetPrivateShopTable()->dwCheque) > CHEQUE_MAX)
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot collect the money, because you would then have more than 999 Won."));
+		return;
+	}
+#endif
+
+	PointChange(POINT_GOLD, llGold);
+
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	PointChange(POINT_CHEQUE, GetPrivateShopTable()->dwCheque);
+#endif
+
+	if (llGold && dwCheque <= 0)
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have withdrawn %lld Yang from your personal shop earnings.", GetLanguage()), llGold);
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	else if (dwCheque && llGold <= 0)
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have withdrawn %u Won from your personal shop earnings.", GetLanguage()), dwCheque);
+	else if(llGold && dwCheque)
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have withdrawn %lld Yang and %u Won from your personal shop earnings.", GetLanguage()), llGold, dwCheque);
+#endif
+
+	sys_log(0, "%s PRIVATE_SHOP: WITHDRAW GOLD %lld CHEQUE %u", GetName(), llGold, dwCheque);
+
+	char szHint[128 + 1] {};
+	snprintf(szHint, sizeof(szHint), "Gold %lld Cheque %u", llGold, dwCheque);
+	LogManager::Instance().CharLog(this, 0, "PRIVATE SHOP WITHDRAW", szHint);
+
+	GetPrivateShopTable()->llGold -= llGold;
+	GetPrivateShopTable()->dwCheque -= dwCheque;
+
+	// Update the value on client-side
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop);
+		mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_WITHDRAW;
+
+		GetDesc()->Packet(&mainPacket, sizeof(TPacketGCPrivateShop));
+	}
+
+	SetPrivateShopTable(*GetPrivateShopTable());
+	Save();
+	sys_log(0, "PRIVATESHOP_GAME: withdraw_partial pid=%u gold=%lld remaining=%lld", GetPlayerID(), llGold, GetPrivateShopTable()->llGold);
+
+	// Update the value on db
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_WITHDRAW;
+	TPacketGDPrivateShopWithdraw packet{};
+	packet.dwPID = GetPlayerID();
+	packet.llGold = llGold;
+	packet.dwCheque = dwCheque;
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(packet));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&packet, sizeof(packet));
+}
+
+void CHARACTER::OpenShopSearch(BYTE bMode)
+{
+	if (!CheckTradeWindows(this))
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot trade while another window is open.", GetLanguage()));
+		return;
+	}
+
+	m_bShopSearchMode = bMode;
+
+	if (GetDesc())
+	{
+		TPacketGCPrivateShop mainPacket{};
+		mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+		mainPacket.wSize = sizeof(TPacketGCPrivateShop);
+		mainPacket.bSubHeader = (bMode == MODE_LOOKING ? SUBHEADER_GC_PRIVATE_SHOP_SEARCH_OPEN_LOOK_MODE : SUBHEADER_GC_PRIVATE_SHOP_SEARCH_OPEN_TRADE_MODE);
+
+		GetDesc()->Packet(&mainPacket, sizeof(mainPacket));
+	}
+}
+
+void CHARACTER::CloseShopSearch()
+{
+	m_bShopSearchMode = MODE_NONE;
+}
+
+bool CHARACTER::SetPremiumPrivateShopBonus(time_t tDuration)
+{
+	if (!GetDesc())
+		return false;
+
+	CAffect* pAffect = FindAffect(AFFECT_PREMIUM_PRIVATE_SHOP);
+	if (pAffect)
+	{
+		tDuration = std::min<time_t>(tDuration + pAffect->lDuration, PRIVATE_SHOP_MAX_PREMIUM_TIME);
+
+		// Return if player has reached limit moments ago
+		if (PRIVATE_SHOP_MAX_PREMIUM_TIME - pAffect->lDuration < 60)
+		{
+			ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have just recently reached maximum premium time for your personal shop. ", GetLanguage()));
+			return false;
+		}
+	}
+
+	// Old affect will be removed by AddAffect
+	AddAffect(AFFECT_PREMIUM_PRIVATE_SHOP, POINT_NONE, 0, 0, tDuration, 0, true);
+
+	m_aiPremiumTimes[PREMIUM_PRIVATE_SHOP] = tDuration + time(0);
+
+	// Update db
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_PREMIUM_TIME_UPDATE;
+
+	TPacketGDPrivateShopPremiumTimeUpdate packet{};
+	packet.dwAID = GetDesc()->GetAccountTable().id;
+	packet.dwPID = GetPlayerID();
+	packet.tPremiumTime = tDuration;
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, 0, sizeof(BYTE) + sizeof(TPacketGDPrivateShopPremiumTimeUpdate));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&packet, sizeof(TPacketGDPrivateShopPremiumTimeUpdate));
+
+	ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have increased Premium Personal Shop duration.", GetLanguage()));
+
+	// Warn the player about time limit
+	if (tDuration == PRIVATE_SHOP_MAX_PREMIUM_TIME)
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have reached maximum premium time for your personal shop. ", GetLanguage()));
+
+	char szHint[128 + 1]{};
+	snprintf(szHint, sizeof(szHint), "+%u", tDuration);
+	LogManager::Instance().CharLog(this, 0, "PRIVATE SHOP PREMIUM TIME", szHint);
+
+	return true;
+}
+#endif

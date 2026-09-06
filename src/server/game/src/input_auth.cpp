@@ -215,6 +215,9 @@ void CInputAuth::Login(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							"UNIX_TIMESTAMP(premium_privateshop_expire),"
+#endif
 				"UNIX_TIMESTAMP(create_time)"
 				" FROM account WHERE login='%s'",
 
@@ -232,6 +235,9 @@ void CInputAuth::Login(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							"UNIX_TIMESTAMP(premium_privateshop_expire),"
+#endif
 				"UNIX_TIMESTAMP(create_time)"
 				" FROM account WHERE login='%s'",
 				szPasswd, szLogin);
@@ -367,6 +373,9 @@ void CInputAuth::LoginOpenID(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							"UNIX_TIMESTAMP(premium_privateshop_expire),"
+#endif
 				"UNIX_TIMESTAMP(create_time)"
 				" FROM account WHERE login='%s'",
 
@@ -384,6 +393,9 @@ void CInputAuth::LoginOpenID(LPDESC d, const char * c_pData)
 				"UNIX_TIMESTAMP(fish_mind_expire),"
 				"UNIX_TIMESTAMP(marriage_fast_expire),"
 				"UNIX_TIMESTAMP(money_drop_rate_expire),"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							"UNIX_TIMESTAMP(premium_privateshop_expire),"
+#endif
 				"UNIX_TIMESTAMP(create_time)"
 				" FROM account WHERE login='%s'",
 				szPasswd, szLogin);

@@ -65,6 +65,9 @@ ACMD(do_pvp);
 ACMD(do_point_reset);
 ACMD(do_safebox_size);
 ACMD(do_safebox_close);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+ACMD(do_shop_collect);
+#endif
 ACMD(do_safebox_password);
 ACMD(do_safebox_change_password);
 ACMD(do_mall_password);
@@ -348,6 +351,9 @@ struct command_info cmd_info[] =
 	{ "pvp",		do_pvp,			0,			POS_DEAD,	GM_PLAYER	},
 	{ "safebox",	do_safebox_size,	0,			POS_DEAD,	GM_HIGH_WIZARD	},
 	{ "safebox_close",	do_safebox_close,	0,			POS_DEAD,	GM_PLAYER	},
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	{ "shop_collect", do_shop_collect, 0, POS_STANDING, GM_PLAYER },
+#endif
 	{ "safebox_passwor",do_inputall,		0,			POS_DEAD,	GM_PLAYER	},
 	{ "safebox_password",do_safebox_password,	0,			POS_DEAD,	GM_PLAYER	},
 	{ "safebox_change_passwor", do_inputall,	0,			POS_DEAD,	GM_PLAYER	},
@@ -734,4 +740,3 @@ void interpret_command(LPCHARACTER ch, const char * argument, size_t len)
 		}
 	}
 }
-

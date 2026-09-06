@@ -16,7 +16,12 @@
 class CPlayerTableCache;
 class CItemCache;
 class CItemPriceListTableCache;
-
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "PrivateShop.h"
+class CPrivateShop;
+class CPrivateShopCache;
+class CPrivateShopItemCache;
+#endif
 class CPacketInfo
 {
     public:
@@ -30,6 +35,9 @@ size_t CreatePlayerSaveQuery(char * pszQuery, size_t querySize, TPlayerTable * p
 
 class CClientManager : public CNetBase, public singleton<CClientManager>
 {
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	friend class CPrivateShop;
+#endif
     public:
 	typedef std::list<CPeer *>			TPeerList;
 	typedef std::unordered_map<DWORD, CPlayerTableCache *> TPlayerTableCacheMap;
@@ -38,7 +46,14 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	typedef std::unordered_map<DWORD, TItemCacheSet *> TItemCacheSetPtrMap;
 	typedef std::unordered_map<DWORD, CItemPriceListTableCache*> TItemPriceListCacheMap;
 	typedef std::unordered_map<short, BYTE> TChannelStatusMap;
-
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	typedef std::unordered_map<DWORD, std::unique_ptr<CPrivateShopCache> > TPrivateShopCacheMap;
+	typedef std::unordered_map<DWORD, std::unique_ptr<CPrivateShop> > TPrivateShopMap;
+	typedef std::unordered_map<DWORD, std::unique_ptr<CPrivateShopItemCache> > TPrivateShopItemCacheMap;
+	typedef std::unordered_set<CPrivateShopItemCache *, std::hash<CPrivateShopItemCache*> > TPrivateShopItemCacheSet;
+	typedef std::unordered_map<DWORD, std::unique_ptr<TPrivateShopItemCacheSet> > TPrivateShopItemCacheSetPtrMap;
+	typedef std::list<CPrivateShop*> TPrivateShopPtrList;
+#endif
 	// MYSHOP_PRICE_LIST
 	/// ������ �������� ����Ʈ ��û ����
 	/**
@@ -447,7 +462,14 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	// END_OF_MYSHOP_PRICE_LIST
 
 	TChannelStatusMap m_mChannelStatus;
-
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	TPrivateShopCacheMap m_map_privateShopCache;
+	TPrivateShopMap m_map_privateShop;
+	TPrivateShopItemCacheMap m_map_privateShopItemCache;
+	TPrivateShopItemCacheSetPtrMap m_map_pPrivateShopItemCacheSetPtr;
+	TPrivateShopPtrList m_list_privateShopPremium;
+	std::vector<TItemTable*> m_vec_itemVnumRange;
+#endif
 	struct TPartyInfo
 	{
 	    BYTE bRole;
@@ -548,6 +570,62 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	void DeleteAwardId(TPacketDeleteAwardID* data);
 	void UpdateChannelStatus(TChannelStatus* pData);
 	void RequestChannelStatus(CPeer* peer, DWORD dwHandle);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	void RESULT_PRIVATE_SHOP_LOAD(CPeer* pPeer, MYSQL_RES* pRes, DWORD dwHandle, DWORD dwPID);
+	void RESULT_PRIVATE_SHOP_ITEM_LOAD(CPeer* pPeer, MYSQL_RES* pRes, DWORD dwHandle, DWORD dwPID);
+	CPeer* GetPrivateShopPeer(BYTE bChannel, WORD wListenPort);
+	TItemTable* GetItemTable(DWORD dwVnum);
+	CPrivateShopCache* GetPrivateShopCache(DWORD dwPID);
+	void PutPrivateShopCache(TPrivateShop* pCache);
+	bool DeletePrivateShopCache(DWORD dwPID);
+	void UpdatePrivateShopCache();
+	void FlushPrivateShopCache(DWORD dwPID);
+	void CreatePrivateShopItemCacheSet(DWORD dwPID);
+	TPrivateShopItemCacheSet* GetPrivateShopItemCacheSet(DWORD dwPID);
+	void FlushPrivateShopItemCacheSet(DWORD dwPID);
+	bool DeletePrivateShopItemCacheSet(DWORD dwPID);
+	CPrivateShopItemCache* GetPrivateShopItemCache(DWORD dwID);
+	void PutPrivateShopItemCache(TPlayerPrivateShopItem* pNew, bool bSkipQuery = false);
+	bool DeletePrivateShopItemCache(DWORD dwID);
+	void UpdatePrivateShopItemCache();
+	void UpdatePrivateShopItemCacheSet(DWORD dwPID);
+	LPPRIVATE_SHOP CreatePrivateShop(DWORD dwPID);
+	bool DeletePrivateShop(DWORD dwPID);
+	LPPRIVATE_SHOP GetPrivateShop(DWORD dwPID);
+	void ProcessPrivateShopPacket(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	LPPRIVATE_SHOP PrivateShopSpawn(DWORD dwShopID);
+	LPPRIVATE_SHOP PrivateShopCreate(TPrivateShop* pTable, const std::vector<TPlayerPrivateShopItem>& c_vec_shopItem);
+	void PrivateShopBuild(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopClose(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopDelete(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopDespawn(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopWithdrawRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopModifyRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopBuyRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopItemPriceChangeRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopItemMoveRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopItemCheckinRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopItemCheckoutRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopTitleChangeRequest(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopItemCheckinUpdate(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopItemCheckoutUpdate(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopWithdraw(const char* c_szData);
+	void PrivateShopBuy(CPeer* pPeer, DWORD dwHandle, const char* c_szData);
+	void PrivateShopFailedBuy(const char* c_szData);
+	void PrivateShopItemTransfer(TPlayerItem* pTItem);
+	void PrivateShopItemDelete(const char* c_szData);
+	void PrivateShopItemExpire(const char* c_szData);
+	void PrivateShopPremiumTimeUpdate(const char* c_szData);
+	void PrivateShopStartPremiumEvent(DWORD dwPID);
+	void PrivateShopEndPremiumEvent(DWORD dwPID);
+	void UpdatePrivateShopPremiumEvent();
+	bool IsPrivateShopPremiumEvent(DWORD dwPID);
+	void PrivateShopDestroy(LPPRIVATE_SHOP pPrivateShop);
+	void PrivateShopGameDespawn(LPPRIVATE_SHOP pPrivateShop);
+	void PrivateShopGameSpawn(LPPRIVATE_SHOP pPrivateShop);
+	bool PrivateShopFetchData(DWORD dwShopID, TPrivateShop& rTable, std::vector<TPlayerPrivateShopItem>& c_vec_shopItem);
+	void PrivateShopPeerSpawn(CPeer* pPeer);
+#endif
 #ifdef __AUCTION__
 	void EnrollInAuction (CPeer * peer, DWORD owner_id, AuctionEnrollProductInfo* data);
 	void EnrollInSale (CPeer * peer, DWORD owner_id, AuctionEnrollSaleInfo* data);

@@ -199,6 +199,11 @@ void CLIENT_DESC::SetPhase(int iPhase)
 #ifndef _IMPROVED_PACKET_ENCRYPTION_
 								thecore_memcpy(pck.adwClientKey, d->GetDecryptionKey(), 16);
 #endif
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+								pck.dwPID = d->GetCharacter() ? d->GetCharacter()->GetPlayerID() : 0;
+								pck.dwHandle = d->GetHandle();
+								pck.bHasPrivateShop = (d->GetCharacter() && d->GetCharacter()->IsPrivateShopOwner()) ? true : false;
+#endif
 
 								buf.write(&pck, sizeof(TPacketLoginOnSetup));
 							}

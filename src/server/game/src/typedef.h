@@ -60,6 +60,15 @@ typedef CEntity* LPENTITY;
 typedef std::vector<LPENTITY> ENTITY_VECTOR;
 typedef std::unordered_set<LPENTITY> ENTITY_SET;
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+class CPrivateShop;
+#ifdef USE_DEBUG_PTR
+typedef DebugPtr<CPrivateShop> LPPRIVATE_SHOP;
+#else
+typedef CPrivateShop* LPPRIVATE_SHOP;
+#endif
+#endif
+
 class SECTREE;
 #ifdef USE_DEBUG_PTR
 typedef DebugPtr<SECTREE> LPSECTREE;
@@ -99,6 +108,9 @@ enum EEntityTypes
 	ENTITY_CHARACTER,
 	ENTITY_ITEM,
 	ENTITY_OBJECT,
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	ENTITY_PRIVATE_SHOP,
+#endif
 };
 
 #ifndef itertype
@@ -106,4 +118,3 @@ enum EEntityTypes
 #endif
 
 #endif /* __INC_METIN_II_GAME_TYPEDEF_H__ */
-

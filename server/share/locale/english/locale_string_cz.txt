@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Zmìníš kanál za 3 sekundy";
+
+"You have increased available space on your personal shop.";
+"Zvìtšil jsi dostupné místo ve svém obchodì.";
+
+"Your personal shop is currently unavailable.";
+"Tvùj obchod je nyní nedostupný.";
+
+"You cannot place any more items in your personal shop.";
+"Do obchodu nemùžeš pøidat další pøedmìty.";
+
+"You cannot move the item to that position.";
+"Na tuto pozici nemùžeš pøedmìt pøesunout.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"Obchod musí být v režimu správy.";
+
+"There is no money to collect.";
+"Nejsou žádné peníze k vyzvednutí.";
+
+"Refresh your search result to sync price of the item.";
+"Obnov hledání, aby se zobrazila aktuální cena.";
+
+"This item is currently unavailable.";
+"Tento pøedmìt je nyní nedostupný.";
+
+"You do not have an open personal shop.";
+"Nemáš otevøený obchod.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Pøed zavøením obchodu vyzvedni výdìlek.";
+
+"You cannot use a personal shop now.";
+"Teï nemùžeš obchod používat.";
+
+"You cannot open a personal shop without a Bundle.";
+"K otevøení obchodu potøebuješ uzlík.";
+
+"You have already opened your personal shop.";
+"Svùj obchod už máš otevøený.";
+
+"You cannot open a personal shop in a dungeon.";
+"V dungeonu nemùžeš otevøít obchod.";
+
+"Please choose another title name for your personal shop.";
+"Zvol jiný název obchodu.";
+
+"The entered name is too short.";
+"Zvol delší název.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"V obchodì nemùžeš prodávat pøedmìty z Item Shopu.";
+
+"You cannot sell equipped items in a personal shop.";
+"V obchodì nemùžeš prodávat nasazené pøedmìty.";
+
+"You cannot sell locked items in a personal shop.";
+"V obchodì nemùžeš prodávat uzamèené pøedmìty.";
+
+"Your personal shop has been closed.";
+"Tvùj obchod byl zavøen.";
+
+"Teleport to the private shop has been canceled.";
+"Teleportace k obchodu byla zrušena.";
+
+"%u seconds until teleport.";
+"Teleportace za %u sekund.";
+
+"Your logout has been canceled.";
+"Tvé odhlášení bylo zrušeno.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Prodal jsi x%lld %s za %s Yangù.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s byl odstranìn z obchodu, protože vypršel èas.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Nelze vybrat peníze: pøekroèil bys 2 miliardy Yangù.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Vyzvedl jsi %lld Yangù z výdìlku obchodu.";
+
+"You cannot trade while another window is open.";
+"Pro pokraèování zavøi ostatní obchodní okna.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Dosáhl jsi maximálního prémiového èasu obchodu.";
+
+"You have increased Premium Personal Shop duration.";
+"Prodloužil jsi trvání prémiového obchodu.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Dosáhl jsi maximálního prémiového èasu obchodu.";
+
+"You cannot use items while editing your personal shop.";
+"Pøi správì obchodu nemùžeš používat pøedmìty.";
+
+"Please wait a few moments before building your personal shop again.";
+"Pøed vytvoøením dalšího obchodu chvíli poèkej.";
+
+"You cannot open a personal shop while another window is open.";
+"Pro pokraèování zavøi ostatní obchodní okna.";
+
+"You cannot close a personal shop while another window is open.";
+"Pro pokraèování zavøi ostatní obchodní okna.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Pro pokraèování zavøi ostatní obchodní okna.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Pøed dalším nákupem v obchodì chvíli poèkej.";
+
+"You cannot buy an item from your own personal shop.";
+"Nemùžeš nakupovat ve vlastním obchodì.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Pøed dalším vyzvednutím výdìlku chvíli poèkej.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Pro pokraèování zavøi ostatní obchodní okna.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"Celková hodnota prodávaných pøedmìtù pøekraèuje povolený limit.";
+
+"Please wait a moment before searching other personal shops again.";
+"Pøed dalším hledáním obchodù chvíli poèkej.";
+
+"Close your current personal shop before opening a new one.";
+"Pøed otevøením nového obchodu zavøi ten stávající.";
+
+"You have sold x%d %s for %s Yangs.";
+"Prodal jsi x%d %s za %s Yangù.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Prodal jsi x%d %s za %s Yangù a %s Wonù.";
+
+"You cannot build a personal shop at this moment. ";
+"Teï nemùžeš obchod používat.";
+
+"You are too far away from your personal shop.";
+"Jsi pøíliš daleko od svého obchodu.";
+
+"You cannot close a personal shop from a different location.";
+"Obchod nemùžeš zavøít z jiného místa.";
+
+"This personal shop item has an invalid price.";
+"Tento pøedmìt v obchodì má neplatnou cenu.";
+
+"You have bought x%d %s.";
+"Koupil jsi x%d %s.";
+
+"You have bought %s.";
+"Koupil jsi %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"Pøi vytváøení obchodu nemùžeš nabízet uzlíky k prodeji.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"V obchodì nemùžeš prodávat pøedmìty z Item Shopu.";
+
+"Equipped items cannot be sold in a private shop.";
+"V obchodì nemùžeš prodávat nasazené pøedmìty.";
+
+"Items in use cannot be sold in a private shop.";
+"Nemùžeš prodávat pøedmìty, které právì používáš.";
+
+"Private Shop";
+"Soukromý obchod";
+
+"You don't have enough space in your inventory.";
+"V inventáøi nemáš dost místa.";
+
+"You don't have enough Yang.";
+"Nemáš dost Yangù.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Vyzvedl jsi %u Wonù z výdìlku obchodu.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Vyzvedl jsi %lld Yangù a %u Wonù z výdìlku obchodu.";
+
+"Please wait before another personal shop action.";
+"Pøed další akcí v obchodì chvíli poèkej.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Nemùžeš nakupovat, když je obchod v režimu správy.";
+
+"You cannot open a private shop in this area.";
+"Tady nemùžeš otevøít obchod.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Pøed další akcí v obchodì chvíli poèkej.";
+
+"You cannot open a private shop while another window is open.";
+"Pro pokraèování zavøi ostatní obchodní okna.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Pøed další akcí v obchodì chvíli poèkej.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Pøed další akcí v obchodì chvíli poèkej.";
+
+"You can't use a private shop now.";
+"Teï nemùžeš obchod používat.";

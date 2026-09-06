@@ -61,6 +61,9 @@ enum EAffectTypes
 	AFFECT_FISH_MIND		= 504,	// PREMIUM_FISH_MIND,
 	AFFECT_MARRIAGE_FAST	= 505,	// ø¯æ”¿« ±Í≈–
 	AFFECT_GOLD_BONUS		= 506,	// µ∑ µÂ∑”»Æ∑¸ 50%¡ı∞°
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	AFFECT_PREMIUM_PRIVATE_SHOP = 507,
+#endif
 	AFFECT_PREMIUM_END		= 509,
 
 	AFFECT_MALL			= 510,	// ∏Ù æ∆¿Ã≈€ ø°∆Â∆Æ

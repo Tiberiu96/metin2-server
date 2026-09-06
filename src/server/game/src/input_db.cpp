@@ -38,6 +38,11 @@
 #include "dev_log.h"
 
 #include "log.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "private_shop_manager.h"
+#include "private_shop.h"
+#include "private_shop_util.h"
+#endif
 
 #include "horsename_manager.h"
 #include "pcbang.h"
@@ -149,7 +154,7 @@ void CInputDB::LoginSuccess(DWORD dwHandle, const char *data)
 		return;
 	}
 
-	if (strcmp(pTab->status, "OK")) // OK�� �ƴϸ�
+	if (strcmp(pTab->status, "OK")) // OK?????? ??????????
 	{
 		sys_log(0, "CInputDB::LoginSuccess - status[%s] is not OK [%s]", pTab->status, pTab->login);
 
@@ -172,7 +177,7 @@ void CInputDB::LoginSuccess(DWORD dwHandle, const char *data)
 
 	d->BindAccountTable(pTab);
 
-	if (!bFound) // ĳ���Ͱ� ������ ������ �������� ������.. -_-
+	if (!bFound) // ???????????????? ?????????????????? ?????????????????? ???????????????????????? ??????????????????.. -_-
 	{
 		TPacketGCEmpire pe;
 		pe.bHeader = HEADER_GC_EMPIRE;
@@ -250,7 +255,7 @@ void CInputDB::PlayerCreateSuccess(LPDESC d, const char * data)
 
 	d->Packet(&pack, sizeof(TPacketGCPlayerCreateSuccess));
 
-	// �⺻ ����� ��ȯ�θ� ����
+	// ?????? ??????????????? ???????????????? ????????????
 	TPlayerItem t;
 	memset(&t, 0, sizeof(t));
 
@@ -260,10 +265,10 @@ void CInputDB::PlayerCreateSuccess(LPDESC d, const char * data)
 		t.count	= 1;
 		t.owner	= r_Tab.players[pPacketDB->bAccountCharacterIndex].dwID;
 
-		//����: ���ΰ�+3,ö������+3,�����Ź�+3,������+3,��ݸ����+3, ��ܱͰ���+3, �һ��+3, ������+3, �������+3 
-		//�ڰ�������+3,��ȯ�ΰ�+3,�����Ź�+3,���ȵ�+3,ȭ�ȱ�+3,�������+3, ���Ͱ���+3, ������+3, �������+3 
-		//�������簩+3,��������+3,�����Ź�+3,������+3,���ָ����+3, ��ݱͰ���+3, ������+3, �������+3
-		//���磺��õ��+3,������+3,�����Ź�+3,�ڸ���+3,��ȭ��+3,���ָ����+3, ��ݱͰ���+3, ������+3, �������+3
+		//????????????: ??????????????+3,????????????????????+3,????????????????????+3,??????????????????+3,????????????????????+3, ???????????????????+3, ???????????+3, ??????????????????+3, ?????????????????????+3 
+		//??????????????????????????+3,????????????????+3,????????????????????+3,??????????????+3,??????????+3,?????????????????????+3, ????????????????????+3, ??????????????????+3, ?????????????????????+3 
+		//????????????????????????+3,????????????????????????+3,????????????????????+3,??????????????????+3,???????????????????????+3, ???????????????????+3, ??????????????????+3, ?????????????????????+3
+		//??????????????????????????+3,??????????????????+3,????????????????????+3,??????????????+3,??????????????+3,???????????????????????+3, ???????????????????+3, ??????????????????+3, ?????????????????????+3
 
 		struct SInitialItem
 		{
@@ -366,7 +371,7 @@ void CInputDB::PlayerLoad(LPDESC d, const char * data)
 	{
 		lMapIndex = SECTREE_MANAGER::instance().GetMapIndex(pTab->x, pTab->y);
 
-		if (lMapIndex == 0) // ��ǥ�� ã�� �� ����.
+		if (lMapIndex == 0) // ?????????????? ???????? ?????? ????????????.
 		{
 			lMapIndex = EMPIRE_START_MAP(d->GetAccountTable().bEmpire);
 			pos.x = EMPIRE_START_X(d->GetAccountTable().bEmpire);
@@ -380,11 +385,11 @@ void CInputDB::PlayerLoad(LPDESC d, const char * data)
 	}
 	pTab->lMapIndex = lMapIndex;
 
-	// Private �ʿ� �־��µ�, Private ���� ����� ���¶�� �ⱸ�� ���ư��� �Ѵ�.
+	// Private ???????? ????????????????, Private ???????????? ??????????????? ????????????????? ???????????? ???????????????????? ????????.
 	// ----
-	// �ٵ� �ⱸ�� ���ư��� �Ѵٸ鼭... �� �ⱸ�� �ƴ϶� private map �� �����Ǵ� pulic map�� ��ġ�� ã�İ�...
-	// ���縦 �𸣴�... �� �ϵ��ڵ� �Ѵ�.
-	// �Ʊ͵����̸�, �ⱸ��...
+	// ???????? ???????????? ???????????????????? ??????????... ?????? ???????????? ?????????? private map ?????? ???????????????????? pulic map?????? ?????????????? ??????????...
+	// ???????????? ??????????... ?????? ???????????????? ????????.
+	// ????????????????????????, ????????????...
 	// by rtsummit
 	if (!SECTREE_MANAGER::instance().GetValidLocation(pTab->lMapIndex, pTab->x, pTab->y, lMapIndex, pos, d->GetEmpire()))
 	{
@@ -512,11 +517,11 @@ void CInputDB::Boot(const char* data)
 {
 	signal_timer_disable();
 
-	// ��Ŷ ������ üũ
+	// ???????? ?????????????????? ????
 	DWORD dwPacketSize = decode_4bytes(data);
 	data += 4;
 
-	// ��Ŷ ���� üũ
+	// ???????? ???????????? ????
 	BYTE bVersion = decode_byte(data);
 	data += 1;
 
@@ -835,7 +840,7 @@ void CInputDB::Boot(const char* data)
 	data += size * sizeof(TItemIDRangeTable);
 
 	//ADMIN_MANAGER
-	//������ ���
+	//?????????????????? ?????????
 	int ChunkSize = decode_2bytes(data );
 	data += 2;
 	int HostSize = decode_2bytes(data );
@@ -1037,6 +1042,11 @@ void CInputDB::Boot(const char* data)
 	// castle_boot
 	castle_boot();
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_INIT;
+	db_clientdesc->DBPacket(HEADER_GD_PRIVATE_SHOP, 0, &bSubHeader, sizeof(bSubHeader));
+#endif
+
 	// request blocked_country_ip
 	{
 		db_clientdesc->DBPacket(HEADER_GD_BLOCK_COUNTRY_IP, 0, NULL, 0);
@@ -1204,7 +1214,7 @@ void CInputDB::SafeboxLoad(LPDESC d, const char * c_pData)
 	// END_OF_ADD_PREMIUM
 
 	//if (d->GetCharacter()->IsEquipUniqueItem(UNIQUE_ITEM_SAFEBOX_EXPAND))
-	//bSize = 3; // â��Ȯ���
+	//bSize = 3; // ???????????????????
 
 	//d->GetCharacter()->LoadSafebox(p->bSize * SAFEBOX_PAGE_SIZE, p->dwGold, p->wItemCount, (TPlayerItem *) (c_pData + sizeof(TSafeboxTable)));
 	d->GetCharacter()->LoadSafebox(bSize * SAFEBOX_PAGE_SIZE, p->dwGold, p->wItemCount, (TPlayerItem *) (c_pData + sizeof(TSafeboxTable)));
@@ -1224,7 +1234,7 @@ void CInputDB::SafeboxChangeSize(LPDESC d, const char * c_pData)
 }
 
 //
-// @version	05/06/20 Bang2ni - ReqSafeboxLoad �� ���
+// @version	05/06/20 Bang2ni - ReqSafeboxLoad ?????? ?????????
 //
 void CInputDB::SafeboxWrongPassword(LPDESC d)
 {
@@ -1284,7 +1294,7 @@ void CInputDB::LoginAlready(LPDESC d, const char * c_pData)
 	if (!d)
 		return;
 
-	// INTERNATIONAL_VERSION �̹� �������̸� ���� ����
+	// INTERNATIONAL_VERSION ???????? ?????????????????????????? ???????????? ????????????
 	{ 
 		TPacketDGLoginAlready * p = (TPacketDGLoginAlready *) c_pData;
 
@@ -1763,11 +1773,11 @@ void CInputDB::AuthLogin(LPDESC d, const char * c_pData)
 
 	if (bResult)
 	{
-		// Panama ��ȣȭ �ѿ� �ʿ��� Ű ������
+		// Panama ?????????? ???????? ?????????????? ?? ??????????????????
 		SendPanamaList(d);
 		ptoc.dwLoginKey = d->GetLoginKey();
 
-		//NOTE: AuthSucess���� ���� �������� �ȱ׷��� PHASE Close�� �Ǽ� �������� �ʴ´�.-_-
+		//NOTE: AuthSucess???????????? ???????????? ???????????????????????? ???????????????? PHASE Close?????? ???????? ???????????????????????? ??????????.-_-
 		//Send Client Package CryptKey
 		{
 			DESC_MANAGER::instance().SendClientPackageCryptKey(d);
@@ -1797,11 +1807,11 @@ void CInputDB::AuthLoginOpenID(LPDESC d, const char * c_pData)
 
 	if (bResult)
 	{
-		// Panama ��ȣȭ �ѿ� �ʿ��� Ű ������
+		// Panama ?????????? ???????? ?????????????? ?? ??????????????????
 		SendPanamaList(d);
 		ptoc.dwLoginKey = d->GetLoginKey();
 
-		//NOTE: AuthSucess���� ���� �������� �ȱ׷��� PHASE Close�� �Ǽ� �������� �ʴ´�.-_-
+		//NOTE: AuthSucess???????????? ???????????? ???????????????????????? ???????????????? PHASE Close?????? ???????? ???????????????????????? ??????????.-_-
 		//Send Client Package CryptKey
 		{
 			DESC_MANAGER::instance().SendClientPackageCryptKey(d);
@@ -1831,7 +1841,7 @@ void CInputDB::ChangeEmpirePriv(const char* c_pData)
 }
 
 /**
- * @version 05/06/08	Bang2ni - ���ӽð� �߰�
+ * @version 05/06/08	Bang2ni - ???????????????? ????????
  */
 void CInputDB::ChangeGuildPriv(const char* c_pData)
 {
@@ -2170,7 +2180,7 @@ void CInputDB::ReloadAdmin(const char * c_pData )
 
 ////////////////////////////////////////////////////////////////////
 // Analyze
-// @version	05/06/10 Bang2ni - ������ �������� ����Ʈ ��Ŷ(HEADER_DG_MYSHOP_PRICELIST_RES) ó����ƾ �߰�.
+// @version	05/06/10 Bang2ni - ?????????????????? ???????????????????????? ?????????????? ????????(HEADER_DG_MYSHOP_PRICELIST_RES) ???????????????? ????????.
 ////////////////////////////////////////////////////////////////////
 int CInputDB::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 {
@@ -2524,13 +2534,18 @@ int CInputDB::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 	case HEADER_DG_NEED_LOGIN_LOG:
 		DetailLog( (TPacketNeedLoginLogInfo*) c_pData );
 		break;
-	// ���� ���� ��� �׽�Ʈ
+	// ???????????? ???????????? ????????? ??????????
 	case HEADER_DG_ITEMAWARD_INFORMER:
 		ItemAwardInformer((TPacketItemAwardInfromer*) c_pData);
 		break;
 	case HEADER_DG_RESPOND_CHANNELSTATUS:
 		RespondChannelStatus(DESC_MANAGER::instance().FindByHandle(m_dwHandle), c_pData);
 		break;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	case HEADER_DG_PRIVATE_SHOP:
+		PrivateShop(DESC_MANAGER::instance().FindByHandle(m_dwHandle), c_pData);
+		break;
+#endif
 #ifdef __AUCTION__
 	case HEADER_DG_AUCTION_RESULT:
 		if (auction_server)
@@ -2697,7 +2712,7 @@ void CInputDB::DetailLog(const TPacketNeedLoginLogInfo* info)
 
 void CInputDB::ItemAwardInformer(TPacketItemAwardInfromer *data)
 {	
-	LPDESC d = DESC_MANAGER::instance().FindByLoginName(data->login);	//login����
+	LPDESC d = DESC_MANAGER::instance().FindByLoginName(data->login);	//login????????????
 	
 	if(d == NULL)
 		return;
@@ -2706,12 +2721,12 @@ void CInputDB::ItemAwardInformer(TPacketItemAwardInfromer *data)
 		if (d->GetCharacter())
 		{
 			LPCHARACTER ch = d->GetCharacter();	
-			ch->SetItemAward_vnum(data->vnum);	// ch �� �ӽ� �����س��ٰ� QuestLoad �Լ����� ó��
+			ch->SetItemAward_vnum(data->vnum);	// ch ?????? ???????? ???????????????????????????? QuestLoad ???????????????????? ????????
 			ch->SetItemAward_cmd(data->command);		
 
-			if(d->IsPhase(PHASE_GAME))			//�����������϶�
+			if(d->IsPhase(PHASE_GAME))			//??????????????????????????????????????
 			{
-				quest::CQuestManager::instance().ItemInformer(ch->GetPlayerID(),ch->GetItemAward_vnum());	//questmanager ȣ��
+				quest::CQuestManager::instance().ItemInformer(ch->GetPlayerID(),ch->GetItemAward_vnum());	//questmanager ????????
 			}
 		}
 	}
@@ -2735,3 +2750,354 @@ void CInputDB::RespondChannelStatus(LPDESC desc, const char* pcData)
 	desc->Packet(&bSuccess, sizeof(bSuccess));
 	desc->SetChannelStatusRequested(false);
 }
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
+{
+	const BYTE bSubHeader = *reinterpret_cast<const BYTE*>(c_pData);
+	c_pData += sizeof(BYTE);
+
+	switch (bSubHeader)
+	{
+		case PRIVATE_SHOP_DG_SUBHEADER_CREATE_RESULT:
+		{
+			TPacketDGPrivateShopCreateResult* p = (TPacketDGPrivateShopCreateResult*)c_pData;
+
+			CPrivateShopManager::Instance().BuildPrivateShopResult(p->privateShopTable.dwOwner, &p->privateShopTable, p->bSuccess);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_NO_SHOP:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_CLOSE_RESULT_BALANCE_AVAILABLE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You must withdraw your earnings before you can close your personal shop.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_DESTROY:
+		{
+			if (d && d->GetCharacter())
+				CPrivateShopManager::Instance().ClosePrivateShop(d->GetCharacter());
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_SPAWN:
+		{
+			TPrivateShop* pPrivateShopTable = (TPrivateShop*)c_pData;
+			c_pData += sizeof(TPrivateShop);
+
+			const WORD wCount = *reinterpret_cast<const WORD*>(c_pData);
+			c_pData += sizeof(WORD);
+
+			TPlayerPrivateShopItem* pShopItem = (TPlayerPrivateShopItem*)c_pData;
+
+			std::vector<TPlayerPrivateShopItem> vec_shopItem;
+			for (int i = 0; i < wCount; ++i, ++pShopItem)
+				vec_shopItem.push_back(*pShopItem);
+
+			CPrivateShopManager::Instance().SpawnPrivateShop(pPrivateShopTable, vec_shopItem);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_DESPAWN:
+		{
+			const DWORD dwPID = *reinterpret_cast<const DWORD*>(c_pData);
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(dwPID);
+			if (!pPrivateShop)
+				return;
+
+			LogManager::Instance().CharLog(dwPID, 0, 0, 0, "PRIVATE SHOP DESPAWN", "", "");
+			CPrivateShopManager::Instance().DeletePrivateShop(dwPID);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_LOAD:
+		{
+			TPrivateShop* pPrivateShopTable = (TPrivateShop*)c_pData;
+			if (!d || !d->GetCharacter())
+			{
+				BYTE header = PRIVATE_SHOP_GD_SUBHEADER_LOGOUT;
+				db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, m_dwHandle, sizeof(header) + sizeof(DWORD));
+				db_clientdesc->Packet(&header, sizeof(header));
+				db_clientdesc->Packet(&pPrivateShopTable->dwOwner, sizeof(DWORD));
+				sys_log(0, "PRIVATESHOP_GAME: load_owner_gone pid=%u handle=%u", pPrivateShopTable->dwOwner, m_dwHandle);
+				return;
+			}
+
+			d->GetCharacter()->SetPrivateShopTable(*pPrivateShopTable);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_LOAD:
+		{
+			if (!d || !d->GetCharacter())
+				return;
+
+			const WORD wCount = *reinterpret_cast<const WORD*>(c_pData);
+			c_pData += sizeof(WORD);
+
+			TPlayerPrivateShopItem* pShopItem = (TPlayerPrivateShopItem*)c_pData;
+
+			for (int i = 0; i < wCount; ++i, ++pShopItem)
+			{
+				d->GetCharacter()->SetPrivateShopItem(*pShopItem);
+			}
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_FALSE_ITEM:
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKIN_FALSE_ITEM:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("This item is currently unavailable.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_FALSE_PRICE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Refresh your search result to sync price of the item.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_MODIFY_STATE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot buy an item while a personal shop is in a modifying state.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_NO_GOLD:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have enough Yang."));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_NO_CHEQUE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have enough Won."));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_BUY_REQUEST:
+		{
+			TPacketDGPrivateShopBuyRequest* p = (TPacketDGPrivateShopBuyRequest*)c_pData;
+
+			if (d && d->GetCharacter())
+				CPrivateShopManager::Instance().ItemTransaction(d->GetCharacter(), &p->TRequestedItem, p->dwReservation);
+			else
+			{
+				CPrivateShopManager::Instance().SendItemTransactionFailedResult(p->TRequestedItem.dwOwner, p->TRequestedItem.wPos, p->dwReservation);
+				sys_log(0, "PRIVATESHOP_GAME: buy_cancel_disconnected pid=%u shop=%u item=%u", p->dwCustomerPID, p->TRequestedItem.dwOwner, p->TRequestedItem.dwID);
+			}
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_CANCEL_BUY:
+		{
+			const auto* p = reinterpret_cast<const TPacketGDPrivateShopFailedBuy*>(c_pData);
+			// TCP ordering places this after the synchronous purchase handler.
+			CPrivateShopManager::Instance().SendItemTransactionFailedResult(p->dwShopID, p->wPos, p->dwReservation);
+			sys_log(0, "PRIVATESHOP_GAME: reservation_cancel_ack shop=%u pos=%u token=%u", p->dwShopID, p->wPos, p->dwReservation);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_REMOVE_ITEM:
+		{
+			const DWORD dwShopID = *reinterpret_cast<const DWORD*>(c_pData);
+			c_pData += sizeof(DWORD);
+
+			const WORD wPos = *reinterpret_cast<const WORD*>(c_pData);
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(dwShopID);
+			if (!pPrivateShop)
+				return;
+
+			pPrivateShop->RemoveItem(wPos);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ADD_ITEM:
+		{
+			const DWORD dwShopID = *reinterpret_cast<const DWORD*>(c_pData);
+			c_pData += sizeof(DWORD);
+
+			const TPlayerPrivateShopItem TPrivateShopItem = *(TPlayerPrivateShopItem*)c_pData;
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(dwShopID);
+			if (!pPrivateShop)
+				return;
+
+			sys_err("Adding item to private shop!");
+			pPrivateShop->ItemCheckin(TPrivateShopItem);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_STATE_UPDATE:
+		{
+			const TPacketDGPrivateShopStateUpdate* p = (TPacketDGPrivateShopStateUpdate*)c_pData;
+
+			if (d && d->GetCharacter())
+				d->GetCharacter()->SetPrivateShopState(p->bState, true);
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(p->dwPID);
+			if (pPrivateShop)
+				pPrivateShop->SetState(p->bState);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_WITHDRAW_RESULT_NO_BALANCE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("There is no money to collect.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_NOT_MODIFY_STATE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_WITHDRAW:
+		{
+			const TPacketDGPrivateShopWithdraw* p = (TPacketDGPrivateShopWithdraw*)c_pData;
+
+			if (d && d->GetCharacter())
+				d->GetCharacter()->WithdrawPrivateShop(p->llGold, p->dwCheque);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_PRICE_CHANGE:
+		{
+			const TPacketPrivateShopItemPriceChange* p = (TPacketPrivateShopItemPriceChange*)c_pData;
+
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChangePrivateShopItemPrice(p->wPos, p->TPrice.llGold, p->TPrice.dwCheque);
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(p->dwShopID);
+			if (pPrivateShop)
+				pPrivateShop->ChangeItemPrice(p->wPos, p->TPrice.llGold, p->TPrice.dwCheque);
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_MOVE:
+		{
+			const TPacketPrivateShopItemMove* p = (TPacketPrivateShopItemMove*)c_pData;
+
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChangePrivateShopItemPos(p->wPos, p->wChangePos);
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(p->dwShopID);
+			if (pPrivateShop)
+				pPrivateShop->MoveItem(p->wPos, p->wChangePos);
+		};
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_CANNOT_MOVE_ITEM:
+		{
+			if (!d || !d->GetCharacter())
+				return;
+
+			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot move the item to that position.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKIN_REQ:
+		{
+			const TPacketDGPrivateShopItemCheckin* p = (TPacketDGPrivateShopItemCheckin*)c_pData;
+
+			if (d && d->GetCharacter())
+			{
+				CPrivateShopManager::Instance().ItemCheckin(d->GetCharacter(), &p->TItem);
+			}
+
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKOUT_REQ:
+		{
+			const TPacketDGPrivateShopItemCheckout* p = (TPacketDGPrivateShopItemCheckout*)c_pData;
+
+			if (d && d->GetCharacter())
+			{
+				CPrivateShopManager::Instance().ItemCheckout(d->GetCharacter(), p->wSrcPos, p->TDstPos);
+			}
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_EXPIRE:
+		{
+			const WORD wPos = *reinterpret_cast<const WORD*>(c_pData);
+
+			if (d && d->GetCharacter())
+			{
+				// Notify the player and remove the private shop item
+				d->GetCharacter()->ItemExpireUpdate(wPos);
+			}
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_SHOP_NOT_AVAILABLE:
+		{
+			if (!d || !d->GetCharacter())
+				return;
+
+			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your personal shop is currently unavailable.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_TITLE_CHANGE:
+		{
+			const TPacketPrivateShopTitleChange* p = (TPacketPrivateShopTitleChange*)c_pData;
+
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ChangePrivateShopTitle(p->szTitle);
+
+			LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShop(p->dwShopID);
+			if (pPrivateShop)
+				pPrivateShop->ChangeTitle(p->szTitle);
+
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_CLOSE:
+		{
+			if (d && d->GetCharacter())
+				d->GetCharacter()->ClosePrivateShop();
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_NO_AVAILABLE_SPACE:
+		{
+			if (!d || !d->GetCharacter())
+				return;
+
+			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot place any more items in your personal shop.", GetLanguage()));
+		}
+		break;
+
+		case PRIVATE_SHOP_DG_SUBHEADER_SALE_UPDATE:
+		{
+			const TPacketDGPrivateShopSaleUpdate* p = (TPacketDGPrivateShopSaleUpdate*)c_pData;
+
+			if (!d || !d->GetCharacter())
+				return;
+
+			d->GetCharacter()->SaleUpdate(p->TItem, p->szCustomerName);
+		}
+		break;
+	}
+}
+#endif

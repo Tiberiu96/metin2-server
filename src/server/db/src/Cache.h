@@ -59,6 +59,31 @@ class CItemPriceListTableCache : public cache< TItemPriceListTable >
 	static const int	s_nMinFlushSec;		///< Minimum cache expire time
 };
 // END_OF_MYSHOP_PRICE_LIST
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+class CPrivateShopCache : public cache<TPrivateShop>
+{
+    public:
+	CPrivateShopCache();
+	virtual ~CPrivateShopCache();
+
+	void Delete();
+	virtual void OnFlush();
+
+	DWORD GetLastUpdateTime() { return m_lastUpdateTime; }
+};
+
+class CPrivateShopItemCache : public cache<TPlayerPrivateShopItem>
+{
+    public:
+	CPrivateShopItemCache();
+	virtual ~CPrivateShopItemCache();
+
+	void Delete();
+	virtual void OnFlush();
+
+	DWORD GetLastUpdateTime() { return m_lastUpdateTime; }
+};
+#endif
 #ifdef __AUCTION__
 
 class CAuctionItemInfoCache : public cache <TAuctionItemInfo>

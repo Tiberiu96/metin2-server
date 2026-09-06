@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Irás mudar de canal em 3 segundos";
+
+"You have increased available space on your personal shop.";
+"Aumentaste o espaço disponível na tua loja.";
+
+"Your personal shop is currently unavailable.";
+"A tua loja está indisponível de momento.";
+
+"You cannot place any more items in your personal shop.";
+"Não podes adicionar mais itens à loja.";
+
+"You cannot move the item to that position.";
+"Não podes mover o item para essa posição.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"A loja tem de estar no modo de gestão.";
+
+"There is no money to collect.";
+"Não há dinheiro para levantar.";
+
+"Refresh your search result to sync price of the item.";
+"Atualiza a pesquisa para veres o preço atual.";
+
+"This item is currently unavailable.";
+"Este item está indisponível de momento.";
+
+"You do not have an open personal shop.";
+"Não tens uma loja aberta.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Levanta os lucros antes de fechares a loja.";
+
+"You cannot use a personal shop now.";
+"Não podes usar a loja agora.";
+
+"You cannot open a personal shop without a Bundle.";
+"Precisas de um embrulho para abrir uma loja.";
+
+"You have already opened your personal shop.";
+"Já abriste a tua loja.";
+
+"You cannot open a personal shop in a dungeon.";
+"Não podes abrir uma loja numa masmorra.";
+
+"Please choose another title name for your personal shop.";
+"Escolhe outro nome para a tua loja.";
+
+"The entered name is too short.";
+"Escolhe um nome mais longo.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Não podes vender itens da Loja de Itens na loja privada.";
+
+"You cannot sell equipped items in a personal shop.";
+"Não podes vender itens equipados na loja.";
+
+"You cannot sell locked items in a personal shop.";
+"Não podes vender itens bloqueados na loja.";
+
+"Your personal shop has been closed.";
+"A tua loja foi fechada.";
+
+"Teleport to the private shop has been canceled.";
+"O teletransporte para a loja foi cancelado.";
+
+"%u seconds until teleport.";
+"Teletransporte dentro de %u segundos.";
+
+"Your logout has been canceled.";
+"A tua desconexão foi cancelada.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Vendeste x%lld %s por %s Yang.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s foi removido da loja porque o tempo terminou.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Não podes levantar: ultrapassarias 2 mil milhões de Yang.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Levantaste %lld Yang dos lucros da tua loja.";
+
+"You cannot trade while another window is open.";
+"Fecha as outras janelas de comércio para continuar.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Atingiste o tempo premium máximo para a tua loja.";
+
+"You have increased Premium Personal Shop duration.";
+"Prolongaste a duração da loja premium.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Atingiste o tempo premium máximo para a tua loja.";
+
+"You cannot use items while editing your personal shop.";
+"Não podes usar itens enquanto geres a loja.";
+
+"Please wait a few moments before building your personal shop again.";
+"Espera um pouco antes de voltares a criar uma loja.";
+
+"You cannot open a personal shop while another window is open.";
+"Fecha as outras janelas de comércio para continuar.";
+
+"You cannot close a personal shop while another window is open.";
+"Fecha as outras janelas de comércio para continuar.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Fecha as outras janelas de comércio para continuar.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Espera um pouco antes de voltares a comprar numa loja.";
+
+"You cannot buy an item from your own personal shop.";
+"Não podes comprar na tua própria loja.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Espera um pouco antes de voltares a levantar lucros.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Fecha as outras janelas de comércio para continuar.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"O valor total dos itens à venda ultrapassa o limite permitido.";
+
+"Please wait a moment before searching other personal shops again.";
+"Espera um pouco antes de voltares a procurar lojas.";
+
+"Close your current personal shop before opening a new one.";
+"Fecha a tua loja atual antes de abrires outra.";
+
+"You have sold x%d %s for %s Yangs.";
+"Vendeste x%d %s por %s Yang.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Vendeste x%d %s por %s Yang e %s Won.";
+
+"You cannot build a personal shop at this moment. ";
+"Não podes usar a loja agora.";
+
+"You are too far away from your personal shop.";
+"Estás demasiado longe da tua loja.";
+
+"You cannot close a personal shop from a different location.";
+"Não podes fechar a loja a partir de outro local.";
+
+"This personal shop item has an invalid price.";
+"Este item da loja tem um preço inválido.";
+
+"You have bought x%d %s.";
+"Compraste x%d %s.";
+
+"You have bought %s.";
+"Compraste %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"Não podes pôr embrulhos à venda ao criares a loja.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Não podes vender itens da Loja de Itens na loja privada.";
+
+"Equipped items cannot be sold in a private shop.";
+"Não podes vender itens equipados na loja.";
+
+"Items in use cannot be sold in a private shop.";
+"Não podes vender itens que estão em uso.";
+
+"Private Shop";
+"Loja privada";
+
+"You don't have enough space in your inventory.";
+"Não tens espaço suficiente no inventário.";
+
+"You don't have enough Yang.";
+"Não tens Yang suficiente.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Levantaste %u Won dos lucros da tua loja.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Levantaste %lld Yang e %u Won dos lucros da tua loja.";
+
+"Please wait before another personal shop action.";
+"Espera um pouco antes de realizar outra operação na loja.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Não podes comprar enquanto a loja está em gestão.";
+
+"You cannot open a private shop in this area.";
+"Não podes abrir uma loja aqui.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Espera um pouco antes de realizar outra operação na loja.";
+
+"You cannot open a private shop while another window is open.";
+"Fecha as outras janelas de comércio para continuar.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Espera um pouco antes de realizar outra operação na loja.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Espera um pouco antes de realizar outra operação na loja.";
+
+"You can't use a private shop now.";
+"Não podes usar a loja agora.";

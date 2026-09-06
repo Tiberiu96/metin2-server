@@ -15,6 +15,9 @@ CLoginData::CLoginData()
 	m_dwBillID = 0;
 	m_lastPlayTime = 0;
 	m_dwLastPlayerID = 0;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	m_dwLastPlayerHandle = 0;
+#endif
 
 	memset(&m_data, 0, sizeof(TAccountTable));
 }
@@ -121,3 +124,12 @@ int * CLoginData::GetPremiumPtr()
 	return &m_aiPremiumTimes[0];
 }
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+void CLoginData::SetPremium(EPremiumTypes type, int iPremiumDuration)
+{
+	if (type >= PREMIUM_MAX_NUM)
+		return;
+
+	m_aiPremiumTimes[type] = iPremiumDuration;
+}
+#endif

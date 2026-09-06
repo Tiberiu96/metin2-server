@@ -30,6 +30,8 @@
 #include "refine.h"
 #include "banword.h"
 #include "priv_manager.h"
+#include "private_shop.h"
+#include "private_shop_manager.h"
 #include "war_map.h"
 #include "building.h"
 #include "login_sim.h"
@@ -86,7 +88,7 @@
 #include <execinfo.h>
 #endif
 
-// À©µµ¿ì¿¡¼­ Å×½ºÆ®ÇÒ ¶§´Â Ç×»ó ¼­¹öÅ° Ã¼Å©
+// ï¿½ï¿½ï¿½ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½×½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½Å° Ã¼Å©
 #ifdef _WIN32
 	//#define _USE_SERVER_KEY_
 #endif
@@ -108,10 +110,10 @@ void WriteMallocMessage(const char* p1, const char* p2, const char* p3, const ch
 #endif
 
 // TRAFFIC_PROFILER
-static const DWORD	TRAFFIC_PROFILE_FLUSH_CYCLE = 3600;	///< TrafficProfiler ÀÇ Flush cycle. 1½Ã°£ °£°Ý
+static const DWORD	TRAFFIC_PROFILE_FLUSH_CYCLE = 3600;	///< TrafficProfiler ï¿½ï¿½ Flush cycle. 1ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
 // END_OF_TRAFFIC_PROFILER
 
-// °ÔÀÓ°ú ¿¬°áµÇ´Â ¼ÒÄÏ
+// ï¿½ï¿½ï¿½Ó°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½
 volatile int	num_events_called = 0;
 int             max_bytes_written = 0;
 int             current_bytes_written = 0;
@@ -247,7 +249,7 @@ void heartbeat(LPHEART ht, int pulse)
 
 	t = get_dword_time();
 
-	// 1ÃÊ¸¶´Ù
+	// 1ï¿½Ê¸ï¿½ï¿½ï¿½
 	if (!(pulse % ht->passes_per_sec))
 	{
 #ifdef ENABLE_LIMIT_TIME
@@ -309,14 +311,14 @@ void heartbeat(LPHEART ht, int pulse)
 	}
 
 	//
-	// 25 PPS(Pulse per second) ¶ó°í °¡Á¤ÇÒ ¶§
+	// 25 PPS(Pulse per second) ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	//
 
-	// ¾à 1.16ÃÊ¸¶´Ù
+	// ï¿½ï¿½ 1.16ï¿½Ê¸ï¿½ï¿½ï¿½
 	if (!(pulse % (passes_per_sec + 4)))
 		CHARACTER_MANAGER::instance().ProcessDelayedSave();
 
-	//4ÃÊ ¸¶´Ù
+	//4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #if defined (__FreeBSD__) && defined(__FILEMONITOR__)
 	if (!(pulse % (passes_per_sec * 5)))
 	{
@@ -324,7 +326,7 @@ void heartbeat(LPHEART ht, int pulse)
 	}
 #endif
 
-	// ¾à 5.08ÃÊ¸¶´Ù
+	// ï¿½ï¿½ 5.08ï¿½Ê¸ï¿½ï¿½ï¿½
 	if (!(pulse % (passes_per_sec * 5 + 2)))
 	{
 		ITEM_MANAGER::instance().Update();
@@ -383,13 +385,13 @@ void Metin2Server_Check()
 		return;
 
 
-	// ºê¶óÁú ip
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ ip
 	if (strncmp (g_szPublicIP, "189.112.1", 9) == 0)
 	{
 		return;
 	}
 
-	// Ä³³ª´Ù ip
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ip
 	if (strncmp (g_szPublicIP, "74.200.6", 8) == 0)
 	{
 		return;
@@ -413,7 +415,7 @@ void Metin2Server_Check()
 
 	if (0 > sockConnector)
 	{
-		if (true != LC_IsEurope()) // À¯·´Àº Á¢¼ÓÀ» ÇÏÁö ¸øÇÏ¸é ÀÎÁõµÈ °ÍÀ¸·Î °£ÁÖ
+		if (true != LC_IsEurope()) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			g_isInvalidServer = true;
 
 		return;
@@ -486,6 +488,7 @@ int main(int argc, char **argv)
 	CRefineManager	refine_manager;
 	CBanwordManager	banword_manager;
 	CPrivManager	priv_manager;
+	CPrivateShopManager	private_shop_manager;
 	CWarMapManager	war_map_manager;
 	building::CManager	building_manager;
 	CTargetManager	target_manager;
@@ -1004,7 +1007,7 @@ int io_loop(LPFDWATCH fdw)
 	LPDESC	d;
 	int		num_events, event_idx;
 
-	DESC_MANAGER::instance().DestroyClosed(); // PHASE_CLOSEÀÎ Á¢¼ÓµéÀ» ²÷¾îÁØ´Ù.
+	DESC_MANAGER::instance().DestroyClosed(); // PHASE_CLOSEï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 	DESC_MANAGER::instance().TryConnect();
 
 	if ((num_events = fdwatch(fdw, 0)) < 0)

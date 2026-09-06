@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Θα αλλάξεις κανάλι σε 3 δευτερόλεπτα";
+
+"You have increased available space on your personal shop.";
+"Αύξησες τον διαθέσιμο χώρο στο κατάστημά σου.";
+
+"Your personal shop is currently unavailable.";
+"Το κατάστημά σου δεν είναι διαθέσιμο τώρα.";
+
+"You cannot place any more items in your personal shop.";
+"Δεν μπορείς να προσθέσεις άλλα αντικείμενα στο κατάστημα.";
+
+"You cannot move the item to that position.";
+"Δεν μπορείς να μετακινήσεις το αντικείμενο σε αυτή τη θέση.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"Το κατάστημα πρέπει να είναι σε λειτουργία διαχείρισης.";
+
+"There is no money to collect.";
+"Δεν υπάρχουν χρήματα για ανάληψη.";
+
+"Refresh your search result to sync price of the item.";
+"Ανανέωσε την αναζήτηση για να δεις την τρέχουσα τιμή.";
+
+"This item is currently unavailable.";
+"Αυτό το αντικείμενο δεν είναι διαθέσιμο τώρα.";
+
+"You do not have an open personal shop.";
+"Δεν έχεις ανοιχτό κατάστημα.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Πάρε τα κέρδη σου πριν κλείσεις το κατάστημα.";
+
+"You cannot use a personal shop now.";
+"Δεν μπορείς να χρησιμοποιήσεις το κατάστημα τώρα.";
+
+"You cannot open a personal shop without a Bundle.";
+"Χρειάζεσαι ένα δέμα για να ανοίξεις κατάστημα.";
+
+"You have already opened your personal shop.";
+"Έχεις ήδη ανοίξει το κατάστημά σου.";
+
+"You cannot open a personal shop in a dungeon.";
+"Δεν μπορείς να ανοίξεις κατάστημα σε μπουντρούμι.";
+
+"Please choose another title name for your personal shop.";
+"Επίλεξε άλλο όνομα για το κατάστημά σου.";
+
+"The entered name is too short.";
+"Επίλεξε μεγαλύτερο όνομα.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Δεν μπορείς να πουλήσεις αντικείμενα του Item Shop στο κατάστημα.";
+
+"You cannot sell equipped items in a personal shop.";
+"Δεν μπορείς να πουλήσεις φορεμένα αντικείμενα στο κατάστημα.";
+
+"You cannot sell locked items in a personal shop.";
+"Δεν μπορείς να πουλήσεις κλειδωμένα αντικείμενα στο κατάστημα.";
+
+"Your personal shop has been closed.";
+"Το κατάστημά σου έκλεισε.";
+
+"Teleport to the private shop has been canceled.";
+"Η τηλεμεταφορά στο κατάστημα ακυρώθηκε.";
+
+"%u seconds until teleport.";
+"Τηλεμεταφορά σε %u δευτερόλεπτα.";
+
+"Your logout has been canceled.";
+"Η αποσύνδεσή σου ακυρώθηκε.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Πούλησες x%lld %s για %s Yang.";
+
+"%s has been removed from the shop as the time has expired.";
+"Το %s αφαιρέθηκε από το κατάστημα επειδή έληξε ο χρόνος του.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Δεν μπορείς να κάνεις ανάληψη: θα ξεπεράσεις τα 2 δισ. Yang.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Πήρες %lld Yang από τα κέρδη του καταστήματός σου.";
+
+"You cannot trade while another window is open.";
+"Κλείσε τα άλλα παράθυρα συναλλαγών για να συνεχίσεις.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Έφτασες τον μέγιστο χρόνο premium για το κατάστημά σου.";
+
+"You have increased Premium Personal Shop duration.";
+"Παρέτεινες τη διάρκεια του premium καταστήματος.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Έφτασες τον μέγιστο χρόνο premium για το κατάστημά σου.";
+
+"You cannot use items while editing your personal shop.";
+"Δεν μπορείς να χρησιμοποιήσεις αντικείμενα κατά τη διαχείριση του καταστήματος.";
+
+"Please wait a few moments before building your personal shop again.";
+"Περίμενε λίγο πριν δημιουργήσεις ξανά κατάστημα.";
+
+"You cannot open a personal shop while another window is open.";
+"Κλείσε τα άλλα παράθυρα συναλλαγών για να συνεχίσεις.";
+
+"You cannot close a personal shop while another window is open.";
+"Κλείσε τα άλλα παράθυρα συναλλαγών για να συνεχίσεις.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Κλείσε τα άλλα παράθυρα συναλλαγών για να συνεχίσεις.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Περίμενε λίγο πριν αγοράσεις ξανά από κατάστημα.";
+
+"You cannot buy an item from your own personal shop.";
+"Δεν μπορείς να αγοράσεις από το δικό σου κατάστημα.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Περίμενε λίγο πριν πάρεις ξανά τα κέρδη σου.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Κλείσε τα άλλα παράθυρα συναλλαγών για να συνεχίσεις.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"Η συνολική αξία των αντικειμένων προς πώληση υπερβαίνει το όριο.";
+
+"Please wait a moment before searching other personal shops again.";
+"Περίμενε λίγο πριν αναζητήσεις ξανά καταστήματα.";
+
+"Close your current personal shop before opening a new one.";
+"Κλείσε το τρέχον κατάστημά σου πριν ανοίξεις άλλο.";
+
+"You have sold x%d %s for %s Yangs.";
+"Πούλησες x%d %s για %s Yang.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Πούλησες x%d %s για %s Yang και %s Won.";
+
+"You cannot build a personal shop at this moment. ";
+"Δεν μπορείς να χρησιμοποιήσεις το κατάστημα τώρα.";
+
+"You are too far away from your personal shop.";
+"Είσαι πολύ μακριά από το κατάστημά σου.";
+
+"You cannot close a personal shop from a different location.";
+"Δεν μπορείς να κλείσεις το κατάστημα από άλλη τοποθεσία.";
+
+"This personal shop item has an invalid price.";
+"Αυτό το αντικείμενο του καταστήματος έχει μη έγκυρη τιμή.";
+
+"You have bought x%d %s.";
+"Αγόρασες x%d %s.";
+
+"You have bought %s.";
+"Αγόρασες %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"Δεν μπορείς να βάλεις δέματα προς πώληση κατά τη δημιουργία του καταστήματος.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Δεν μπορείς να πουλήσεις αντικείμενα του Item Shop στο κατάστημα.";
+
+"Equipped items cannot be sold in a private shop.";
+"Δεν μπορείς να πουλήσεις φορεμένα αντικείμενα στο κατάστημα.";
+
+"Items in use cannot be sold in a private shop.";
+"Δεν μπορείς να πουλήσεις αντικείμενα που χρησιμοποιούνται.";
+
+"Private Shop";
+"Ιδιωτικό κατάστημα";
+
+"You don't have enough space in your inventory.";
+"Δεν έχεις αρκετό χώρο στο ευρετήριό σου.";
+
+"You don't have enough Yang.";
+"Δεν έχεις αρκετά Yang.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Πήρες %u Won από τα κέρδη του καταστήματός σου.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Πήρες %lld Yang και %u Won από τα κέρδη του καταστήματός σου.";
+
+"Please wait before another personal shop action.";
+"Περίμενε λίγο πριν από την επόμενη ενέργεια στο κατάστημα.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Δεν μπορείς να αγοράσεις όσο το κατάστημα είναι σε διαχείριση.";
+
+"You cannot open a private shop in this area.";
+"Δεν μπορείς να ανοίξεις κατάστημα εδώ.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Περίμενε λίγο πριν από την επόμενη ενέργεια στο κατάστημα.";
+
+"You cannot open a private shop while another window is open.";
+"Κλείσε τα άλλα παράθυρα συναλλαγών για να συνεχίσεις.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Περίμενε λίγο πριν από την επόμενη ενέργεια στο κατάστημα.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Περίμενε λίγο πριν από την επόμενη ενέργεια στο κατάστημα.";
+
+"You can't use a private shop now.";
+"Δεν μπορείς να χρησιμοποιήσεις το κατάστημα τώρα.";

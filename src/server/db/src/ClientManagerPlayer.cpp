@@ -8,6 +8,9 @@
 #include "ItemAwardManager.h"
 #include "HB.h"
 #include "Cache.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "PrivateShopUtils.h"
+#endif
 
 extern bool g_bHotBackup;
 
@@ -347,6 +350,13 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 					peer->GetHandle(),
 					new ClientHandleInfo(dwHandle, pTab->id));
 		}
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		CDBManager::instance().ReturnQuery(GetPrivateShopItemQuery(packet->player_id),
+			QID_PRIVATE_SHOP_ITEM, peer->GetHandle(), new ClientHandleInfo(dwHandle, packet->player_id));
+		CDBManager::instance().ReturnQuery(GetPrivateShopQuery(packet->player_id),
+			QID_PRIVATE_SHOP, peer->GetHandle(), new ClientHandleInfo(dwHandle, packet->player_id));
+		sys_log(0, "PRIVATESHOP_DB: load_cached_player pid=%u handle=%u", packet->player_id, dwHandle);
+#endif
 		//ljw
 		//return;
 	}
@@ -399,6 +409,17 @@ void CClientManager::QUERY_PLAYER_LOAD(CPeer * peer, DWORD dwHandle, TPlayerLoad
 				"SELECT dwPID,bType,bApplyOn,lApplyValue,dwFlag,lDuration,lSPCost FROM affect%s WHERE dwPID=%d",
 				GetTablePostfix(), packet->player_id);
 		CDBManager::instance().ReturnQuery(queryStr, QID_AFFECT, peer->GetHandle(), new ClientHandleInfo(dwHandle, packet->player_id));
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		CDBManager::instance().ReturnQuery(GetPrivateShopItemQuery(packet->player_id),
+			QID_PRIVATE_SHOP_ITEM,
+			peer->GetHandle(),
+			new ClientHandleInfo(dwHandle, packet->player_id));
+
+		CDBManager::instance().ReturnQuery(GetPrivateShopQuery(packet->player_id),
+			QID_PRIVATE_SHOP,
+			peer->GetHandle(),
+			new ClientHandleInfo(dwHandle, packet->player_id));
+#endif
 	}
 	
 	
@@ -571,6 +592,17 @@ void CClientManager::RESULT_COMPOSITE_PLAYER(CPeer * peer, SQLMsg * pMsg, DWORD 
 			sys_log(0, "QID_ITEM %u", info->dwHandle);
 			RESULT_ITEM_LOAD(peer, pSQLResult, info->dwHandle, info->player_id);
 			break;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		case QID_PRIVATE_SHOP:
+			sys_log(0, "QID_PRIVATE_SHOP %u", info->dwHandle);
+			RESULT_PRIVATE_SHOP_LOAD(peer, pSQLResult, info->dwHandle, info->player_id);
+			break;
+
+		case QID_PRIVATE_SHOP_ITEM:
+			sys_log(0, "QID_PRIVATE_SHOP_ITEM %u", info->dwHandle);
+			RESULT_PRIVATE_SHOP_ITEM_LOAD(peer, pSQLResult, info->dwHandle, info->player_id);
+			break;
+#endif
 
 		case QID_QUEST:
 			{
@@ -1353,4 +1385,3 @@ void CClientManager::FlushPlayerCacheSet(DWORD pid)
 		delete c; 
 	}
 }
-

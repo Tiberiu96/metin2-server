@@ -160,6 +160,9 @@ class CItem : public CEntity
 
 		void		StartRealTimeExpireEvent();
 		bool		IsRealTimeItem();
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		void		SetRealTimeExpireEvent(LPEVENT event) { m_pkRealTimeExpireEvent = event; }
+#endif
 
 		void		StopUniqueExpireEvent();
 		void		StopTimerBasedOnWearExpireEvent();
@@ -212,6 +215,20 @@ class CItem : public CEntity
 		void		Lock(bool f) { m_isLocked = f; }
 		bool		isLocked() const { return m_isLocked; }
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		void				BindPrivateShop(LPPRIVATE_SHOP pPrivateShop) { m_pPrivateShop = pPrivateShop; }
+		LPPRIVATE_SHOP		GetPrivateShop() { return m_pPrivateShop; }
+
+		void		SetGoldPrice(long long llGoldPrice) { m_llGoldPrice = llGoldPrice; }
+		long long	GetGoldPrice() { return m_llGoldPrice; }
+
+		void		SetChequePrice(DWORD dwChequePrice) { m_dwChequePrice = dwChequePrice; }
+		DWORD		GetChequePrice() { return m_dwChequePrice; }
+
+		void		SetCheckinTime(time_t tCheckin) { m_tPrivateShopCheckin = tCheckin; }
+		time_t		GetCheckinTime() { return m_tPrivateShopCheckin; }
+#endif
+
 	private :
 		void		SetAttribute(int i, BYTE bType, short sValue);
 	public:
@@ -227,6 +244,10 @@ class CItem : public CEntity
 
 	protected:
 		friend class CInputDB;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		friend class CPrivateShop;
+		friend class CPrivateShopManager;
+#endif
 		bool		OnAfterCreatedItem();			// 서버상에 아이템이 모든 정보와 함께 완전히 생성(로드)된 후 불리우는 함수.
 
 	public:
@@ -295,6 +316,12 @@ class CItem : public CEntity
 		
 		DWORD		m_dwMaskVnum;
 		DWORD		m_dwSIGVnum;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		LPPRIVATE_SHOP		m_pPrivateShop;
+		long long			 m_llGoldPrice;
+		DWORD				m_dwChequePrice;
+		time_t				 m_tPrivateShopCheckin;
+#endif
 	public:
 		void SetSIGVnum(DWORD dwSIG)
 		{

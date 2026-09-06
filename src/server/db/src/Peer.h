@@ -54,6 +54,9 @@ class CPeer : public CPeerBase
 
 	void	SetMaps(long* pl);
 	long *	GetMaps() { return &m_alMaps[0]; }
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	bool	GetMap(DWORD dwMapIndex);
+#endif
 
 	bool	SetItemIDRange(TItemIDRangeTable itemRange);
 	bool	SetSpareItemIDRange(TItemIDRangeTable itemRange);

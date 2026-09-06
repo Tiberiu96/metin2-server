@@ -229,6 +229,20 @@ CCI * P2P_MANAGER::FindByPID(DWORD pid)
 	return it->second;
 }
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+LPDESC P2P_MANAGER::GetPeer(DWORD dwP2PPort)
+{
+	for (auto it = m_set_pkPeers.begin(); it != m_set_pkPeers.end(); ++it)
+	{
+		LPDESC pDesc = *it;
+		if (pDesc->GetP2PPort() == dwP2PPort)
+			return pDesc;
+	}
+
+	return nullptr;
+}
+#endif
+
 CCI * P2P_MANAGER::Find(const char * c_pszName)
 {
 	TCCIMap::const_iterator it;
