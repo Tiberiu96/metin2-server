@@ -132,6 +132,22 @@ void CPeer::SetMaps(long * pl)
 	thecore_memcpy(m_alMaps, pl, sizeof(m_alMaps));
 }
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+bool CPeer::GetMap(DWORD dwMapIndex)
+{
+	long* lMaps = GetMaps();
+
+	for (DWORD i = 0; i < sizeof(m_alMaps) / sizeof(m_alMaps[0]); ++i)
+	{
+		DWORD lMapIndex = static_cast<DWORD>(*(lMaps++));
+		if (lMapIndex == dwMapIndex)
+			return true;
+	}
+
+	return false;
+}
+#endif
+
 void CPeer::SendSpareItemIDRange()
 {
 	if (m_itemSpareRange.dwMin == 0 || m_itemSpareRange.dwMax == 0 || m_itemSpareRange.dwUsableItemIDMin == 0)
@@ -193,5 +209,4 @@ bool CPeer::CheckItemIDRangeCollision(TItemIDRangeTable itemRange)
 	
 	return true;
 }
-
 

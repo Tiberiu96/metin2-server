@@ -4,9 +4,6 @@
 
 #include "QID.h"
 #include "ClientManager.h"
-#ifdef __AUCTION__
-#include "AuctionManager.h"
-#endif
 #include "Main.h"
 
 extern CPacketInfo g_item_info;
@@ -20,6 +17,159 @@ extern int g_iItemPriceListTableCacheFlushSeconds;
 extern int g_item_count;
 const int auctionMinFlushSec = 1800;
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+CPrivateShopCache::CPrivateShopCache()
+{
+	m_expireTime = MIN(1800, g_iItemCacheFlushSeconds);
+}
+
+CPrivateShopCache::~CPrivateShopCache()
+{
+}
+
+void CPrivateShopCache::Delete()
+{
+	if (m_data.dwVnum == 0)
+		return;
+
+	if (g_test_server)
+		sys_log(0, "PRIVATESHOP_DB: cache_delete owner=%u", m_data.dwOwner);
+
+	m_data.dwVnum = 0;
+	m_bNeedQuery = true;
+	m_lastUpdateTime = time(0);
+	OnFlush();
+}
+
+void CPrivateShopCache::OnFlush()
+{
+	char szQuery[1024];
+
+	if (m_data.dwVnum == 0)
+	{
+		snprintf(szQuery, sizeof(szQuery), "DELETE FROM private_shop%s WHERE owner_id=%u", GetTablePostfix(), m_data.dwOwner);
+		CDBManager::instance().ReturnQuery(szQuery, QID_PRIVATE_SHOP_DELETE, 0, NULL);
+
+		if (g_test_server)
+			sys_log(0, "PRIVATESHOP_DB: cache_flush_delete owner=%u query=%s", m_data.dwOwner, szQuery);
+	}
+	else
+	{
+		char szEscapedTitle[TITLE_MAX_LEN * 2 + 1] { 0 };
+		char szEscapedOwnerName[CHARACTER_NAME_MAX_LEN * 2 + 1] { 0 };
+		CDBManager::instance().EscapeString(szEscapedTitle, m_data.szTitle, strlen(m_data.szTitle));
+		CDBManager::instance().EscapeString(szEscapedOwnerName, m_data.szOwnerName, strlen(m_data.szOwnerName));
+
+		snprintf(szQuery, sizeof(szQuery),
+			"REPLACE INTO private_shop%s SET "
+			"owner_id=%u, owner_name='%s', state=%u, title='%s', title_type=%u, "
+			"vnum=%u, x=%ld, y=%ld, map_index=%ld, channel=%u, port=%u, "
+			"gold=%lld, cheque=%u, page_count=%u, premium_time=%u",
+			GetTablePostfix(), m_data.dwOwner, szEscapedOwnerName, m_data.bState, szEscapedTitle,
+			m_data.bTitleType, m_data.dwVnum, m_data.lX, m_data.lY, m_data.lMapIndex,
+			m_data.bChannel, m_data.wPort, m_data.llGold, m_data.dwCheque,
+			m_data.bPageCount, m_data.tPremiumTime);
+
+		CDBManager::instance().ReturnQuery(szQuery, QID_PRIVATE_SHOP_SAVE, 0, NULL);
+		m_bNeedQuery = false;
+	}
+}
+
+CPrivateShopItemCache::CPrivateShopItemCache()
+{
+	m_expireTime = MIN(1800, g_iItemCacheFlushSeconds);
+}
+
+CPrivateShopItemCache::~CPrivateShopItemCache()
+{
+}
+
+void CPrivateShopItemCache::Delete()
+{
+	if (m_data.dwVnum == 0)
+		return;
+
+	if (g_test_server)
+		sys_log(0, "PRIVATESHOP_DB: item_cache_delete owner=%u item=%u", m_data.dwOwner, m_data.dwID);
+
+	m_data.dwVnum = 0;
+	m_bNeedQuery = true;
+	m_lastUpdateTime = time(0);
+	OnFlush();
+}
+
+void CPrivateShopItemCache::OnFlush()
+{
+	if (m_data.dwVnum == 0)
+	{
+		char szQuery[128 + 1];
+		snprintf(szQuery, sizeof(szQuery), "DELETE FROM private_shop_item%s WHERE id=%u", GetTablePostfix(), m_data.dwID);
+		CDBManager::instance().ReturnQuery(szQuery, QID_PRIVATE_SHOP_ITEM_DELETE, 0, NULL);
+
+		if (g_test_server)
+			sys_log(0, "PRIVATESHOP_DB: item_cache_flush_delete owner=%u item=%u query=%s", m_data.dwOwner, m_data.dwID, szQuery);
+	}
+	else
+	{
+		long alSockets[ITEM_SOCKET_MAX_NUM];
+		TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
+		bool isSocket = false, isAttr = false;
+
+		memset(&alSockets, 0, sizeof(long) * ITEM_SOCKET_MAX_NUM);
+		memset(&aAttr, 0, sizeof(TPlayerItemAttribute) * ITEM_ATTRIBUTE_MAX_NUM);
+
+		TPlayerPrivateShopItem* p = &m_data;
+
+		if (memcmp(alSockets, p->alSockets, sizeof(long) * ITEM_SOCKET_MAX_NUM))
+			isSocket = true;
+
+		if (memcmp(aAttr, p->aAttr, sizeof(TPlayerItemAttribute) * ITEM_ATTRIBUTE_MAX_NUM))
+			isAttr = true;
+
+		char szColumns[QUERY_MAX_LEN];
+		char szValues[QUERY_MAX_LEN];
+
+		int iLen = snprintf(szColumns, sizeof(szColumns), "id, owner_id, pos, count, vnum, gold, cheque, checkin");
+		int iValueLen = snprintf(szValues, sizeof(szValues), "%u, %u, %u, %u, %u, %lld, %u, %u",
+			p->dwID, p->dwOwner, p->wPos, p->dwCount, p->dwVnum, p->TPrice.llGold, p->TPrice.dwCheque, p->tCheckin);
+
+		if (isSocket)
+		{
+			iLen += snprintf(szColumns + iLen, sizeof(szColumns) - iLen, ", socket0, socket1, socket2");
+			iValueLen += snprintf(szValues + iValueLen, sizeof(szValues) - iValueLen, ", %lu, %lu, %lu", p->alSockets[0], p->alSockets[1], p->alSockets[2]);
+		}
+
+		if (isAttr)
+		{
+			iLen += snprintf(szColumns + iLen, sizeof(szColumns) - iLen,
+				", attrtype0, attrvalue0, attrtype1, attrvalue1, attrtype2, attrvalue2, attrtype3, attrvalue3"
+				", attrtype4, attrvalue4, attrtype5, attrvalue5, attrtype6, attrvalue6");
+
+			iValueLen += snprintf(szValues + iValueLen, sizeof(szValues) - iValueLen,
+				", %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d",
+				p->aAttr[0].bType, p->aAttr[0].sValue,
+				p->aAttr[1].bType, p->aAttr[1].sValue,
+				p->aAttr[2].bType, p->aAttr[2].sValue,
+				p->aAttr[3].bType, p->aAttr[3].sValue,
+				p->aAttr[4].bType, p->aAttr[4].sValue,
+				p->aAttr[5].bType, p->aAttr[5].sValue,
+				p->aAttr[6].bType, p->aAttr[6].sValue);
+		}
+
+		char szItemQuery[32768];
+		snprintf(szItemQuery, sizeof(szItemQuery), "REPLACE INTO private_shop_item%s (%s) VALUES(%s)", GetTablePostfix(), szColumns, szValues);
+
+		if (g_test_server)
+			sys_log(0, "PRIVATESHOP_DB: item_cache_flush_replace query=%s", szItemQuery);
+
+		CDBManager::instance().ReturnQuery(szItemQuery, QID_PRIVATE_SHOP_ITEM_SAVE, 0, NULL);
+		m_bNeedQuery = false;
+	}
+}
+#endif
+#ifdef __AUCTION__
+#include "AuctionManager.h"
+#endif
 CItemCache::CItemCache()
 {
 	m_expireTime = MIN(1800, g_iItemCacheFlushSeconds);

@@ -21,6 +21,10 @@
 #include "buff_on_attributes.h"
 #include "belt_inventory_helper.h"
 #include "../../common/VnumHelper.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "private_shop_manager.h"
+#include "private_shop.h"
+#endif
 
 CItem::CItem(DWORD dwVnum)
 	: m_dwVnum(dwVnum), m_bWindow(0), m_dwID(0), m_bEquipped(false), m_dwVID(0), m_wCell(0), m_dwCount(0), m_lFlag(0), m_dwLastOwnerPID(0),
@@ -28,6 +32,12 @@ CItem::CItem(DWORD dwVnum)
 	m_pkExpireEvent(NULL),
    	m_pkAccessorySocketExpireEvent(NULL), m_pkOwnershipEvent(NULL), m_dwOwnershipPID(0), m_bSkipSave(false), m_isLocked(false),
 	m_dwMaskVnum(0), m_dwSIGVnum (0)
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	, m_pPrivateShop(nullptr),
+	 m_llGoldPrice(0),
+	 m_dwChequePrice(0),
+	 m_tPrivateShopCheckin(0)
+#endif
 {
 	memset( &m_alSockets, 0, sizeof(m_alSockets) );
 	memset( &m_aAttr, 0, sizeof(m_aAttr) );
@@ -63,6 +73,12 @@ void CItem::Initialize()
 
 	m_bSkipSave = false;
 	m_dwLastOwnerPID = 0;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	 m_pPrivateShop = nullptr;
+	 m_llGoldPrice = 0;
+	 m_dwChequePrice = 0;
+	 m_tPrivateShopCheckin = 0;
+#endif
 }
 
 void CItem::Destroy()
@@ -1327,6 +1343,14 @@ EVENTFUNC(unique_expire_event)
 		{
 			sys_log(0, "UNIQUE_ITEM: expire %s %u", pkItem->GetName(), pkItem->GetID());
 			pkItem->SetUniqueExpireEvent(NULL);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+			if (pkItem->GetPrivateShop())
+			{
+				sys_log(0, "PRIVATESHOP_GAME: action=item_unique_expire shop_owner=%u item_id=%u vnum=%u cell=%u", pkItem->GetPrivateShop()->GetID(), pkItem->GetID(), pkItem->GetVnum(), pkItem->GetCell());
+				CPrivateShopManager::Instance().SendItemExpire(pkItem);
+				return 0;
+			}
+#endif
 			ITEM_MANAGER::instance().RemoveItem(pkItem, "UNIQUE_EXPIRE");
 			return 0;
 		}
@@ -1343,6 +1367,14 @@ EVENTFUNC(unique_expire_event)
 		if (pkItem->GetSocket(ITEM_SOCKET_UNIQUE_REMAIN_TIME) <= cur)
 		{
 			pkItem->SetUniqueExpireEvent(NULL);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+			if (pkItem->GetPrivateShop())
+			{
+				sys_log(0, "PRIVATESHOP_GAME: action=item_unique_expire shop_owner=%u item_id=%u vnum=%u cell=%u", pkItem->GetPrivateShop()->GetID(), pkItem->GetID(), pkItem->GetVnum(), pkItem->GetCell());
+				CPrivateShopManager::Instance().SendItemExpire(pkItem);
+				return 0;
+			}
+#endif
 			ITEM_MANAGER::instance().RemoveItem(pkItem, "UNIQUE_EXPIRE");
 			return 0;
 		}
@@ -1431,6 +1463,15 @@ EVENTFUNC(real_time_expire_event)
 			break;
 		}
 
+		#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		item->SetRealTimeExpireEvent(NULL);
+		if (item->GetPrivateShop())
+		{
+			sys_log(0, "PRIVATESHOP_GAME: action=item_real_time_expire shop_owner=%u item_id=%u vnum=%u cell=%u", item->GetPrivateShop()->GetID(), item->GetID(), item->GetVnum(), item->GetCell());
+			CPrivateShopManager::Instance().SendItemExpire(item);
+			return 0;
+		}
+#endif
 		ITEM_MANAGER::instance().RemoveItem(item, "REAL_TIME_EXPIRE");
 
 		return 0;

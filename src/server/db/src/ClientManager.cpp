@@ -1233,10 +1233,31 @@ void CClientManager::QUERY_SETUP(CPeer * peer, DWORD dwHandle, const char * c_pD
 
 		InsertLoginData(pkLD);
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		if (pck->bHasPrivateShop)
+		{
+			sys_log(0, "PRIVATESHOP_DB: action=recreate_from_setup owner=%u channel=%u port=%u", pck->dwPID, p->bChannel, p->wListenPort);
+			LPPRIVATE_SHOP pPrivateShop = PrivateShopSpawn(pck->dwPID);
+			if (pPrivateShop)
+			{
+				pPrivateShop->BindOwnerPeerHandle(peer->GetHandle());
+				pPrivateShop->SetOwnerHandle(pck->dwHandle);
+			}
+			else
+			{
+				sys_err("PRIVATESHOP_DB: reason=recreate_failed owner=%u", pck->dwPID);
+			}
+		}
+#endif
+
 		if (InsertLogonAccount(pck->szLogin, peer->GetHandle(), pck->szHost))
 		{
 			sys_log(0, "SETUP: login %u %s login_key %u host %s", pck->dwID, pck->szLogin, pck->dwLoginKey, pck->szHost);
 			pkLD->SetPlay(true);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+			pkLD->SetLastPlayerID(pck->dwPID);
+			pkLD->SetLastPlayerHandle(pck->dwHandle);
+#endif
 
 			if (m_pkAuthPeer)
 			{
@@ -1265,6 +1286,9 @@ void CClientManager::QUERY_SETUP(CPeer * peer, DWORD dwHandle, const char * c_pD
 	CPrivManager::instance().SendPrivOnSetup(peer);
 	SendEventFlagsOnSetup(peer);
 	marriage::CManager::instance().OnSetup(peer);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	PrivateShopPeerSpawn(peer);
+#endif
 }
 
 void CClientManager::QUERY_ITEM_FLUSH(CPeer * pkPeer, const char * c_pData)
@@ -1531,6 +1555,9 @@ void CClientManager::UpdatePlayerCache()
 
 			// Item Cache�� ������Ʈ
 			UpdateItemCacheSet(c->Get()->id);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+			UpdatePrivateShopItemCacheSet(c->Get()->id);
+#endif
 		}
 		else if (c->CheckFlushTimeout())
 			c->Flush();
@@ -2398,6 +2425,11 @@ void CClientManager::ProcessPackets(CPeer * peer)
 				QUERY_EMPIRE_SELECT(peer, dwHandle, (TEmpireSelectPacket *) data);
 				break;
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+			case HEADER_GD_PRIVATE_SHOP:
+				ProcessPrivateShopPacket(peer, dwHandle, data);
+				break;
+#endif
 			case HEADER_GD_SETUP:
 				QUERY_SETUP(peer, dwHandle, data);
 				break;
@@ -2830,6 +2862,31 @@ void CClientManager::RemovePeer(CPeer * pPeer)
 			else
 				++it;
 		}
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		for (const auto& kv : m_map_privateShop)
+		{
+			LPPRIVATE_SHOP pPrivateShop = kv.second.get();
+			if (pPrivateShop->GetShopPeerHandle() != pPeer->GetHandle())
+				continue;
+
+			if (GetPrivateShopCache(pPrivateShop->GetOwner()))
+				FlushPrivateShopCache(pPrivateShop->GetOwner());
+
+			if (GetPrivateShopItemCacheSet(pPrivateShop->GetOwner()))
+				FlushPrivateShopItemCacheSet(pPrivateShop->GetOwner());
+
+			pPrivateShop->BindShopPeerHandle(0);
+			if (pPeer->GetHandle() == pPrivateShop->GetOwnerPeerHandle())
+			{
+				pPrivateShop->BindOwnerPeerHandle(0);
+				pPrivateShop->SetOwnerHandle(0);
+			}
+
+			pPrivateShop->SetState(STATE_UNAVAILABLE);
+			sys_log(0, "PRIVATESHOP_DB: action=peer_removed owner=%u peer=%u", pPrivateShop->GetOwner(), pPeer->GetHandle());
+		}
+#endif
 	}
 
 	m_peerList.remove(pPeer);
@@ -2900,8 +2957,13 @@ int CClientManager::AnalyzeQueryResult(SQLMsg * msg)
 		case QID_ITEM:
 		case QID_QUEST:
 		case QID_AFFECT:
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		case QID_PRIVATE_SHOP:
+		case QID_PRIVATE_SHOP_ITEM:
+#endif
 			RESULT_COMPOSITE_PLAYER(peer, msg, qi->iType);
 			break;
+
 
 		case QID_LOGIN:
 			RESULT_LOGIN(peer, msg);
@@ -3092,7 +3154,11 @@ int CClientManager::Process()
 			UpdatePlayerCache();
 			//������ �÷���
 			UpdateItemCache();
-			//�α׾ƿ��� ó��- ĳ���� �÷���
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+			UpdatePrivateShopCache();
+			UpdatePrivateShopItemCache();
+			UpdatePrivateShopPremiumEvent();			//�α׾ƿ��� ó��- ĳ���� �÷���
+#endif
 			UpdateLogoutPlayer();
 
 			// MYSHOP_PRICE_LIST

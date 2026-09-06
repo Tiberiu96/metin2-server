@@ -14,6 +14,11 @@
 #include "cmd.h"
 #include "shop.h"
 #include "shop_manager.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "private_shop_manager.h"
+#include "private_shop.h"
+#include "private_shop_util.h"
+#endif
 #include "safebox.h"
 #include "regen.h"
 #include "battle.h"
@@ -47,7 +52,7 @@ extern int g_nPortalLimitTime;
 
 static int __deposit_limit()
 {
-	return (1000*10000); // 1õ��
+	return (1000*10000); // 1????????
 }
 
 void SendBlockChatInfo(LPCHARACTER ch, int sec)
@@ -183,7 +188,7 @@ int GetTextTag(const char * src, int maxLen, int & tagLen, std::string & extraIn
 
 	const char * cur = ++src;
 
-	if (*cur == '|') // ||�� |�� ǥ���Ѵ�.
+	if (*cur == '|') // ||?????? |?????? ????????????????.
 	{
 		tagLen = 2;
 		return TEXT_TAG_TAG;
@@ -193,7 +198,7 @@ int GetTextTag(const char * src, int maxLen, int & tagLen, std::string & extraIn
 		tagLen = 2;
 		return TEXT_TAG_COLOR;
 	}
-	else if (*cur == 'H') // hyperlink |Hitem:10000:0:0:0:0|h[�̸�]|h
+	else if (*cur == 'H') // hyperlink |Hitem:10000:0:0:0:0|h[????????]|h
 	{
 		tagLen = 2;
 		return TEXT_TAG_HYPERLINK_START;
@@ -231,15 +236,15 @@ void GetTextTagInfo(const char * src, int src_len, int & hyperlinks, bool & colo
 
 int ProcessTextTag(LPCHARACTER ch, const char * c_pszText, size_t len)
 {
-	//2012.05.17 ����
-	//0 : ���������� ���
-	//1 : �ݰ��� ����
-	//2 : �ݰ����� ������, ���λ������� �����
-	//3 : ��ȯ��
-	//4 : ����
+	//2012.05.17 ????????????
+	//0 : ?????????????????????????????? ?????????
+	//1 : ?????????????? ????????????
+	//2 : ???????????????????? ??????????????????, ???????????????????????????????? ???????????????
+	//3 : ??????????????
+	//4 : ????????????
 	int hyperlinks;
 	bool colored;
-	
+
 	GetTextTagInfo(c_pszText, len, hyperlinks, colored);
 
 	if (colored == true && hyperlinks == 0)
@@ -275,7 +280,7 @@ int ProcessTextTag(LPCHARACTER ch, const char * c_pszText, size_t len)
 			return 0;
 		}
 	}
-	
+
 	return 4;
 }
 
@@ -297,7 +302,7 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 	if (ch->GetLastPMPulse() < thecore_pulse())
 		ch->ClearPMCounter();
-		
+
 	if (ch->GetPMCounter() > 3 && ch->GetLastPMPulse() > thecore_pulse())
 	{
 		ch->GetDesc()->SetPhase(PHASE_CLOSE);
@@ -314,7 +319,7 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 	if (pkChr == ch)
 		return (iExtraLen);
-	
+
 	ch->IncreasePMCounter();
 	ch->SetLastPMPulse();
 
@@ -329,7 +334,7 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 		else
 			sys_log(0, "Whisper to %s(%s) from %s", pkChr->GetName(), pinfo->szNameTo, ch->GetName());
 	}
-		
+
 	if (ch->IsBlockMode(BLOCK_WHISPER))
 	{
 		if (ch->GetDesc())
@@ -434,18 +439,18 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 			if (g_bEmpireWhisper)
 				if (!ch->IsEquipUniqueGroup(UNIQUE_GROUP_RING_OF_LANGUAGE))
 					if (!(pkChr && pkChr->IsEquipUniqueGroup(UNIQUE_GROUP_RING_OF_LANGUAGE)))
-						if (bOpponentEmpire != ch->GetEmpire() && ch->GetEmpire() && bOpponentEmpire // ���� ������ �ٸ��鼭
-								&& ch->GetGMLevel() == GM_PLAYER && gm_get_level(pinfo->szNameTo) == GM_PLAYER) // �Ѵ� �Ϲ� �÷��̾��̸�
-							// �̸� �ۿ� �𸣴� gm_get_level �Լ��� ���
+						if (bOpponentEmpire != ch->GetEmpire() && ch->GetEmpire() && bOpponentEmpire // ???????????? ?????????????????? ??????????????
+								&& ch->GetGMLevel() == GM_PLAYER && gm_get_level(pinfo->szNameTo) == GM_PLAYER) // ???????? ???????? ????????????????????????
+							// ???????? ???????? ?????????? gm_get_level ?????????????? ?????????
 						{
 							if (!pkChr)
 							{
-								// �ٸ� ������ ������ ���� ǥ�ø� �Ѵ�. bType�� ���� 4��Ʈ�� Empire��ȣ�� ����Ѵ�.
+								// ???????? ?????????????????? ?????????????????? ???????????? ?????????? ????????. bType?????? ???????????? 4?????????????? Empire?????????????? ?????????????????.
 								bType = ch->GetEmpire() << 4;
 							}
 							else
 							{
-								ConvertEmpireText(ch->GetEmpire(), buf, buflen, 10 + 2 * pkChr->GetSkillPower(SKILL_LANGUAGE1 + ch->GetEmpire() - 1)/*��ȯȮ��*/);
+								ConvertEmpireText(ch->GetEmpire(), buf, buflen, 10 + 2 * pkChr->GetSkillPower(SKILL_LANGUAGE1 + ch->GetEmpire() - 1)/*????????????????*/);
 							}
 						}
 
@@ -460,16 +465,16 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 					{
 						char buf[128];
 						int len;
-						if (3==processReturn) //��ȯ��
+						if (3==processReturn) //??????????????
 							len = snprintf(buf, sizeof(buf), LC_TEXT("You can't use a private shop now."), pTable->szLocaleName);
 						else
 							len = snprintf(buf, sizeof(buf), LC_TEXT("%s needed."), pTable->szLocaleName);
-						
+
 
 						if (len < 0 || len >= (int) sizeof(buf))
 							len = sizeof(buf) - 1;
 
-						++len;  // \0 ���� ����
+						++len;  // \0 ???????????? ????????????
 
 						TPacketGCWhisper pack;
 
@@ -485,7 +490,7 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 					}
 				}
 
-				// ������ ������ �� �����Ƿ� �����̸� Ǯ���ش�.
+				// ?????????????????? ?????????????????? ?????? ???????????????????? ???????????????????? ????????????????.
 				pkDesc->SetRelay("");
 				return (iExtraLen);
 			}
@@ -503,8 +508,8 @@ int CInputMain::Whisper(LPCHARACTER ch, const char * data, size_t uiBytes)
 				strlcpy(pack.szNameFrom, ch->GetName(), sizeof(pack.szNameFrom));
 				strlcpy(pack.language, ch->GetLanguage(), sizeof(pack.language));
 
-				// desc->BufferedPacket�� ���� �ʰ� ���ۿ� ����ϴ� ������ 
-				// P2P relay�Ǿ� ��Ŷ�� ĸ��ȭ �� �� �ֱ� �����̴�.
+				// desc->BufferedPacket?????? ???????????? ???????? ?????????????? ????????????????? ??????????????????
+				// P2P relay???????? ?????????????? ?????????? ?????? ?????? ???????? ????????????????????.
 				TEMP_BUFFER tmpbuf;
 
 				tmpbuf.write(&pack, sizeof(pack));
@@ -579,7 +584,7 @@ struct FEmpireChatPacket
 		}
 		else
 		{
-			// ������� ��ų������ �ٸ��� �Ź� �ؾ��մϴ�
+			// ????????????????????? ?????????????????????????? ?????????????? ???????? ??????????????????
 			size_t len = strlcpy(converted_msg, orig_msg, sizeof(converted_msg));
 
 			if (len >= sizeof(converted_msg))
@@ -597,7 +602,7 @@ struct FYmirChatPacket
 	const char* m_szChat;
 	size_t m_lenChat;
 	const char* m_szName;
-	
+
 	int m_iMapIndex;
 	BYTE m_bEmpire;
 	bool m_ring;
@@ -610,21 +615,21 @@ struct FYmirChatPacket
 	FYmirChatPacket(packet_chat& p, const char* chat, size_t len_chat, const char* name, size_t len_name, int iMapIndex, BYTE empire, bool ring)
 		: packet(p),
 		m_szChat(chat), m_lenChat(len_chat),
-		m_szName(name), 
+		m_szName(name),
 		m_iMapIndex(iMapIndex), m_bEmpire(empire),
 		m_ring(ring)
 	{
-		m_len_orig_msg = snprintf(m_orig_msg, sizeof(m_orig_msg), "%s : %s", m_szName, m_szChat) + 1; // �� ���� ����
+		m_len_orig_msg = snprintf(m_orig_msg, sizeof(m_orig_msg), "%s : %s", m_szName, m_szChat) + 1; // ?????? ???????????? ????????????
 
 		if (m_len_orig_msg < 0 || m_len_orig_msg >= (int) sizeof(m_orig_msg))
 			m_len_orig_msg = sizeof(m_orig_msg) - 1;
 
-		m_len_conv_msg = snprintf(m_conv_msg, sizeof(m_conv_msg), "??? : %s", m_szChat) + 1; // �� ���� ������
+		m_len_conv_msg = snprintf(m_conv_msg, sizeof(m_conv_msg), "??? : %s", m_szChat) + 1; // ?????? ???????????? ??????????????????
 
 		if (m_len_conv_msg < 0 || m_len_conv_msg >= (int) sizeof(m_conv_msg))
 			m_len_conv_msg = sizeof(m_conv_msg) - 1;
 
-		ConvertEmpireText(m_bEmpire, m_conv_msg + 6, m_len_conv_msg - 6, 10); // 6�� "??? : "�� ����
+		ConvertEmpireText(m_bEmpire, m_conv_msg + 6, m_len_conv_msg - 6, 10); // 6?????? "??? : "?????? ????????????
 	}
 
 	void operator() (LPDESC d)
@@ -692,7 +697,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 		return iExtraLen;
 	}
 
-	// ä�� ���� Affect ó��
+	// ???????? ???????????? Affect ????????
 	const CAffect* pAffect = ch->FindAffect(AFFECT_BLOCK_CHAT);
 
 	if (pAffect != NULL)
@@ -729,11 +734,11 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		if (NULL != pTable)
 		{
-			if (3==processReturn) //��ȯ��
+			if (3==processReturn) //??????????????
 				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You can't use a private shop now.", ch->GetLanguage()), pTable->szLocaleName);
 			else
 				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("%s needed.", ch->GetLanguage()), pTable->szLocaleName);
-						
+
 		}
 
 		return iExtraLen;
@@ -782,7 +787,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (false)
 				{
-					std::for_each(c_ref_set.begin(), c_ref_set.end(), 
+					std::for_each(c_ref_set.begin(), c_ref_set.end(),
 							FYmirChatPacket(pack_chat,
 								buf,
 								strlen(buf),
@@ -794,12 +799,12 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 				}
 				else
 				{
-					std::for_each(c_ref_set.begin(), c_ref_set.end(), 
+					std::for_each(c_ref_set.begin(), c_ref_set.end(),
 							FEmpireChatPacket(pack_chat,
 								chatbuf,
-								len, 
+								len,
 								(ch->GetGMLevel() > GM_PLAYER ||
-								 ch->IsEquipUniqueGroup(UNIQUE_GROUP_RING_OF_LANGUAGE)) ? 0 : ch->GetEmpire(), 
+								 ch->IsEquipUniqueGroup(UNIQUE_GROUP_RING_OF_LANGUAGE)) ? 0 : ch->GetEmpire(),
 								ch->GetMapIndex(), strlen(ch->GetName())));
 				}
 			}
@@ -812,7 +817,7 @@ int CInputMain::Chat(LPCHARACTER ch, const char * data, size_t uiBytes)
 				else
 				{
 					TEMP_BUFFER tbuf;
-					
+
 					tbuf.write(&pack_chat, sizeof(pack_chat));
 					tbuf.write(chatbuf, len);
 
@@ -856,13 +861,13 @@ void CInputMain::ItemDrop(LPCHARACTER ch, const char * data)
 	struct command_item_drop * pinfo = (struct command_item_drop *) data;
 
 	//MONARCH_LIMIT
-	//if (ch->IsMonarch())	
+	//if (ch->IsMonarch())
 	//	return;
 	//END_MONARCH_LIMIT
 	if (!ch)
 		return;
 
-	// ��ũ�� 0���� ũ�� ��ũ�� ������ �� �̴�.
+	// ?????????????? 0???????????? ???????? ?????????????? ?????????????????? ?????? ????????.
 	if (pinfo->gold > 0)
 		ch->DropGold(pinfo->gold);
 	else
@@ -872,14 +877,14 @@ void CInputMain::ItemDrop(LPCHARACTER ch, const char * data)
 void CInputMain::ItemDrop2(LPCHARACTER ch, const char * data)
 {
 	//MONARCH_LIMIT
-	//if (ch->IsMonarch())	
+	//if (ch->IsMonarch())
 	//	return;
 	//END_MONARCH_LIMIT
 
 	TPacketCGItemDrop2 * pinfo = (TPacketCGItemDrop2 *) data;
 
-	// ��ũ�� 0���� ũ�� ��ũ�� ������ �� �̴�.
-	
+	// ?????????????? 0???????????? ???????? ?????????????? ?????????????????? ?????? ????????.
+
 	if (!ch)
 		return;
 	if (pinfo->gold > 0)
@@ -924,7 +929,7 @@ void CInputMain::QuickslotSwap(LPCHARACTER ch, const char * data)
 int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 {
 	TPacketCGMessenger* p = (TPacketCGMessenger*) c_pData;
-	
+
 	if (uiBytes < sizeof(TPacketCGMessenger))
 		return -1;
 
@@ -964,7 +969,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 					return sizeof(TPacketCGMessengerAddByVID);
 				}
 
-				if (ch->GetDesc() == d) // �ڽ��� �߰��� �� ����.
+				if (ch->GetDesc() == d) // ?????????????? ?????????????? ?????? ????????????.
 					return sizeof(TPacketCGMessengerAddByVID);
 
 				MessengerManager::instance().RequestToAdd(ch, ch_companion);
@@ -992,7 +997,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 					ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("%s is not online.", ch->GetLanguage()), name);
 				else
 				{
-					if (tch == ch) // �ڽ��� �߰��� �� ����.
+					if (tch == ch) // ?????????????? ?????????????? ?????? ????????????.
 						return CHARACTER_NAME_MAX_LEN;
 
 					if (tch->IsBlockMode(BLOCK_MESSENGER_INVITE) == true)
@@ -1001,7 +1006,7 @@ int CInputMain::Messenger(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
 					}
 					else
 					{
-						// �޽����� ĳ���ʹ����� �Ǹ鼭 ����
+						// ???????????????????? ???????????????????????????? ???????? ????????????
 						MessengerManager::instance().RequestToAdd(ch, tch);
 						//MessengerManager::instance().AddToList(ch->GetName(), tch->GetName());
 					}
@@ -1113,8 +1118,8 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 	if (!ch->CanHandleItem())
 		return;
 
-	int iPulse = thecore_pulse(); 
-	
+	int iPulse = thecore_pulse();
+
 	if ((to_ch = CHARACTER_MANAGER::instance().Find(pinfo->arg1)))
 	{
 		if (iPulse - to_ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
@@ -1160,7 +1165,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 						if (test_server)
 							ch->ChatPacket(CHAT_TYPE_INFO, "[TestOnly][Safebox]Pulse %d LoadTime %d PASS %d", iPulse, ch->GetSafeboxLoadTime(), PASSES_PER_SEC(g_nPortalLimitTime));
-						return; 
+						return;
 					}
 
 					if (iPulse - to_ch->GetSafeboxLoadTime() < PASSES_PER_SEC(g_nPortalLimitTime))
@@ -1170,11 +1175,11 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 
 						if (test_server)
 							to_ch->ChatPacket(CHAT_TYPE_INFO, "[TestOnly][Safebox]Pulse %d LoadTime %d PASS %d", iPulse, to_ch->GetSafeboxLoadTime(), PASSES_PER_SEC(g_nPortalLimitTime));
-						return; 
+						return;
 					}
 
 					if (ch->GetGold() >= GOLD_MAX)
-					{	
+					{
 						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You have more than 2 Billion Yang. You cannot trade.", ch->GetLanguage()));
 
 						sys_err("[OVERFLOG_GOLD] START (%u) id %u name %s ", ch->GetGold(), ch->GetPlayerID(), ch->GetName());
@@ -1243,7 +1248,7 @@ void CInputMain::Exchange(LPCHARACTER ch, const char * data)
 		case EXCHANGE_SUBHEADER_CG_ACCEPT:	// arg1 == not used
 			if (ch->GetExchange())
 			{
-				sys_log(0, "CInputMain()::Exchange() ==> ACCEPT "); 
+				sys_log(0, "CInputMain()::Exchange() ==> ACCEPT ");
 				ch->GetExchange()->Accept(true);
 			}
 
@@ -1276,7 +1281,7 @@ void CInputMain::Position(LPCHARACTER ch, const char * data)
 	}
 }
 
-static const int ComboSequenceBySkillLevel[3][8] = 
+static const int ComboSequenceBySkillLevel[3][8] =
 {
 	// 0   1   2   3   4   5   6   7
 	{ 14, 15, 16, 17,  0,  0,  0,  0 },
@@ -1290,13 +1295,13 @@ static const int ComboSequenceBySkillLevel[3][8] =
 DWORD ClacValidComboInterval( LPCHARACTER ch, BYTE bArg )
 {
 	int nInterval = 300;
-	float fAdjustNum = 1.5f; // �Ϲ� ������ speed hack �� �ɸ��� ���� ���� ����. 2013.09.10 CYH
+	float fAdjustNum = 1.5f; // ???????? ?????????????????? speed hack ?????? ?????????????? ???????????? ???????????? ????????????. 2013.09.10 CYH
 
 	if( !ch )
 	{
 		sys_err( "ClacValidComboInterval() ch is NULL");
 		return nInterval;
-	}	
+	}
 
 	if( bArg == 13 )
 	{
@@ -1304,7 +1309,7 @@ DWORD ClacValidComboInterval( LPCHARACTER ch, BYTE bArg )
 		nInterval = (int) (normalAttackDuration / (((float) ch->GetPoint(POINT_ATT_SPEED) / 100.f) * 900.f) + fAdjustNum );
 	}
 	else if( bArg == 14 )
-	{		
+	{
 		nInterval = (int)(ani_combo_speed(ch, 1 ) / ((ch->GetPoint(POINT_ATT_SPEED) / 100.f) + fAdjustNum) );
 	}
 	else if( bArg > 14 && bArg << 22 )
@@ -1313,25 +1318,25 @@ DWORD ClacValidComboInterval( LPCHARACTER ch, BYTE bArg )
 	}
 	else
 	{
-		sys_err( "ClacValidComboInterval() Invalid bArg(%d) ch(%s)", bArg, ch->GetName() );		
-	}	
+		sys_err( "ClacValidComboInterval() Invalid bArg(%d) ch(%s)", bArg, ch->GetName() );
+	}
 
 	return nInterval;
 }
 
 bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack)
 {
-	//	�װų� ���� ���¿����� ������ �� �����Ƿ�, skip�Ѵ�.
-	//	�̷��� ���� ����, CHRACTER::CanMove()�� 
+	//	?????????? ???????????? ?????????????????????????? ?????????????????? ?????? ????????????????????, skip????????.
+	//	?????????????? ???????????? ????????????, CHRACTER::CanMove()??????
 	//	if (IsStun() || IsDead()) return false;
-	//	�� �߰��ϴ°� �´ٰ� �����ϳ�,
-	//	�̹� �ٸ� �κп��� CanMove()�� IsStun(), IsDead()��
-	//	���������� üũ�ϰ� �ֱ� ������ ������ ���� ������
-	//	�ּ�ȭ�ϱ� ���� �̷��� ���� �ڵ带 ����´�.
+	//	?????? ?????????????????? ?????????? ????????????????????,
+	//	???????? ???????? ???????????????? CanMove()?????? IsStun(), IsDead()??????
+	//	?????????????????????????????? ???????????? ???????? ?????????????????? ?????????????????? ???????????? ??????????????????
+	//	?????????????????? ???????????? ?????????????? ???????????? ???????? ?????????????????.
 	if (ch->IsStun() || ch->IsDead())
 		return false;
 	int ComboInterval = dwTime - ch->GetLastComboTime();
-	int HackScalar = 0; // �⺻ ��Į�� ���� 1
+	int HackScalar = 0; // ?????? ?????????????? ???????????? 1
 
 	// [2013 09 11 CYH] debugging log
 		/*sys_log(0, "COMBO_TEST_LOG: %s arg:%u interval:%d valid:%u atkspd:%u riding:%s",
@@ -1342,22 +1347,22 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 						ch->GetPoint(POINT_ATT_SPEED),
 						ch->IsRiding() ? "yes" : "no");*/
 
-#if 0	
+#if 0
 	sys_log(0, "COMBO: %s arg:%u seq:%u delta:%d checkspeedhack:%d",
 			ch->GetName(), bArg, ch->GetComboSequence(), ComboInterval - ch->GetValidComboInterval(), CheckSpeedHack);
 #endif
-	// bArg 14 ~ 21�� ���� �� 8�޺� ����
-	// 1. ù �޺�(14)�� ���� �ð� ���Ŀ� �ݺ� ����
-	// 2. 15 ~ 21���� �ݺ� �Ұ���
-	// 3. ���ʴ�� �����Ѵ�.
+	// bArg 14 ~ 21?????? ???????????? ?????? 8???????? ????????????
+	// 1. ?? ????????(14)?????? ???????????? ???????? ?????????????? ???????? ????????????
+	// 2. 15 ~ 21???????????? ???????? ??????????????
+	// 3. ????????????????? ????????????????????.
 	if (bArg == 14)
 	{
 		if (CheckSpeedHack && ComboInterval > 0 && ComboInterval < ch->GetValidComboInterval() - COMBO_HACK_ALLOWABLE_MS)
 		{
-			// FIXME ù��° �޺��� �̻��ϰ� ���� �� ���� �־ 300���� ���� -_-;
-			// �ټ��� ���Ϳ� ���� �ٿ�Ǵ� ��Ȳ���� ������ �ϸ�
-			// ù��° �޺��� �ſ� ���� ���͹��� ������ ��Ȳ �߻�.
-			// �̷� ���� �޺������� ƨ��� ��찡 �־� ���� �ڵ� �� Ȱ��ȭ.
+			// FIXME ?????????? ?????????????? ???????????????? ???????????? ?????? ???????????? ???????? 300???????????? ???????????? -_-;
+			// ?????????????? ?????????????? ???????????? ????????????? ???????????????????? ?????????????????? ????????
+			// ?????????? ?????????????? ???????? ???????????? ???????????????????? ?????????????????? ???????? ????????.
+			// ???????? ???????????? ?????????????????????????? ??????????? ????????? ???????? ???????????? ???????? ?????? ??????????.
 			//HackScalar = 1 + (ch->GetValidComboInterval() - ComboInterval) / 300;
 
 			//sys_log(0, "COMBO_HACK: 2 %s arg:%u interval:%d valid:%u atkspd:%u riding:%s",
@@ -1379,13 +1384,13 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 	{
 		int idx = MIN(2, ch->GetComboIndex());
 
-		if (ch->GetComboSequence() > 5) // ���� 6�޺� �̻��� ����.
+		if (ch->GetComboSequence() > 5) // ???????????? 6???????? ?????????????? ????????????.
 		{
 			HackScalar = 1;
 			ch->SetValidComboInterval(300);
 			sys_log(0, "COMBO_HACK: 5 %s combo_seq:%d", ch->GetName(), ch->GetComboSequence());
 		}
-		// �ڰ� �ּ� �޺� ����ó��
+		// ???????? ???????? ???????? ????????????????????
 		else if (bArg == 21 &&
 				 idx == 2 &&
 				 ch->GetComboSequence() == 5 &&
@@ -1420,7 +1425,7 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 						ch->IsRiding() ? "yes" : "no");
 			}
 
-			// ���� ���� ���� 15�� ~ 16���� �ݺ��Ѵ�
+			// ???????????? ???????????? ???????????? 15?????? ~ 16???????????? ????????????????
 			//if (ch->IsHorseRiding())
 			if (ch->IsRiding())
 				ch->SetComboSequence(ch->GetComboSequence() == 1 ? 2 : 1);
@@ -1433,13 +1438,13 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 			ch->SetLastComboTime(dwTime);
 		}
 	}
-	else if (bArg == 13) // �⺻ ���� (�а�(Polymorph)���� �� �´�)
+	else if (bArg == 13) // ?????? ???????????? (????????(Polymorph)???????????? ?????? ????????)
 	{
 		if (CheckSpeedHack && ComboInterval > 0 && ComboInterval < ch->GetValidComboInterval() - COMBO_HACK_ALLOWABLE_MS)
 		{
-			// �ټ��� ���Ϳ� ���� �ٿ�Ǵ� ��Ȳ���� ������ �ϸ�
-			// ù��° �޺��� �ſ� ���� ���͹��� ������ ��Ȳ �߻�.
-			// �̷� ���� �޺������� ƨ��� ��찡 �־� ���� �ڵ� �� Ȱ��ȭ.
+			// ?????????????? ?????????????? ???????????? ????????????? ???????????????????? ?????????????????? ????????
+			// ?????????? ?????????????? ???????? ???????????? ???????????????????? ?????????????????? ???????? ????????.
+			// ???????? ???????????? ?????????????????????????? ??????????? ????????? ???????? ???????????? ???????? ?????? ??????????.
 			//HackScalar = 1 + (ch->GetValidComboInterval() - ComboInterval) / 100;
 
 			//sys_log(0, "COMBO_HACK: 6 %s arg:%u interval:%d valid:%u atkspd:%u",
@@ -1453,7 +1458,7 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 		if (ch->GetRaceNum() >= MAIN_RACE_MAX_NUM)
 		{
 			// POLYMORPH_BUG_FIX
-			
+
 			// DELETEME
 			/*
 			const CMotion * pkMotion = CMotionManager::instance().GetMotion(ch->GetRaceNum(), MAKE_MOTION_KEY(MOTION_MODE_GENERAL, MOTION_NORMAL_ATTACK));
@@ -1462,8 +1467,8 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 				sys_err("cannot find motion by race %u", ch->GetRaceNum());
 			else
 			{
-				// ������ ����̶�� 1000.f�� ���ؾ� ������ Ŭ���̾�Ʈ�� �ִϸ��̼� �ӵ��� 90%����
-				// ���� �ִϸ��̼� �������� ����ϹǷ� 900.f�� ���Ѵ�.
+				// ?????????????????? ???????????????????? 1000.f?????? ?????????????? ?????????????????? ???????????????????????? ?????????????????? ?????????????? 90%????????????
+				// ???????????? ?????????????????? ???????????????????????? ??????????????????? 900.f?????? ??????????????.
 				int k = (int) (pkMotion->GetDuration() / ((float) ch->GetPoint(POINT_ATT_SPEED) / 100.f) * 900.f);
 				ch->SetValidComboInterval(k);
 				ch->SetLastComboTime(dwTime);
@@ -1472,7 +1477,7 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 
 			// 2013 09 11 CYH edited
 			//float normalAttackDuration = CMotionManager::instance().GetNormalAttackDuration(ch->GetRaceNum());
-			//int k = (int) (normalAttackDuration / ((float) ch->GetPoint(POINT_ATT_SPEED) / 100.f) * 900.f);			
+			//int k = (int) (normalAttackDuration / ((float) ch->GetPoint(POINT_ATT_SPEED) / 100.f) * 900.f);
 			//ch->SetValidComboInterval(k);
 			ch->SetValidComboInterval( ClacValidComboInterval(ch, bArg) );
 			ch->SetLastComboTime(dwTime);
@@ -1480,32 +1485,32 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 		}
 		else
 		{
-			// ���� �ȵǴ� �޺��� �Դ� ��Ŀ�� ���ɼ�?
+			// ???????????? ?????????? ?????????????? ???????? ?????????????? ???????????????
 			//if (ch->GetDesc()->DelayedDisconnect(number(2, 9)))
 			//{
 			//	LogManager::instance().HackLog("Hacker", ch);
 			//	sys_log(0, "HACKER: %s arg %u", ch->GetName(), bArg);
 			//}
 
-			// �� �ڵ�� ����, ���������� Ǫ�� �߿� ���� �ϸ�,
-			// ���� ������ �ν��ϴ� ��찡 �ִ�.
+			// ?????? ??????????? ????????????, ?????????????????????????????? ???????? ???????? ???????????? ????????,
+			// ???????????? ?????????????????? ???????????????? ????????? ????????.
 
-			// �ڼ��� ������,
-			// �������� poly 0�� ó��������,
-			// Ŭ�󿡼� �� ��Ŷ�� �ޱ� ����, ���� ����. <- ��, ���� ���¿��� ����.
+			// ?????????????? ??????????????????,
+			// ???????????????????????? poly 0?????? ??????????????????????????,
+			// ???????????? ?????? ?????????????? ???????? ????????????, ???????????? ????????????. <- ??????, ???????????? ???????????????????? ????????????.
 			//
-			// �׷��� Ŭ�󿡼��� ������ �� ���·� �����ߴٴ� Ŀ�ǵ带 ������ (arg == 13)
+			// ?????????????? ?????????????????? ?????????????????? ?????? ?????????????? ?????????????????????? ?????????? ?????????????????? (arg == 13)
 			//
-			// ���������� race�� �ΰ��ε� �������´� ���� ���̴�! ��� �Ͽ� ��üũ�� �ߴ�.
+			// ?????????????????????????????? race?????? ???????????????? ?????????????????????????? ???????????? ??????????????! ????????? ???????? ???????????????? ????????.
 
-			// ��� ���� ���Ͽ� ���� ���� Ŭ���̾�Ʈ���� �Ǵ��ؼ� ���� ���� �ƴ϶�,
-			// �������� �Ǵ��ؾ� �� ���ε�... �� �̷��� �س�����...
+			// ????????? ???????????? ?????????????? ???????????? ???????????? ?????????????????????????????? ???????????????? ???????????? ???????????? ??????????,
+			// ???????????????????????? ???????????????? ?????? ??????????????... ?????? ?????????????? ????????????????????...
 			// by rtsummit
 		}
 	}
 	else
 	{
-		// ���� �ȵǴ� �޺��� �Դ� ��Ŀ�� ���ɼ�?
+		// ???????????? ?????????? ?????????????? ???????? ?????????????? ???????????????
 		if (ch->GetDesc()->DelayedDisconnect(number(2, 9)))
 		{
 			LogManager::instance().HackLog("Hacker", ch);
@@ -1518,7 +1523,7 @@ bool CheckComboHack(LPCHARACTER ch, BYTE bArg, DWORD dwTime, bool CheckSpeedHack
 
 	if (HackScalar)
 	{
-		// ���� Ÿ�ų� ������ �� 1.5�ʰ� ������ ������ �������� �ʵ� ���ݷ��� ���� �ϴ� ó��
+		// ???????????? ?????????? ?????????????????? ?????? 1.5???????? ?????????????????? ?????????????????? ???????????????????????? ???????? ???????????????????? ???????????? ???????? ????????
 		if (get_dword_time() - ch->GetLastMountTime() > 1500)
 			ch->IncreaseComboHackCount(1 + HackScalar);
 
@@ -1542,7 +1547,7 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 	}
 
 	//enum EMoveFuncType
-	//{   
+	//{
 	//	FUNC_WAIT,
 	//	FUNC_MOVE,
 	//	FUNC_ATTACK,
@@ -1551,11 +1556,11 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 	//	_FUNC_SKILL,
 	//	FUNC_MAX_NUM,
 	//	FUNC_SKILL = 0x80,
-	//};  
+	//};
 
-	// �ڷ���Ʈ �� üũ
+	// ???????????????? ?????? ????
 
-//	if (!test_server)	//2012.05.15 ���� : �׼����� (�������·�) �ټ� ���� ���� �ٿ�Ǹ鼭 ���ݽ� �޺������� �״� ������ �־���.
+//	if (!test_server)	//2012.05.15 ???????????? : ???????????????????? (??????????????????????????) ???????? ???????????? ???????????? ????????????? ?????????????? ?????????????????????????? ???????? ?????????????????? ??????????????.
 	{
 		const float fDist = DISTANCE_SQRT((ch->GetX() - pinfo->lX) / 100, (ch->GetY() - pinfo->lY) / 100);
 
@@ -1566,7 +1571,7 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 				const PIXEL_POSITION & warpPos = ch->GetWarpPosition();
 
 				if (warpPos.x == 0 && warpPos.y == 0)
-					LogManager::instance().HackLog("Teleport", ch); // ����Ȯ�� �� ����
+					LogManager::instance().HackLog("Teleport", ch); // ???????????????????? ?????? ????????????
 			}
 
 			sys_log(0, "MOVE: %s trying to move too far (dist: %.1fm) Riding(%d)", ch->GetName(), fDist, ch->IsRiding());
@@ -1577,10 +1582,10 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 		}
 
 		//
-		// ���ǵ���(SPEEDHACK) Check
+		// ????????????????????(SPEEDHACK) Check
 		//
 		DWORD dwCurTime = get_dword_time();
-		// �ð��� Sync�ϰ� 7�� �� ���� �˻��Ѵ�. (20090702 ������ 5�ʿ���)
+		// ?????????????? Sync???????? 7?????? ?????? ???????????? ????????????????. (20090702 ?????????????????? 5??????????????)
 		bool CheckSpeedHack = (false == ch->GetDesc()->IsHandshaking() && dwCurTime - ch->GetDesc()->GetClientTime() > 7000);
 
 		if (CheckSpeedHack)
@@ -1590,13 +1595,13 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 
 			iDelta = (int) (dwCurTime - pinfo->dwTime);
 
-			// �ð��� �ʰ԰���. �ϴ� �α׸� �صд�. ��¥ �̷� ������� ������ üũ�ؾ���. TODO
+			// ?????????????? ????????????????. ???????? ?????????? ??????????. ???????? ???????? ????????????????????? ?????????????????? ??????????????????. TODO
 			if (iDelta >= 30000)
 			{
 				sys_log(0, "SPEEDHACK: slow timer name %s delta %d", ch->GetName(), iDelta);
 				// ch->GetDesc()->DelayedDisconnect(3);
 			}
-			// 1�ʿ� 20msec ���� ���°� ������ �����Ѵ�.
+			// 1???????? 20msec ???????????? ?????????????? ?????????????????? ????????????????????.
 			else if (iDelta < -(iServerDelta / 50))
 			{
 				sys_log(0, "SPEEDHACK: DETECTED! %s (delta %d %d)", ch->GetName(), iDelta, iServerDelta);
@@ -1605,11 +1610,11 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 		}
 
 		//
-		// �޺��� �� ���ǵ��� üũ
+		// ?????????????? ?????? ???????????????????? ????
 		//
 		if (pinfo->bFunc == FUNC_COMBO && g_bCheckMultiHack)
 		{
-			CheckComboHack(ch, pinfo->bArg, pinfo->dwTime, CheckSpeedHack); // �޺� üũ
+			CheckComboHack(ch, pinfo->bArg, pinfo->dwTime, CheckSpeedHack); // ???????? ????
 		}
 	}
 
@@ -1618,7 +1623,7 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 		if (ch->GetLimitPoint(POINT_MOV_SPEED) == 0)
 			return;
 
-		ch->SetRotation(pinfo->bRot * 5);	// �ߺ� �ڵ�
+		ch->SetRotation(pinfo->bRot * 5);	// ???????? ????????
 		ch->ResetStopTime();				// ""
 
 		ch->Goto(pinfo->lX, pinfo->lY);
@@ -1657,7 +1662,7 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 			ch->OnMove();
 		}
 
-		ch->SetRotation(pinfo->bRot * 5);	// �ߺ� �ڵ�
+		ch->SetRotation(pinfo->bRot * 5);	// ???????? ????????
 		ch->ResetStopTime();				// ""
 
 		ch->Move(pinfo->lX, pinfo->lY);
@@ -1679,20 +1684,20 @@ void CInputMain::Move(LPCHARACTER ch, const char * data)
 
 	ch->PacketAround(&pack, sizeof(TPacketGCMove), ch);
 /*
-	if (pinfo->dwTime == 10653691) // ����� �߰�
+	if (pinfo->dwTime == 10653691) // ??????????????? ????????
 	{
 		if (ch->GetDesc()->DelayedDisconnect(number(15, 30)))
 			LogManager::instance().HackLog("Debugger", ch);
 
 	}
-	else if (pinfo->dwTime == 10653971) // Softice �߰�
+	else if (pinfo->dwTime == 10653971) // Softice ????????
 	{
 		if (ch->GetDesc()->DelayedDisconnect(number(15, 30)))
 			LogManager::instance().HackLog("Softice", ch);
 	}
 */
 	/*
-	sys_log(0, 
+	sys_log(0,
 			"MOVE: %s Func:%u Arg:%u Pos:%dx%d Time:%u Dist:%.1f",
 			ch->GetName(),
 			pinfo->bFunc,
@@ -1742,7 +1747,7 @@ void CInputMain::Attack(LPCHARACTER ch, const BYTE header, const char* data)
 			case SKILL_HORSE_WILDATTACK_RANGE:
 				if (HEADER_CG_SHOOT != type->header)
 				{
-					if (test_server) 
+					if (test_server)
 						ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG(LC_TEXT("Attack :name[%s] Vnum[%d] can't use skill by attack(warning)"), ch->GetLanguage()), type->type);
 					return;
 				}
@@ -1840,7 +1845,7 @@ int CInputMain::SyncPosition(LPCHARACTER ch, const char * c_pcData, size_t uiByt
 	TPacketGCSyncPosition * pHeader = (TPacketGCSyncPosition *) buffer_write_peek(lpBuf);
 	buffer_write_proceed(lpBuf, sizeof(TPacketGCSyncPosition));
 
-	const TPacketCGSyncPositionElement* e = 
+	const TPacketCGSyncPositionElement* e =
 		reinterpret_cast<const TPacketCGSyncPositionElement*>(c_pcData + sizeof(TPacketCGSyncPosition));
 
 	timeval tvCurTime;
@@ -1861,20 +1866,20 @@ int CInputMain::SyncPosition(LPCHARACTER ch, const char * c_pcData, size_t uiByt
 				continue;
 		}
 
-		// ������ �˻�
+		// ?????????????????? ????????
 		if (!victim->SetSyncOwner(ch))
 			continue;
 
 		const float fDistWithSyncOwner = DISTANCE_SQRT( (victim->GetX() - ch->GetX()) / 100, (victim->GetY() - ch->GetY()) / 100 );
 		static const float fLimitDistWithSyncOwner = 2500.f + 1000.f;
-		// victim���� �Ÿ��� 2500 + a �̻��̸� ������ ����.
-		//	�Ÿ� ���� : Ŭ���̾�Ʈ�� __GetSkillTargetRange, __GetBowRange �Լ�
-		//	2500 : ��ų proto���� ���� ��Ÿ��� �� ��ų�� ��Ÿ�, �Ǵ� Ȱ�� ��Ÿ�
-		//	a = POINT_BOW_DISTANCE ��... �ε� ������ ����ϴ� �������� �� �𸣰���. �������̳� ����, ��ų, ����Ʈ���� ���µ�...
-		//		�׷��� Ȥ�ó� �ϴ� ������ ���۷� ����� ���ؼ� 1000.f �� ��...
+		// victim???????????? ?????????????? 2500 + a ???????????????? ?????????????????? ????????????.
+		//	???????? ???????????? : ???????????????????????? __GetSkillTargetRange, __GetBowRange ????????
+		//	2500 : ???????? proto???????????? ???????????? ????????????????? ?????? ?????????????? ???????????, ???????? ???????? ???????????
+		//	a = POINT_BOW_DISTANCE ??????... ???????? ?????????????????? ????????????????? ???????????????????????? ?????? ????????????????. ?????????????????????????? ????????????, ????????, ?????????????????????????? ??????????????...
+		//		?????????????? ?????????? ???????? ?????????????????? ?????????????? ??????????????? ?????????????? 1000.f ?????? ??????...
 		if (fDistWithSyncOwner > fLimitDistWithSyncOwner)
 		{
-			// g_iSyncHackLimitCount�� ������ ����.
+			// g_iSyncHackLimitCount?????? ?????????????????? ????????????.
 			if (ch->GetSyncHackCount() < g_iSyncHackLimitCount)
 			{
 				ch->SetSyncHackCount(ch->GetSyncHackCount() + 1);
@@ -1893,17 +1898,17 @@ int CInputMain::SyncPosition(LPCHARACTER ch, const char * c_pcData, size_t uiByt
 				return -1;
 			}
 		}
-		
+
 		const float fDist = DISTANCE_SQRT( (victim->GetX() - e->lX) / 100, (victim->GetY() - e->lY) / 100 );
 		static const long g_lValidSyncInterval = 50 * 1000; // 100ms -> 50ms 2013 09 11 CYH
 		const timeval &tvLastSyncTime = victim->GetLastSyncTime();
 		timeval *tvDiff = timediff(&tvCurTime, &tvLastSyncTime);
-		
-		// SyncPosition�� �ǿ��Ͽ� Ÿ������ �̻��� ������ ������ �� ����ϱ� ���Ͽ�,
-		// ���� ������ g_lValidSyncInterval ms �̳��� �ٽ� SyncPosition�Ϸ��� �ϸ� ������ ����.
+
+		// SyncPosition?????? ???????????????? ???????????????????? ?????????????? ?????????????????? ?????????????????? ?????? ????????????????? ??????????????,
+		// ???????????? ?????????????????? g_lValidSyncInterval ms ?????????????? ???????? SyncPosition?????????????? ???????? ?????????????????? ????????????.
 		if (tvDiff->tv_sec == 0 && tvDiff->tv_usec < g_lValidSyncInterval)
 		{
-			// g_iSyncHackLimitCount�� ������ ����.
+			// g_iSyncHackLimitCount?????? ?????????????????? ????????????.
 			if (ch->GetSyncHackCount() < g_iSyncHackLimitCount)
 			{
 				ch->SetSyncHackCount(ch->GetSyncHackCount() + 1);
@@ -1990,11 +1995,11 @@ void CInputMain::ScriptAnswer(LPCHARACTER ch, const void* c_pData)
 	TPacketCGScriptAnswer * p = (TPacketCGScriptAnswer *) c_pData;
 	sys_log(0, "QUEST ScriptAnswer pid %d answer %d", ch->GetPlayerID(), p->answer);
 
-	if (p->answer > 250) // ���� ��ư�� ���� �������� �� ��Ŷ�� ���
+	if (p->answer > 250) // ???????????? ?????????????? ???????????? ???????????????????????? ?????? ?????????????? ?????????
 	{
 		quest::CQuestManager::Instance().Resume(ch->GetPlayerID());
 	}
-	else // ���� ��ư�� ��� �� ��Ŷ�� ���
+	else // ???????????? ?????????????? ????????? ?????? ?????????????? ?????????
 	{
 		quest::CQuestManager::Instance().Select(ch->GetPlayerID(),  p->answer);
 	}
@@ -2071,7 +2076,7 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 
 	if (!pkSafebox || !pkItem)
 		return;
-	
+
 	if (pkItem->GetType() == ITEM_BELT && pkItem->IsEquipped()) // Fix
 		return;
 
@@ -2109,7 +2114,7 @@ void CInputMain::SafeboxCheckin(LPCHARACTER ch, const char * c_pData)
 	if (!pkItem->IsDragonSoul())
 		ch->SyncQuickslot(QUICKSLOT_TYPE_ITEM, p->ItemPos.cell, 255);
 	pkSafebox->Add(p->bSafePos, pkItem);
-	
+
 	char szHint[128];
 	snprintf(szHint, sizeof(szHint), "%s %u", pkItem->GetName(), pkItem->GetCount());
 	LogManager::instance().ItemLog(ch, pkItem, "SAFEBOX PUT", szHint);
@@ -2136,13 +2141,13 @@ void CInputMain::SafeboxCheckout(LPCHARACTER ch, const char * c_pData, bool bMal
 
 	if (!pkItem)
 		return;
-	
+
 	if (!ch->IsEmptyItemGrid(p->ItemPos, pkItem->GetSize()))
 		return;
 
-	// ������ ������ �κ����� �ű�� �κп��� ��ȥ�� Ư�� ó��
-	// (������ ����� �������� item_proto�� ���ǵȴ�� �Ӽ��� �ٱ� ������,
-	//  ��ȥ���� ���, �� ó���� ���� ������ �Ӽ��� �ϳ��� ���� �ʰ� �ȴ�.)
+	// ?????????????????? ?????????????????? ???????????????????? ??????????? ???????????????? ?????????????? ???????? ????????
+	// (?????????????????? ??????????????? ???????????????????????? item_proto?????? ??????????????????? ?????????????? ???????? ??????????????????,
+	//  ???????????????????? ?????????, ?????? ?????????????? ???????????? ?????????????????? ?????????????? ?????????????? ???????????? ???????? ????????.)
 	if (pkItem->IsDragonSoul())
 	{
 		if (bMall)
@@ -2155,7 +2160,7 @@ void CInputMain::SafeboxCheckout(LPCHARACTER ch, const char * c_pData, bool bMal
 			ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Storeroom] No movement possible.", ch->GetLanguage()));
 			return;
 		}
-		
+
 		TItemPos DestPos = p->ItemPos;
 		if (!DSManager::instance().IsValidCellForThisItem(pkItem, DestPos))
 		{
@@ -2188,7 +2193,7 @@ void CInputMain::SafeboxCheckout(LPCHARACTER ch, const char * c_pData, bool bMal
 				sys_err ("pkItem->GetProto() == NULL (id : %d)",pkItem->GetID());
 				return ;
 			}
-			// 100% Ȯ���� �Ӽ��� �پ�� �ϴµ� �� �پ��ִٸ� ���� ������. ...............
+			// 100% ?????????????? ?????????????? ??????????? ?????????? ?????? ?????????????????? ???????????? ??????????????????. ...............
 			if (100 == pkItem->GetProto()->bAlterToMagicItemPct && 0 == pkItem->GetAttributeCount())
 			{
 				pkItem->AlterToMagicItem();
@@ -2257,7 +2262,7 @@ void CInputMain::PartyInviteAnswer(LPCHARACTER ch, const char * c_pData)
 
 	LPCHARACTER pInviter = CHARACTER_MANAGER::instance().Find(p->leader_vid);
 
-	// pInviter �� ch ���� ��Ƽ ��û�� �߾���.
+	// pInviter ?????? ch ???????????? ???????? ?????????????? ??????????????.
 
 	if (!pInviter)
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Group] The player who invited you is not online.", ch->GetLanguage()));
@@ -2301,8 +2306,8 @@ void CInputMain::PartySetState(LPCHARACTER ch, const char* c_pData)
 		case PARTY_ROLE_NORMAL:
 			break;
 
-		case PARTY_ROLE_ATTACKER: 
-		case PARTY_ROLE_TANKER: 
+		case PARTY_ROLE_ATTACKER:
+		case PARTY_ROLE_TANKER:
 		case PARTY_ROLE_BUFFER:
 		case PARTY_ROLE_SKILL_MASTER:
 		case PARTY_ROLE_HASTE:
@@ -2423,7 +2428,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 	if (get_global_time() - ch->GetQuestFlag("guild_manage.new_disband_time") <
 			CGuildManager::instance().GetDisbandDelay())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] After disbanding a guild, you cannot create a new one for %d days.", ch->GetLanguage()), 
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] After disbanding a guild, you cannot create a new one for %d days.", ch->GetLanguage()),
 				quest::CQuestManager::instance().GetEventFlag("guild_disband_delay"));
 		return;
 	}
@@ -2431,7 +2436,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 	if (get_global_time() - ch->GetQuestFlag("guild_manage.new_withdraw_time") <
 			CGuildManager::instance().GetWithdrawDelay())
 	{
-		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] After leaving a guild, you cannot create a new one for %d days.", ch->GetLanguage()), 
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("[Guild] After leaving a guild, you cannot create a new one for %d days.", ch->GetLanguage()),
 				quest::CQuestManager::instance().GetEventFlag("guild_withdraw_delay"));
 		return;
 	}
@@ -2487,7 +2492,7 @@ void CInputMain::AnswerMakeGuild(LPCHARACTER ch, const char* c_pData)
 
 void CInputMain::PartyUseSkill(LPCHARACTER ch, const char* c_pData)
 {
-	TPacketCGPartyUseSkill* p = (TPacketCGPartyUseSkill*) c_pData; 
+	TPacketCGPartyUseSkill* p = (TPacketCGPartyUseSkill*) c_pData;
 	if (!ch->GetParty())
 		return;
 
@@ -2579,7 +2584,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 	{
 		case GUILD_SUBHEADER_CG_DEPOSIT_MONEY:
 			{
-				// by mhh : ����ڱ��� ��а� ���� �� ����.
+				// by mhh : ??????????????????????? ??????????? ???????????? ?????? ????????????.
 				return SubPacketLen;
 
 				const int gold = MIN(*reinterpret_cast<const int*>(c_pData), __deposit_limit());
@@ -2602,7 +2607,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 		case GUILD_SUBHEADER_CG_WITHDRAW_MONEY:
 			{
-				// by mhh : ����ڱ��� ��а� �� �� ����.
+				// by mhh : ??????????????????????? ??????????? ?????? ?????? ????????????.
 				return SubPacketLen;
 
 				const int gold = MIN(*reinterpret_cast<const int*>(c_pData), 500000);
@@ -2799,7 +2804,7 @@ int CInputMain::Guild(LPCHARACTER ch, const char * data, size_t uiBytes)
 
 				if (length > GUILD_COMMENT_MAX_LEN)
 				{
-					// �߸��� ����.. ��������.
+					// ?????????????? ????????????.. ????????????????????????.
 					sys_err("POST_COMMENT: %s comment too long (length: %u)", ch->GetName(), length);
 					ch->GetDesc()->SetPhase(PHASE_CLOSE);
 					return -1;
@@ -2933,13 +2938,13 @@ void CInputMain::ItemGive(LPCHARACTER ch, const char* c_pData)
 void CInputMain::Hack(LPCHARACTER ch, const char * c_pData)
 {
 	TPacketCGHack * p = (TPacketCGHack *) c_pData;
-	
+
 	char buf[sizeof(p->szBuf)];
 	strlcpy(buf, p->szBuf, sizeof(buf));
 
 	sys_err("HACK_DETECT: %s %s", ch->GetName(), buf);
 
-	// ���� Ŭ���̾�Ʈ���� �� ��Ŷ�� ������ ��찡 �����Ƿ� ������ ������ �Ѵ�
+	// ???????????? ?????????????????????????????? ?????? ?????????????? ?????????????????? ????????? ???????????????????? ?????????????????? ?????????????????? ????????
 	ch->GetDesc()->SetPhase(PHASE_CLOSE);
 }
 
@@ -3035,7 +3040,7 @@ void CInputMain::Refine(LPCHARACTER ch, const char* c_pData)
 				}
 				else
 				{
-					ch->ChatPacket(CHAT_TYPE_INFO, "��� Ÿ�� �Ϸ� ������ �ѹ����� ��밡���մϴ�.");
+					ch->ChatPacket(CHAT_TYPE_INFO, "????????? ???????? ???????? ?????????????????? ???????????????????? ?????????????????????????.");
 				}
 			}
 		}
@@ -3043,6 +3048,975 @@ void CInputMain::Refine(LPCHARACTER ch, const char* c_pData)
 
 	ch->ClearRefineMode();
 }
+
+
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+int CInputMain::PrivateShopBuild(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	if (uiBytes < sizeof(TPacketCGPrivateShop) + sizeof(TPacketCGPrivateShopBuild))
+	{
+		sys_err("PRIVATESHOP_GAME: build_packet_short pid=%u bytes=%u need=%u", ch ? ch->GetPlayerID() : 0, static_cast<unsigned>(uiBytes), static_cast<unsigned>(sizeof(TPacketCGPrivateShop) + sizeof(TPacketCGPrivateShopBuild)));
+		return -1;
+	}
+
+	TPacketCGPrivateShopBuild* p = (TPacketCGPrivateShopBuild*)c_pData;
+	const char* c_pItemData = c_pData + sizeof(TPacketCGPrivateShopBuild);
+
+	if (p->wItemCount > PRIVATE_SHOP_HOST_ITEM_MAX_NUM || p->bPageCount == 0 || p->bPageCount > PRIVATE_SHOP_PAGE_MAX_NUM)
+	{
+		sys_err("PRIVATESHOP_GAME: build_invalid_header pid=%u item_count=%u page_count=%u", ch ? ch->GetPlayerID() : 0, p->wItemCount, p->bPageCount);
+		return -1;
+	}
+
+	int iExtraLen = sizeof(TPacketCGPrivateShopBuild) + p->wItemCount * sizeof(TPrivateShopItem);
+
+	if (uiBytes < (sizeof(TPacketCGPrivateShop) + iExtraLen))
+	{
+		sys_err("PRIVATESHOP_GAME: build_payload_short pid=%u bytes=%u need=%u item_count=%u", ch ? ch->GetPlayerID() : 0, static_cast<unsigned>(uiBytes), static_cast<unsigned>(sizeof(TPacketCGPrivateShop) + iExtraLen), p->wItemCount);
+		return -1;
+	}
+
+	char szTitle[TITLE_MAX_LEN + 1]{};
+	memcpy(szTitle, p->szTitle, TITLE_MAX_LEN);
+
+	if (!ch || !ch->GetDesc())
+		return iExtraLen;
+
+	sys_log(0, "PRIVATESHOP_GAME: build_recv pid=%u name=%s title=%s poly=%u title_type=%u page_count=%u item_count=%u bytes=%u extra=%d",
+		ch->GetPlayerID(), ch->GetName(), szTitle, p->dwPolyVnum, p->bTitleType, p->bPageCount, p->wItemCount, static_cast<unsigned>(uiBytes), iExtraLen);
+
+	if (ch && ch->m_pkTimedEvent)
+	{
+		sys_log(0, "PRIVATESHOP_GAME: build_cancel_logout pid=%u", ch->GetPlayerID());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return iExtraLen;
+	}
+
+	if (ch->IsStun() || ch->IsDead())
+	{
+		sys_log(0, "PRIVATESHOP_GAME: build_blocked_dead_or_stun pid=%u", ch->GetPlayerID());
+		return iExtraLen;
+	}
+
+	if (!CanBuildPrivateShop(ch))
+	{
+		sys_log(0, "PRIVATESHOP_GAME: build_blocked_canbuild pid=%u", ch->GetPlayerID());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot open a personal shop while another window is open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopBuildTime() < PASSES_PER_SEC(10))
+	{
+		sys_log(0, "PRIVATESHOP_GAME: build_blocked_cooldown pid=%u", ch->GetPlayerID());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a few moments before building your personal shop again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!CheckTradeWindows(ch))
+	{
+		sys_log(0, "PRIVATESHOP_GAME: build_blocked_trade_window pid=%u", ch->GetPlayerID());
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot open a personal shop while another window is open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	ch->BuildPrivateShop(szTitle, p->dwPolyVnum, p->bTitleType, p->bPageCount, p->wItemCount, (TPrivateShopItem*)c_pItemData);
+	ch->SetLastPrivateShopBuildTime();
+
+	return iExtraLen;
+}
+
+void CInputMain::PrivateShopClose(LPCHARACTER ch)
+{
+	if (!ch || !ch->GetDesc())
+		return;
+
+	if (ch && ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return;
+	}
+
+	if (ch->IsStun() || ch->IsDead())
+		return;
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot close a personal shop while another window is open.", ch->GetLanguage()));
+		return;
+	}
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopCloseTime() < PASSES_PER_SEC(10))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a few moments before closing your personal shop again.", ch->GetLanguage()));
+		return;
+	}
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_CLOSE;
+	DWORD dwPID = ch->GetPlayerID();
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(DWORD));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&dwPID, sizeof(DWORD));
+
+	ch->SetLastPrivateShopCloseTime();
+}
+
+void CInputMain::PrivateShopPanelOpen(LPCHARACTER ch)
+{
+	if (!ch || !ch->GetDesc())
+		return;
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot open a personal shop while another window is open.", ch->GetLanguage()));
+		return;
+	}
+
+	if (ch->IsEditingPrivateShop())
+		return;
+
+	ch->OpenPrivateShopPanel();
+}
+
+void CInputMain::PrivateShopPanelClose(LPCHARACTER ch)
+{
+	if (!ch)
+		return;
+
+	if (ch->IsStun() || ch->IsDead())
+		return;
+
+	ch->ClosePrivateShopPanel();
+
+	if (ch->CanModifyPrivateShop())
+	{
+		BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_MODIFY_REQUEST;
+		DWORD dwPID = ch->GetPlayerID();
+		db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(DWORD));
+		db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+		db_clientdesc->Packet(&dwPID, sizeof(DWORD));
+	}
+}
+
+int CInputMain::PrivateShopStart(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	const DWORD dwVID = *reinterpret_cast<const DWORD*>(c_pData);
+	size_t iExtraLen = sizeof(DWORD);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch || !ch->GetDesc())
+		return iExtraLen;
+
+	if (ch && ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return iExtraLen;
+	}
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot view a personal shop while having other trading windows open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	LPPRIVATE_SHOP pPrivateShop = CPrivateShopManager::Instance().GetPrivateShopByVID(dwVID);
+	if (!pPrivateShop)
+		return iExtraLen;
+
+	if (pPrivateShop->GetID() == ch->GetPlayerID())
+	{
+		if (!ch->IsEditingPrivateShop())
+			ch->OpenPrivateShopPanel();
+
+		return iExtraLen;
+	}
+
+	if (pPrivateShop == ch->GetViewingPrivateShop())
+		return iExtraLen;
+
+	if (ch->IsEditingPrivateShop())
+		ch->ClosePrivateShopPanel();
+
+	if (ch->GetViewingPrivateShop())
+		ch->GetViewingPrivateShop()->RemoveShopViewer(ch);
+
+	pPrivateShop->AddShopViewer(ch);
+
+	return iExtraLen;
+}
+
+void CInputMain::PrivateShopEnd(LPCHARACTER ch)
+{
+	if (!ch)
+		return;
+
+	CPrivateShopManager::Instance().StopShopping(ch);
+}
+
+int CInputMain::PrivateShopBuy(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	const WORD wPos = *reinterpret_cast<const WORD*>(c_pData);
+	size_t iExtraLen = sizeof(WORD);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch || !ch->GetDesc())
+		return iExtraLen;
+
+	if (db_clientdesc->GetSocket() == INVALID_SOCKET)
+		return iExtraLen;
+
+	if (ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopBuyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before buying from a personal shop again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (!ch->GetViewingPrivateShop())
+		return iExtraLen;
+
+	if (!ch->GetViewingPrivateShop()->GetItem(wPos))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot buy an item from your own personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_BUY_REQUEST;
+
+	TPacketGDPrivateShopBuyRequest subPacket{};
+	subPacket.dwCustomerPID = ch->GetPlayerID();
+	subPacket.llGoldBalance = ch->GetGold();
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	subPacket.dwChequeBalance = ch->GetCheque();
+#else
+	subPacket.dwChequeBalance = 0;
+#endif
+	subPacket.dwShopID = ch->GetViewingPrivateShop()->GetID();
+	subPacket.wPos = wPos;
+	subPacket.TPrice.llGold = ch->GetViewingPrivateShop()->GetItem(wPos)->GetGoldPrice();
+	subPacket.TPrice.dwCheque = ch->GetViewingPrivateShop()->GetItem(wPos)->GetChequePrice();
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketGDPrivateShopBuyRequest));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketGDPrivateShopBuyRequest));
+
+	ch->SetLastPrivateShopBuyTime();
+
+	return iExtraLen;
+}
+
+static void RequestPrivateShopWithdrawal(LPCHARACTER ch)
+{
+	if (!ch)
+		return;
+
+	if (ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return;
+	}
+
+	if (ch->IsStun() || ch->IsDead())
+		return;
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopWithdrawTime() < PASSES_PER_SEC(10))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a few moments before withdrawing your personal shop again.", ch->GetLanguage()));
+		return;
+	}
+
+	if (ch->GetGold() >= GOLD_MAX - 1)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot exchange as you would exceed the maximum amount of Yang."));
+		return;
+	}
+
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	if ((ch->GetPrivateShopTable()->dwCheque + ch->GetCheque()) > CHEQUE_MAX)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You cannot exchange as you would exceed the maximum amount of Won."));
+		return;
+	}
+#endif
+
+	if (!ch->GetPrivateShopTable()->llGold && !ch->GetPrivateShopTable()->dwCheque)
+		return;
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_WITHDRAW_REQUEST;
+	DWORD dwPID = ch->GetPlayerID();
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(DWORD));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&dwPID, sizeof(DWORD));
+
+	ch->SetLastPrivateShopWithdrawTime();
+}
+
+void CInputMain::PrivateShopWithdraw(LPCHARACTER ch)
+{
+	RequestPrivateShopWithdrawal(ch);
+}
+
+ACMD(do_shop_collect)
+{
+	if (!ch || !ch->GetDesc() || !CheckTradeWindows(ch) || !ch->IsPrivateShopOwner())
+	{
+		sys_log(0, "PRIVATESHOP_GAME: collect_command_unavailable pid=%u", ch ? ch->GetPlayerID() : 0);
+		return;
+	}
+	ch->OpenPrivateShopPanel();
+	RequestPrivateShopWithdrawal(ch);
+	sys_log(0, "PRIVATESHOP_GAME: collect_command pid=%u", ch->GetPlayerID());
+}
+
+void CInputMain::PrivateShopModify(LPCHARACTER ch)
+{
+	if (!ch)
+		return;
+
+	if (ch->IsStun() || ch->IsDead())
+		return;
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, "You do not have an open private shop.");
+		return;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopStateChangeTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before changing state of your personal shop again.", ch->GetLanguage()));
+		return;
+	}
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_MODIFY_REQUEST;
+	DWORD dwPID = ch->GetPlayerID();
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(DWORD));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&dwPID, sizeof(DWORD));
+
+	ch->SetLastPrivateShopStateChangeTime();
+}
+
+int CInputMain::PrivateShopItemPriceChange(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	TPacketCGPrivateShopItemPriceChange* p = (TPacketCGPrivateShopItemPriceChange*)c_pData;
+
+	size_t iExtraLen = sizeof(TPacketCGPrivateShopItemPriceChange);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return iExtraLen;
+	}
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot modify a personal shop while having other trading windows open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->CanModifyPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopModifyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before editing your personal shop's content again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	const TPlayerPrivateShopItem* pPrivateShopItem = ch->GetPrivateShopItem(p->wPos);
+	if (!pPrivateShopItem)
+		return iExtraLen;
+
+	if ((ch->GetPrivateShopTotalGold() + ch->GetGold() - pPrivateShopItem->TPrice.llGold + p->TPrice.llGold) >= GOLD_MAX)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The items you put up for sale must not exceed the permitted total value.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	if ((ch->GetPrivateShopTotalCheque() + ch->GetCheque() - pPrivateShopItem->TPrice.dwCheque + p->TPrice.dwCheque) > CHEQUE_MAX)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The items you put up for sale must not exceed the permitted total value.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+#endif
+
+	if (p->TPrice.llGold <= 0 || p->TPrice.llGold > GOLD_MAX || p->TPrice.dwCheque != 0)
+	{
+		sys_err("Player %u is trying to negatively manipulate price of the item", ch->GetPlayerID());
+		return iExtraLen;
+	}
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_ITEM_PRICE_CHANGE_REQUEST;
+
+	TPacketPrivateShopItemPriceChange subPacket{};
+	subPacket.dwShopID = ch->GetPlayerID();
+	subPacket.wPos = p->wPos;
+	subPacket.TPrice.llGold = p->TPrice.llGold;
+	subPacket.TPrice.dwCheque = p->TPrice.dwCheque;
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketPrivateShopItemPriceChange));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketPrivateShopItemPriceChange));
+
+	ch->SetLastPrivateShopModifyTime();
+
+	return iExtraLen;
+}
+
+int CInputMain::PrivateShopItemMove(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	TPacketCGPrivateShopItemMove* p = (TPacketCGPrivateShopItemMove*)c_pData;
+
+	size_t iExtraLen = sizeof(TPacketCGPrivateShopItemMove);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (!ch->CanHandleItem(false, false, true))
+		return iExtraLen;
+
+	if (ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return iExtraLen;
+	}
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot modify a personal shop while having other trading windows open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->CanModifyPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopModifyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before editing your personal shop's content again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_ITEM_MOVE_REQUEST;
+
+	TPacketPrivateShopItemMove subPacket{};
+	subPacket.dwShopID = ch->GetPlayerID();
+	subPacket.wPos = p->wPos;
+	subPacket.wChangePos = p->wChangePos;
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketPrivateShopItemMove));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketPrivateShopItemMove));
+
+	ch->SetLastPrivateShopModifyTime();
+
+	return iExtraLen;
+}
+
+int CInputMain::PrivateShopItemCheckin(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	TPacketCGPrivateShopItemCheckin* p = (TPacketCGPrivateShopItemCheckin*)c_pData;
+
+	size_t iExtraLen = sizeof(TPacketCGPrivateShopItemCheckin);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (!ch->CanHandleItem(false, false, true))
+		return iExtraLen;
+
+	if (ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return iExtraLen;
+	}
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot modify a personal shop while having other trading windows open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->CanModifyPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopModifyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before editing your personal shop's content again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if ((ch->GetPrivateShopTotalGold() + ch->GetGold() + p->llGold) >= GOLD_MAX)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The items you put up for sale must not exceed the permitted total value.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	if ((ch->GetPrivateShopTotalCheque() + ch->GetCheque() + p->dwCheque) > CHEQUE_MAX)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The items you put up for sale must not exceed the permitted total value.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+#endif
+
+	if (p->llGold <= 0 || p->llGold > GOLD_MAX || p->dwCheque != 0)
+	{
+		sys_err("Player %u is trying to add an item with negative price", ch->GetPlayerID());
+		return iExtraLen;
+	}
+
+	LPITEM pItem = ch->GetItem(p->TSrcPos);
+	if (!pItem)
+		return iExtraLen;
+
+	if (!pItem->GetOwner() || ch != pItem->GetOwner())
+	{
+		sys_err("Player %u tried to add item %u that is not bound to him", ch->GetPlayerID(), pItem->GetID());
+		return iExtraLen;
+	}
+
+	const TItemTable* pItemTable = pItem->GetProto();
+	if (!pItemTable)
+	{
+		sys_err("Could not find an item table for an item at position: %d vnum: %d", p->TSrcPos, pItem->GetVnum());
+		return false;
+	}
+
+	if (pItemTable && (IS_SET(pItemTable->dwAntiFlags, ITEM_ANTIFLAG_GIVE | ITEM_ANTIFLAG_MYSHOP)))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot sell Item-Shop items in a personal shop.", ch->GetLanguage()));
+		return false;
+	}
+
+	if (pItem->IsEquipped())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot sell equipped items in a personal shop.", ch->GetLanguage()));
+		return false;
+	}
+
+#ifdef WJ_SOULBINDING_SYSTEM
+	if (pItem->IsBind() || pItem->IsUntilBind())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You can't sell this item because is binded!"));
+		return false;
+	}
+#endif
+
+	if (pItem->isLocked())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot sell locked items in a personal shop.", ch->GetLanguage()));
+		return false;
+	}
+
+	ITEM_MANAGER::Instance().FlushDelayedSave(pItem);
+
+	pItem->Lock(true);//Darklovers_Fix_Offline_Shop
+
+	TPlayerPrivateShopItem t;
+	t.dwID = pItem->GetID();
+	t.wPos = 0;
+	t.dwCount = pItem->GetCount();
+	t.dwVnum = pItem->GetOriginalVnum();
+	thecore_memcpy(t.alSockets, pItem->GetSockets(), sizeof(t.alSockets));
+	thecore_memcpy(t.aAttr, pItem->GetAttributes(), sizeof(t.aAttr));
+	t.TPrice.llGold = p->llGold;
+	t.TPrice.dwCheque = p->dwCheque;
+	t.dwOwner = pItem->GetOwner()->GetPlayerID();
+	t.tCheckin = time(0);
+
+	TPacketGDPrivateShopItemCheckin subPacket{};
+	subPacket.dwShopID = ch->GetPlayerID();
+	subPacket.TItem = t;
+	subPacket.iPos = p->iDstPos;
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_ITEM_CHECKIN_REQUEST;
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketGDPrivateShopItemCheckin));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketGDPrivateShopItemCheckin));
+
+	ch->SetLastPrivateShopModifyTime();
+
+	return iExtraLen;
+}
+
+int CInputMain::PrivateShopItemCheckout(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	TPacketCGPrivateShopItemCheckout* p = (TPacketCGPrivateShopItemCheckout*)c_pData;
+
+	size_t iExtraLen = sizeof(TPacketCGPrivateShopItemCheckout);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (!ch->CanHandleItem(false, false, true))
+		return iExtraLen;
+
+	if (!CheckTradeWindows(ch))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot modify a personal shop while having other trading windows open.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (ch->m_pkTimedEvent)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your logout has been canceled.", ch->GetLanguage()));
+		event_cancel(&ch->m_pkTimedEvent);
+		return iExtraLen;
+	}
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->CanModifyPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopModifyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before editing your personal shop's content again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	const TPlayerPrivateShopItem* c_pShopItem = ch->GetPrivateShopItem(p->wSrcPos);
+	if (!c_pShopItem)
+	{
+		sys_err("Cannot find item on position %d pid %u", p->wSrcPos, ch->GetPlayerID());
+		return iExtraLen;
+	}
+
+	const TItemTable* pItemTable = ITEM_MANAGER::Instance().GetTable(c_pShopItem->dwVnum);
+	if (!pItemTable)
+	{
+		sys_err("Cannot find item table for item vnum %d", c_pShopItem->dwVnum);
+		return iExtraLen;
+	}
+
+	BYTE bWindow = RESERVED_WINDOW;
+	LPITEM pFakeItem = ITEM_MANAGER::Instance().CreateItem(c_pShopItem->dwVnum);
+	int iPos = GetEmptyInventory(ch, pFakeItem);
+
+	if (pItemTable->bType == ITEM_DS)
+	{
+		if (p->iDstPos < 0 || !ch->IsEmptyItemGrid(TItemPos(DRAGON_SOUL_INVENTORY, p->iDstPos), pItemTable->bSize))
+		{
+			if (iPos < 0)
+			{
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have enough space in your inventory."));
+				M2_DESTROY_ITEM(pFakeItem);
+				return iExtraLen;
+			}
+
+			p->iDstPos = iPos;
+		}
+
+		bWindow = DRAGON_SOUL_INVENTORY;
+	}
+	else
+	{
+		if (p->iDstPos < 0 || !ch->IsEmptyItemGrid(TItemPos(INVENTORY, p->iDstPos), pItemTable->bSize))
+		{
+			if (iPos < 0)
+			{
+				ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT("You don't have enough space in your inventory."));
+				M2_DESTROY_ITEM(pFakeItem);
+				return iExtraLen;
+			}
+
+			p->iDstPos = iPos;
+		}
+
+		bWindow = INVENTORY;
+	}
+
+	M2_DESTROY_ITEM(pFakeItem);
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_ITEM_CHECKOUT_REQUEST;
+
+	TPacketGDPrivateShopItemCheckout subPacket{};
+	subPacket.dwPID = ch->GetPlayerID();
+	subPacket.wSrcPos = p->wSrcPos;
+	subPacket.TDstPos.cell = p->iDstPos;
+	subPacket.TDstPos.window_type = bWindow;
+	subPacket.TItem = *c_pShopItem;
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketGDPrivateShopItemCheckout));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketGDPrivateShopItemCheckout));
+
+	ch->SetLastPrivateShopModifyTime();
+
+	return iExtraLen;
+}
+
+int CInputMain::PrivateShopTitleChange(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	size_t iExtraLen = TITLE_MAX_LEN + 1;
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	char szTitle[TITLE_MAX_LEN + 1]{};
+	memcpy(szTitle, c_pData, TITLE_MAX_LEN);
+	const char* c_szTitle = szTitle;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (!ch->IsPrivateShopOwner() || !ch->IsEditingPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (!ch->CanModifyPrivateShop())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (strlen(c_szTitle) < TITLE_MIN_LEN)
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("The entered name is too short.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopModifyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before editing your personal shop's content again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_TITLE_CHANGE_REQUEST;
+
+	TPacketPrivateShopTitleChange subPacket{};
+	subPacket.dwShopID = ch->GetPlayerID();
+	strlcpy(subPacket.szTitle, c_szTitle, sizeof(subPacket.szTitle));
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketPrivateShopTitleChange));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketPrivateShopTitleChange));
+
+	ch->SetLastPrivateShopModifyTime();
+
+	return iExtraLen;
+}
+
+void CInputMain::PrivateShopSearchClose(LPCHARACTER ch)
+{
+	if (!ch)
+		return;
+
+	ch->CloseShopSearch();
+}
+
+int CInputMain::PrivateShopSearch(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	TPacketCGPrivateShopSearch* p = (TPacketCGPrivateShopSearch*)c_pData;
+
+	size_t iExtraLen = sizeof(TPacketCGPrivateShopSearch);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (thecore_pulse() - ch->GetLastPrivateShopSearchTime() < PASSES_PER_SEC(2))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before searching other personal shops again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	TPrivateShopSearchFilter filter = p->Filter;
+	filter.wMinCheque = 0;
+	filter.wMaxCheque = 0;
+	if (filter.llMinGold < 0)
+		filter.llMinGold = 0;
+	if (filter.llMaxGold <= 0 || filter.llMaxGold > GOLD_MAX)
+		filter.llMaxGold = GOLD_MAX;
+	if (filter.llMinGold > filter.llMaxGold)
+		return iExtraLen;
+
+	CPrivateShopManager::Instance().SearchItem(ch->GetDesc(), filter, p->bUseFilter);
+
+	TPacketGGPrivateShopItemSearch packet{};
+	packet.bHeader = HEADER_GG_PRIVATE_SHOP_ITEM_SEARCH;
+	packet.dwCustomerID = ch->GetPlayerID();
+	packet.dwCustomerPort = p2p_port;
+	packet.bUseFilter = p->bUseFilter;
+	memcpy(&packet.Filter, &filter, sizeof(packet.Filter));
+
+	P2P_MANAGER::Instance().Send(&packet, sizeof(TPacketGGPrivateShopItemSearch));
+
+	ch->SetLastPrivateShopSearchTime();
+	return iExtraLen;
+}
+
+int CInputMain::PrivateShopSearchBuy(LPCHARACTER ch, const char* c_pData, size_t uiBytes)
+{
+	TPacketCGPrivateShopSearchBuy* p = (TPacketCGPrivateShopSearchBuy*)c_pData;
+
+	size_t iExtraLen = sizeof(TPacketCGPrivateShopSearchBuy);
+
+	if (uiBytes < iExtraLen)
+		return -1;
+
+	if (!ch)
+		return iExtraLen;
+
+	if (db_clientdesc->GetSocket() == INVALID_SOCKET)
+		return iExtraLen;
+
+	if (ch->IsStun() || ch->IsDead())
+		return iExtraLen;
+
+	if (!ch->IsShopSearch())
+	{
+		sys_err("Player %u is tryint to buy an item with no window opened", ch->GetPlayerID());
+		return iExtraLen;
+	}
+
+	if (p->dwShopID == ch->GetPlayerID())
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot buy an item from your own personal shop.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (thecore_pulse() - ch->GetLastPrivateShopBuyTime() < PASSES_PER_SEC(1))
+	{
+		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Please wait a moment before buying from a personal shop again.", ch->GetLanguage()));
+		return iExtraLen;
+	}
+
+	if (p->TPrice.llGold <= 0 || p->TPrice.llGold > GOLD_MAX || p->TPrice.dwCheque != 0)
+	{
+		sys_err("Player %u tried to buy a private shop search result with invalid price gold %lld cheque %u", ch->GetPlayerID(), p->TPrice.llGold, p->TPrice.dwCheque);
+		return iExtraLen;
+	}
+	BYTE bSubHeader = PRIVATE_SHOP_GD_SUBHEADER_BUY_REQUEST;
+
+	TPacketGDPrivateShopBuyRequest subPacket{};
+	subPacket.dwCustomerPID = ch->GetPlayerID();
+	subPacket.llGoldBalance = ch->GetGold();
+#ifdef WJ_PRIVATE_SHOP_CHEQUE
+	subPacket.dwChequeBalance = ch->GetCheque();
+#else
+	subPacket.dwChequeBalance = 0;
+#endif
+	subPacket.dwShopID = p->dwShopID;
+	subPacket.wPos = p->wPos;
+	subPacket.TPrice.llGold = p->TPrice.llGold;
+	subPacket.TPrice.dwCheque = p->TPrice.dwCheque;
+
+	db_clientdesc->DBPacketHeader(HEADER_GD_PRIVATE_SHOP, ch->GetDesc()->GetHandle(), sizeof(BYTE) + sizeof(TPacketGDPrivateShopBuyRequest));
+	db_clientdesc->Packet(&bSubHeader, sizeof(BYTE));
+	db_clientdesc->Packet(&subPacket, sizeof(TPacketGDPrivateShopBuyRequest));
+
+	ch->SetLastPrivateShopBuyTime();
+	return iExtraLen;
+}
+#endif
 
 int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 {
@@ -3056,14 +4030,14 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 	}
 
 	int iExtraLen = 0;
-	
+
 	if (test_server && bHeader != HEADER_CG_MOVE)
 		sys_log(0, "CInputMain::Analyze() ==> Header [%d] ", bHeader);
 
 	switch (bHeader)
 	{
 		case HEADER_CG_PONG:
-			Pong(d); 
+			Pong(d);
 			break;
 
 		case HEADER_CG_TIME_SYNC:
@@ -3076,7 +4050,7 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				char* pBuf = (char*)c_pData;
 				sys_log(0, "%s", pBuf + sizeof(TPacketCGChat));
 			}
-	
+
 			if ((iExtraLen = Chat(ch, c_pData, m_iBufferLeft)) < 0)
 				return -1;
 			break;
@@ -3109,7 +4083,7 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 			else
 			{
 				if (!*d->GetClientVersion())
-				{   
+				{
 					sys_err("Version not recieved name %s", ch->GetName());
 					d->SetPhase(PHASE_CLOSE);
 				}
@@ -3191,6 +4165,36 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 			if ((iExtraLen = Shop(ch, c_pData, m_iBufferLeft)) < 0)
 				return -1;
 			break;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		case HEADER_CG_PRIVATE_SHOP:
+		{
+			TPacketCGPrivateShop* p = (TPacketCGPrivateShop*) c_pData;
+			c_pData += sizeof(TPacketCGPrivateShop);
+
+			switch (p->bSubHeader)
+			{
+				case SUBHEADER_CG_PRIVATE_SHOP_BUILD: if ((iExtraLen = PrivateShopBuild(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_CLOSE: PrivateShopClose(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_PANEL_OPEN: PrivateShopPanelOpen(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_PANEL_CLOSE: PrivateShopPanelClose(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_START: if ((iExtraLen = PrivateShopStart(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_END: PrivateShopEnd(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_BUY: if ((iExtraLen = PrivateShopBuy(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_WITHDRAW: PrivateShopWithdraw(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_MODIFY: PrivateShopModify(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_ITEM_PRICE_CHANGE: if ((iExtraLen = PrivateShopItemPriceChange(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_ITEM_MOVE: if ((iExtraLen = PrivateShopItemMove(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_ITEM_CHECKIN: if ((iExtraLen = PrivateShopItemCheckin(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_ITEM_CHECKOUT: if ((iExtraLen = PrivateShopItemCheckout(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_TITLE_CHANGE: if ((iExtraLen = PrivateShopTitleChange(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_SEARCH_CLOSE: PrivateShopSearchClose(ch); break;
+				case SUBHEADER_CG_PRIVATE_SHOP_SEARCH: if ((iExtraLen = PrivateShopSearch(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				case SUBHEADER_CG_PRIVATE_SHOP_SEARCH_BUY: if ((iExtraLen = PrivateShopSearchBuy(ch, c_pData, m_iBufferLeft)) < 0) return -1; break;
+				default: sys_err("PRIVATESHOP_GAME: reason=unknown_subheader pid=%u subheader=%u", ch ? ch->GetPlayerID() : 0, p->bSubHeader); break;
+			}
+		}
+		break;
+#endif
 
 		case HEADER_CG_MESSENGER:
 			if ((iExtraLen = Messenger(ch, c_pData, m_iBufferLeft))<0)
@@ -3324,7 +4328,7 @@ int CInputMain::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 				// CXTrapManager::instance().Verify_CSStep3(d->GetCharacter(), p->bPacketData);
 			// }
 			// break;
-			
+
 		case HEADER_CG_DRAGON_SOUL_REFINE:
 			{
 				TPacketCGDragonSoulRefine* p = reinterpret_cast <TPacketCGDragonSoulRefine*>((void*)c_pData);
@@ -3418,7 +4422,7 @@ EVENTFUNC(change_channel_event)
 	const TAccountTable & r = d->GetAccountTable();
 	DWORD dwLoginKey = d->GetLoginKey();
 
-	// 1. Sterge contul din logon map — ch2 poate reconnecta fara LOGIN_ALREADY
+	// 1. Sterge contul din logon map ??? ch2 poate reconnecta fara LOGIN_ALREADY
 	//    NU trimitem AUTH_LOGIN cu cheie noua: cheia existenta e deja
 	//    inregistrata in db_cache + auth server (LoginPrepare la login initial)
 	d->SetChangingChannel(true);
@@ -3429,7 +4433,7 @@ EVENTFUNC(change_channel_event)
 		db_clientdesc->DBPacket(HEADER_GD_LOGOUT, d->GetHandle(), &logout, sizeof(logout));
 	}
 
-	// 2. Trimite adresa lui ch_target/FIRST — clientul face login normal prin first,
+	// 2. Trimite adresa lui ch_target/FIRST ??? clientul face login normal prin first,
 	//    care redirectioneaza spre game server corect (la fel ca login manual).
 	//    ch_first_port = baza canalului curent + offset canal * 10
 	//    ex: ch1/game2 (13002) -> ch2/first = (13002 - 13002%10) + (2-1)*10 = 13000 + 10 = 13010
@@ -3517,7 +4521,7 @@ int CInputDead::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 	switch (bHeader)
 	{
 		case HEADER_CG_PONG:
-			Pong(d); 
+			Pong(d);
 			break;
 
 		case HEADER_CG_TIME_SYNC:
@@ -3546,4 +4550,3 @@ int CInputDead::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 
 	return (iExtraLen);
 }
-

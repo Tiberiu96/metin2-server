@@ -21,6 +21,11 @@
 #include "pcbang.h"
 #include "skill.h"
 #include "threeway_war.h"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+#include "private_shop_manager.h"
+#include "private_shop.h"
+#include "buffer_manager.h"
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -411,6 +416,58 @@ void CInputP2P::IamAwake(LPDESC d, const char * c_pData)
 	sys_log(0, "P2P Awakeness check from %s. My P2P connection number is %d. and details...\n%s", d->GetHostName(), P2P_MANAGER::instance().GetDescCount(), hostNames.c_str());
 }
 
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+void CInputP2P::PrivateShopItemSearch(const char* c_pData)
+{
+	TPacketGGPrivateShopItemSearch* p = (TPacketGGPrivateShopItemSearch*)c_pData;
+
+	LPDESC pPeer = P2P_MANAGER::Instance().GetPeer(p->dwCustomerPort);
+	if (!pPeer)
+		return;
+
+	TEMP_BUFFER buf;
+	CPrivateShopManager::Instance().SearchItem(pPeer, p->Filter, p->bUseFilter, p->dwCustomerID);//Darklovers_Fix_Offline_Shop
+
+	if (buf.size())
+	{
+		TPacketGGPrivateShopItemSearchResult mainPacket{};
+		mainPacket.bHeader = HEADER_GG_PRIVATE_SHOP_ITEM_SEARCH_RESULT;
+		mainPacket.wSize = buf.size();
+		mainPacket.dwCustomerID = p->dwCustomerID;
+
+		pPeer->BufferedPacket(&mainPacket, sizeof(mainPacket));
+		pPeer->LargePacket(buf.read_peek(), buf.size());
+	}
+}
+
+int CInputP2P::PrivateShopItemSearchResult(const char* c_pData, size_t uiBytes)
+{
+	TPacketGGPrivateShopItemSearchResult* p = (TPacketGGPrivateShopItemSearchResult*)c_pData;
+
+	if (uiBytes < sizeof(TPacketGGPrivateShopItemSearchResult) + p->wSize)
+		return -1;
+
+	c_pData += sizeof(TPacketGGPrivateShopItemSearchResult);
+
+	LPCHARACTER pCustomer = CHARACTER_MANAGER::Instance().FindByPID(p->dwCustomerID);
+	if (!pCustomer)
+		return p->wSize;
+
+	if (!pCustomer->GetDesc())
+		return p->wSize;
+
+	TPacketGCPrivateShop mainPacket{};
+	mainPacket.bHeader = HEADER_GC_PRIVATE_SHOP;
+	mainPacket.wSize = sizeof(TPacketGCPrivateShop) + p->wSize;
+	mainPacket.bSubHeader = SUBHEADER_GC_PRIVATE_SHOP_SEARCH_RESULT;
+
+	pCustomer->GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
+	pCustomer->GetDesc()->LargePacket(c_pData, p->wSize);
+
+	return p->wSize;
+}
+#endif
+
 int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 {
 	if (test_server)
@@ -531,6 +588,17 @@ int CInputP2P::Analyze(LPDESC d, BYTE bHeader, const char * c_pData)
 		case HEADER_GG_CHECK_AWAKENESS:
 			IamAwake(d, c_pData);
 			break;
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		case HEADER_GG_PRIVATE_SHOP_ITEM_SEARCH:
+			PrivateShopItemSearch(c_pData);
+			break;
+
+		case HEADER_GG_PRIVATE_SHOP_ITEM_SEARCH_RESULT:
+			if ((iExtraLen = PrivateShopItemSearchResult(c_pData, m_iBufferLeft)) < 0)
+				return -1;
+			break;
+#endif
 	}
 
 	return (iExtraLen);

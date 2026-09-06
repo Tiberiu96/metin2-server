@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Du skifter kanal om 3 sekunder";
+
+"You have increased available space on your personal shop.";
+"Du har udvidet pladsen i din butik.";
+
+"Your personal shop is currently unavailable.";
+"Din butik er ikke tilgængelig i øjeblikket.";
+
+"You cannot place any more items in your personal shop.";
+"Du kan ikke føje flere genstande til butikken.";
+
+"You cannot move the item to that position.";
+"Du kan ikke flytte genstanden til den plads.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"Butikken skal være i administrationstilstand.";
+
+"There is no money to collect.";
+"Der er ingen penge at hæve.";
+
+"Refresh your search result to sync price of the item.";
+"Opdater søgningen for at se den aktuelle pris.";
+
+"This item is currently unavailable.";
+"Denne genstand er ikke tilgængelig i øjeblikket.";
+
+"You do not have an open personal shop.";
+"Du har ingen åben butik.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Hæv din indtjening, før du lukker butikken.";
+
+"You cannot use a personal shop now.";
+"Du kan ikke bruge butikken lige nu.";
+
+"You cannot open a personal shop without a Bundle.";
+"Du skal bruge en bylt for at åbne en butik.";
+
+"You have already opened your personal shop.";
+"Du har allerede åbnet din butik.";
+
+"You cannot open a personal shop in a dungeon.";
+"Du kan ikke åbne en butik i en dungeon.";
+
+"Please choose another title name for your personal shop.";
+"Vælg et andet navn til din butik.";
+
+"The entered name is too short.";
+"Vælg et længere navn.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Du kan ikke sælge Item-Shop-genstande i butikken.";
+
+"You cannot sell equipped items in a personal shop.";
+"Du kan ikke sælge genstande, du har på, i butikken.";
+
+"You cannot sell locked items in a personal shop.";
+"Du kan ikke sælge låste genstande i butikken.";
+
+"Your personal shop has been closed.";
+"Din butik er blevet lukket.";
+
+"Teleport to the private shop has been canceled.";
+"Teleporteringen til butikken er annulleret.";
+
+"%u seconds until teleport.";
+"Teleportering om %u sekunder.";
+
+"Your logout has been canceled.";
+"Din udlogning er annulleret.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Du har solgt x%lld %s for %s Yang.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s er fjernet fra butikken, fordi tiden er udløbet.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Du kan ikke hæve: Du ville overskride 2 milliarder Yang.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Du har hævet %lld Yang fra din butiks indtjening.";
+
+"You cannot trade while another window is open.";
+"Luk de andre handelsvinduer for at fortsætte.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Du har nået den maksimale premiumtid for din butik.";
+
+"You have increased Premium Personal Shop duration.";
+"Du har forlænget premiumbutikkens varighed.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Du har nået den maksimale premiumtid for din butik.";
+
+"You cannot use items while editing your personal shop.";
+"Du kan ikke bruge genstande, mens du administrerer butikken.";
+
+"Please wait a few moments before building your personal shop again.";
+"Vent lidt, før du opretter en butik igen.";
+
+"You cannot open a personal shop while another window is open.";
+"Luk de andre handelsvinduer for at fortsætte.";
+
+"You cannot close a personal shop while another window is open.";
+"Luk de andre handelsvinduer for at fortsætte.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Luk de andre handelsvinduer for at fortsætte.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Vent lidt, før du køber i en butik igen.";
+
+"You cannot buy an item from your own personal shop.";
+"Du kan ikke købe i din egen butik.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Vent lidt, før du hæver indtjening igen.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Luk de andre handelsvinduer for at fortsætte.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"Den samlede værdi af genstandene til salg overstiger grænsen.";
+
+"Please wait a moment before searching other personal shops again.";
+"Vent lidt, før du søger efter butikker igen.";
+
+"Close your current personal shop before opening a new one.";
+"Luk din nuværende butik, før du åbner en ny.";
+
+"You have sold x%d %s for %s Yangs.";
+"Du har solgt x%d %s for %s Yang.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Du har solgt x%d %s for %s Yang og %s Won.";
+
+"You cannot build a personal shop at this moment. ";
+"Du kan ikke bruge butikken lige nu.";
+
+"You are too far away from your personal shop.";
+"Du er for langt fra din butik.";
+
+"You cannot close a personal shop from a different location.";
+"Du kan ikke lukke butikken fra et andet sted.";
+
+"This personal shop item has an invalid price.";
+"Denne butiksgenstand har en ugyldig pris.";
+
+"You have bought x%d %s.";
+"Du har købt x%d %s.";
+
+"You have bought %s.";
+"Du har købt %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"Du kan ikke sætte bylter til salg, når du opretter butikken.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Du kan ikke sælge Item-Shop-genstande i butikken.";
+
+"Equipped items cannot be sold in a private shop.";
+"Du kan ikke sælge genstande, du har på, i butikken.";
+
+"Items in use cannot be sold in a private shop.";
+"Du kan ikke sælge genstande, der er i brug.";
+
+"Private Shop";
+"Privatbutik";
+
+"You don't have enough space in your inventory.";
+"Du har ikke nok plads i din beholdning.";
+
+"You don't have enough Yang.";
+"Du har ikke nok Yang.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Du har hævet %u Won fra din butiks indtjening.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Du har hævet %lld Yang og %u Won fra din butiks indtjening.";
+
+"Please wait before another personal shop action.";
+"Vent lidt, før du udfører en ny butikshandling.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Du kan ikke købe, mens butikken administreres.";
+
+"You cannot open a private shop in this area.";
+"Du kan ikke åbne en butik her.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Vent lidt, før du udfører en ny butikshandling.";
+
+"You cannot open a private shop while another window is open.";
+"Luk de andre handelsvinduer for at fortsætte.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Vent lidt, før du udfører en ny butikshandling.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Vent lidt, før du udfører en ny butikshandling.";
+
+"You can't use a private shop now.";
+"Du kan ikke bruge butikken lige nu.";

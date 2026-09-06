@@ -5742,3 +5742,7 @@ VNUM	LOCALE_NAME
 164400~164499	Legendary Dragon Onyx
 71051	Bewitch Item
 71052	Bless Item
+60004	Looking Glass
+60005	Trading Glass
+71221	Kashmir Bundle
+72355	Premium Private Shop 7d

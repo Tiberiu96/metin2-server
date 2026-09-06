@@ -159,6 +159,25 @@ class CInputMain : public CInputProcessor
 
 		void		Roulette(LPCHARACTER ch, const char* c_pData);
 		void		ChangeChannel(LPCHARACTER ch, const char* c_pData);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		int			PrivateShopBuild(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		void		PrivateShopClose(LPCHARACTER ch);
+		void		PrivateShopPanelOpen(LPCHARACTER ch);
+		void		PrivateShopPanelClose(LPCHARACTER ch);
+		int			PrivateShopStart(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		void		PrivateShopEnd(LPCHARACTER ch);
+		int			PrivateShopBuy(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		void		PrivateShopWithdraw(LPCHARACTER ch);
+		void		PrivateShopModify(LPCHARACTER ch);
+		int			PrivateShopItemPriceChange(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		int			PrivateShopItemMove(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		int			PrivateShopItemCheckin(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		int			PrivateShopItemCheckout(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		int			PrivateShopTitleChange(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		void		PrivateShopSearchClose(LPCHARACTER ch);
+		int			PrivateShopSearch(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+		int			PrivateShopSearchBuy(LPCHARACTER ch, const char* c_pData, size_t uiBytes);
+#endif
 };
 
 class CInputDead : public CInputMain
@@ -198,6 +217,9 @@ protected:
 	void		P2P(const char * c_pData);
 	void		ItemLoad(LPDESC d, const char * c_pData);
 	void		AffectLoad(LPDESC d, const char * c_pData);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	void		PrivateShop(LPDESC d, const char* c_pData);
+#endif
 
 	void		GuildLoad(const char * c_pData);
 	void		GuildSkillUpdate(const char* c_pData);
@@ -354,6 +376,10 @@ class CInputP2P : public CInputProcessor
 		void		BlockChat(const char * c_pData);
 		void		PCBangUpdate(const char* c_pData);
 		void		IamAwake(LPDESC d, const char * c_pData);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		void		PrivateShopItemSearch(const char* c_pData);
+		int			PrivateShopItemSearchResult(const char* c_pData, size_t uiBytes);
+#endif
 
 	protected:
 		CPacketInfoGG 	m_packetInfoGG;
@@ -395,4 +421,3 @@ class CInputTeen : public CInputProcessor
 };
 
 #endif /* __INC_METIN_II_GAME_INPUT_PROCESSOR__ */
-

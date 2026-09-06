@@ -155,6 +155,9 @@ enum
 	
 	HEADER_GD_UPDATE_CHANNELSTATUS	= 139,
 	HEADER_GD_REQUEST_CHANNELSTATUS	= 140,
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	HEADER_GD_PRIVATE_SHOP			= 182,
+#endif
 
 	HEADER_GD_SETUP			= 0xff,
 
@@ -289,6 +292,9 @@ enum
 	HEADER_DG_RESULT_CHARGE_CASH	= 179,
 	HEADER_DG_ITEMAWARD_INFORMER	= 180,	//gift notify
 	HEADER_DG_RESPOND_CHANNELSTATUS		= 181,
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	HEADER_DG_PRIVATE_SHOP			= 183,
+#endif
 
 	HEADER_DG_MAP_LOCATIONS		= 0xfe,
 	HEADER_DG_P2P			= 0xff,
@@ -1210,6 +1216,11 @@ typedef struct SPacketLoginOnSetup
 	char    szHost[MAX_HOST_LENGTH + 1];
 	DWORD   dwLoginKey;
 	DWORD   adwClientKey[4];
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	DWORD	dwPID;
+	DWORD	dwHandle;
+	bool	bHasPrivateShop;
+#endif
 } TPacketLoginOnSetup;
 
 typedef struct SPacketGDCreateObject
@@ -1483,6 +1494,241 @@ typedef struct SChannelStatus
 	short nPort;
 	BYTE bStatus;
 } TChannelStatus;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+
+typedef struct SPrivateShop
+{
+	DWORD	dwOwner;
+	char	szTitle[TITLE_MAX_LEN + 1];
+	char	szOwnerName[CHARACTER_NAME_MAX_LEN + 1];
+	BYTE	bState;
+	DWORD	dwVnum;
+	BYTE	bTitleType;
+	long	lX;
+	long	lY;
+	long	lMapIndex;
+	BYTE	bChannel;
+	WORD	wPort;
+	long long	llGold;
+	DWORD	dwCheque;
+	BYTE	bPageCount;
+	time_t	tPremiumTime;
+} TPrivateShop;
+
+typedef struct SItemPrice
+{
+	long long	llGold;
+	DWORD	dwCheque;
+} TItemPrice;
+
+typedef struct SPlayerPrivateShopItem
+{
+	DWORD	dwID;
+	WORD	wPos;
+	DWORD	dwCount;
+	DWORD	dwVnum;
+	long	alSockets[ITEM_SOCKET_MAX_NUM];
+	TPlayerItemAttribute aAttr[ITEM_ATTRIBUTE_MAX_NUM];
+	time_t	tCheckin;
+	TItemPrice TPrice;
+	DWORD	dwOwner;
+} TPlayerPrivateShopItem;
+
+enum EPrivateShopGDSubheader
+{
+	PRIVATE_SHOP_GD_SUBHEADER_LOGOUT,
+	PRIVATE_SHOP_GD_SUBHEADER_CREATE,
+	PRIVATE_SHOP_GD_SUBHEADER_CLOSE,
+	PRIVATE_SHOP_GD_SUBHEADER_DELETE,
+	PRIVATE_SHOP_GD_SUBHEADER_DESPAWN,
+	PRIVATE_SHOP_GD_SUBHEADER_WITHDRAW_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_MODIFY_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_BUY_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_PRICE_CHANGE_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_MOVE_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_CHECKIN_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_CHECKOUT_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_TITLE_CHANGE_REQUEST,
+	PRIVATE_SHOP_GD_SUBHEADER_WITHDRAW,
+	PRIVATE_SHOP_GD_SUBHEADER_BUY,
+	PRIVATE_SHOP_GD_SUBHEADER_FAILED_BUY,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_CHECKIN_UPDATE,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_CHECKOUT_UPDATE,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_TRANSFER,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_DELETE,
+	PRIVATE_SHOP_GD_SUBHEADER_ITEM_EXPIRE,
+	PRIVATE_SHOP_GD_SUBHEADER_PREMIUM_TIME_UPDATE,
+	PRIVATE_SHOP_GD_SUBHEADER_INIT,
+};
+
+typedef struct SPacketGDPrivateShopBuyRequest
+{
+	DWORD	dwCustomerPID;
+	long long	llGoldBalance;
+	DWORD	dwChequeBalance;
+	DWORD	dwShopID;
+	WORD	wPos;
+	TItemPrice TPrice;
+} TPacketGDPrivateShopBuyRequest;
+
+typedef struct SPacketGDPrivateShopItemCheckin
+{
+	DWORD	dwShopID;
+	TPlayerPrivateShopItem TItem;
+	int	iPos;
+} TPacketGDPrivateShopItemCheckin;
+
+typedef struct SPacketGDPrivateShopItemCheckout
+{
+	DWORD	dwPID;
+	WORD	wSrcPos;
+	TItemPos TDstPos;
+	TPlayerPrivateShopItem TItem;
+} TPacketGDPrivateShopItemCheckout;
+
+typedef struct SPacketGDPrivateShopBuy
+{
+	DWORD dwReservation;
+	TPlayerPrivateShopItem TItem;
+	DWORD	dwCustomer;
+	char	szCustomerName[CHARACTER_NAME_MAX_LEN + 1];
+} TPacketGDPrivateShopBuy;
+
+struct TPacketGDPrivateShopWithdraw
+{
+	DWORD dwPID;
+	long long llGold;
+	DWORD dwCheque;
+};
+
+typedef struct SPacketGDPrivateShopFailedBuy
+{
+	DWORD dwReservation;
+	DWORD	dwShopID;
+	WORD	wPos;
+} TPacketGDPrivateShopFailedBuy;
+
+typedef struct SPacketGDPrivateShopItemDelete
+{
+	DWORD	dwShopID;
+	DWORD	dwItemID;
+} TPacketGDPrivateShopItemDelete;
+
+typedef struct SPacketGDPrivateShopItemExpire
+{
+	DWORD	dwShopID;
+	WORD	wPos;
+} TPacketGDPrivateShopItemExpire;
+
+typedef struct SPacketGDPrivateShopPremiumTimeUpdate
+{
+	DWORD	dwAID;
+	DWORD	dwPID;
+	time_t	tPremiumTime;
+} TPacketGDPrivateShopPremiumTimeUpdate;
+
+enum EPrivateShopDGSubheader
+{
+	PRIVATE_SHOP_DG_SUBHEADER_CREATE_RESULT,
+	PRIVATE_SHOP_DG_SUBHEADER_NO_SHOP,
+	PRIVATE_SHOP_DG_SUBHEADER_CLOSE_RESULT_BALANCE_AVAILABLE,
+	PRIVATE_SHOP_DG_SUBHEADER_CLOSE,
+	PRIVATE_SHOP_DG_SUBHEADER_SPAWN,
+	PRIVATE_SHOP_DG_SUBHEADER_DESTROY,
+	PRIVATE_SHOP_DG_SUBHEADER_DESPAWN,
+	PRIVATE_SHOP_DG_SUBHEADER_LOAD,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_LOAD,
+	PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_FALSE_ITEM,
+	PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_FALSE_PRICE,
+	PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_MODIFY_STATE,
+	PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_NO_GOLD,
+	PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_NO_CHEQUE,
+	PRIVATE_SHOP_DG_SUBHEADER_BUY_REQUEST,
+	PRIVATE_SHOP_DG_SUBHEADER_REMOVE_ITEM,
+	PRIVATE_SHOP_DG_SUBHEADER_ADD_ITEM,
+	PRIVATE_SHOP_DG_SUBHEADER_STATE_UPDATE,
+	PRIVATE_SHOP_DG_SUBHEADER_WITHDRAW_RESULT_NO_BALANCE,
+	PRIVATE_SHOP_DG_SUBHEADER_WITHDRAW,
+	PRIVATE_SHOP_DG_SUBHEADER_NOT_MODIFY_STATE,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_PRICE_CHANGE,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_MOVE,
+	PRIVATE_SHOP_DG_SUBHEADER_CANNOT_MOVE_ITEM,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKIN_REQ,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKIN_FALSE_ITEM,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKOUT_REQ,
+	PRIVATE_SHOP_DG_SUBHEADER_ITEM_EXPIRE,
+	PRIVATE_SHOP_DG_SUBHEADER_SHOP_NOT_AVAILABLE,
+	PRIVATE_SHOP_DG_SUBHEADER_TITLE_CHANGE,
+	PRIVATE_SHOP_DG_SUBHEADER_NO_AVAILABLE_SPACE,
+	PRIVATE_SHOP_DG_SUBHEADER_SALE_UPDATE,
+	PRIVATE_SHOP_DG_SUBHEADER_CANCEL_BUY,
+};
+
+typedef struct SPacketDGPrivateShopCreateResult
+{
+	TPrivateShop privateShopTable;
+	bool	bSuccess;
+} TPacketDGPrivateShopCreateResult;
+
+typedef struct SPacketDGPrivateShopBuyRequest
+{
+	DWORD dwReservation;
+	DWORD	dwCustomerPID;
+	TPlayerPrivateShopItem TRequestedItem;
+} TPacketDGPrivateShopBuyRequest;
+
+typedef struct SPacketDGPrivateShopStateUpdate
+{
+	DWORD	dwPID;
+	BYTE	bState;
+} TPacketDGPrivateShopStateUpdate;
+
+typedef struct SPacketDGPrivateShopWithdraw
+{
+	long long	llGold;
+	DWORD		dwCheque;
+} TPacketDGPrivateShopWithdraw;
+
+typedef struct SPacketDGPrivateShopItemCheckin
+{
+	DWORD	dwPID;
+	TPlayerPrivateShopItem TItem;
+} TPacketDGPrivateShopItemCheckin;
+
+typedef struct SPacketDGPrivateShopItemCheckout
+{
+	DWORD	dwPID;
+	WORD	wSrcPos;
+	TItemPos TDstPos;
+} TPacketDGPrivateShopItemCheckout;
+
+typedef struct SPacketDGPrivateShopSaleUpdate
+{
+	char	szCustomerName[CHARACTER_NAME_MAX_LEN + 1];
+	TPlayerPrivateShopItem TItem;
+} TPacketDGPrivateShopSaleUpdate;
+
+typedef struct SPacketPrivateShopItemPriceChange
+{
+	DWORD	dwShopID;
+	WORD	wPos;
+	TItemPrice TPrice;
+} TPacketPrivateShopItemPriceChange;
+
+typedef struct SPacketPrivateShopItemMove
+{
+	DWORD	dwShopID;
+	WORD	wPos;
+	WORD	wChangePos;
+} TPacketPrivateShopItemMove;
+
+typedef struct SPacketPrivateShopTitleChange
+{
+	DWORD	dwShopID;
+	char	szTitle[TITLE_MAX_LEN + 1];
+} TPacketPrivateShopTitleChange;
+
+#endif
 
 #pragma pack()
 #endif

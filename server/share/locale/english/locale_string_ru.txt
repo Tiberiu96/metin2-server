@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Сменишь канал через 3 секунды";
+
+"You have increased available space on your personal shop.";
+"Доступное место в твоём магазине увеличено.";
+
+"Your personal shop is currently unavailable.";
+"Твой магазин сейчас недоступен.";
+
+"You cannot place any more items in your personal shop.";
+"В магазин нельзя добавить больше предметов.";
+
+"You cannot move the item to that position.";
+"Нельзя переместить предмет в эту ячейку.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"Магазин должен быть в режиме управления.";
+
+"There is no money to collect.";
+"Нет денег для получения.";
+
+"Refresh your search result to sync price of the item.";
+"Обнови поиск, чтобы увидеть текущую цену.";
+
+"This item is currently unavailable.";
+"Этот предмет сейчас недоступен.";
+
+"You do not have an open personal shop.";
+"У тебя нет открытого магазина.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Забери выручку перед закрытием магазина.";
+
+"You cannot use a personal shop now.";
+"Сейчас нельзя использовать магазин.";
+
+"You cannot open a personal shop without a Bundle.";
+"Для открытия магазина нужен узелок.";
+
+"You have already opened your personal shop.";
+"Твой магазин уже открыт.";
+
+"You cannot open a personal shop in a dungeon.";
+"Нельзя открыть магазин в подземелье.";
+
+"Please choose another title name for your personal shop.";
+"Выбери другое название магазина.";
+
+"The entered name is too short.";
+"Выбери более длинное название.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Нельзя продавать предметы из Item Shop в личном магазине.";
+
+"You cannot sell equipped items in a personal shop.";
+"Нельзя продавать надетые предметы в магазине.";
+
+"You cannot sell locked items in a personal shop.";
+"Нельзя продавать заблокированные предметы в магазине.";
+
+"Your personal shop has been closed.";
+"Твой магазин был закрыт.";
+
+"Teleport to the private shop has been canceled.";
+"Телепортация к магазину отменена.";
+
+"%u seconds until teleport.";
+"Телепортация через %u сек.";
+
+"Your logout has been canceled.";
+"Твой выход из игры отменён.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Продано x%lld %s за %s Янг.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s удалён из магазина: срок действия истёк.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Нельзя забрать деньги: будет превышен лимит в 2 миллиарда Янг.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Получено %lld Янг из выручки магазина.";
+
+"You cannot trade while another window is open.";
+"Закрой остальные окна торговли, чтобы продолжить.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Достигнуто максимальное премиум-время магазина.";
+
+"You have increased Premium Personal Shop duration.";
+"Время работы премиум-магазина продлено.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Достигнуто максимальное премиум-время магазина.";
+
+"You cannot use items while editing your personal shop.";
+"Нельзя использовать предметы во время управления магазином.";
+
+"Please wait a few moments before building your personal shop again.";
+"Подожди немного перед повторным созданием магазина.";
+
+"You cannot open a personal shop while another window is open.";
+"Закрой остальные окна торговли, чтобы продолжить.";
+
+"You cannot close a personal shop while another window is open.";
+"Закрой остальные окна торговли, чтобы продолжить.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Закрой остальные окна торговли, чтобы продолжить.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Подожди немного перед следующей покупкой в магазине.";
+
+"You cannot buy an item from your own personal shop.";
+"Нельзя покупать в собственном магазине.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Подожди немного перед повторным получением выручки.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Закрой остальные окна торговли, чтобы продолжить.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"Общая стоимость товаров превышает допустимый предел.";
+
+"Please wait a moment before searching other personal shops again.";
+"Подожди немного перед повторным поиском магазинов.";
+
+"Close your current personal shop before opening a new one.";
+"Закрой текущий магазин перед открытием нового.";
+
+"You have sold x%d %s for %s Yangs.";
+"Продано x%d %s за %s Янг.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Продано x%d %s за %s Янг и %s Вон.";
+
+"You cannot build a personal shop at this moment. ";
+"Сейчас нельзя использовать магазин.";
+
+"You are too far away from your personal shop.";
+"Ты слишком далеко от своего магазина.";
+
+"You cannot close a personal shop from a different location.";
+"Нельзя закрыть магазин из другого места.";
+
+"This personal shop item has an invalid price.";
+"У этого товара указана недопустимая цена.";
+
+"You have bought x%d %s.";
+"Куплено x%d %s.";
+
+"You have bought %s.";
+"Куплено %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"При создании магазина нельзя выставлять узелки на продажу.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Нельзя продавать предметы из Item Shop в личном магазине.";
+
+"Equipped items cannot be sold in a private shop.";
+"Нельзя продавать надетые предметы в магазине.";
+
+"Items in use cannot be sold in a private shop.";
+"Нельзя продавать используемые предметы.";
+
+"Private Shop";
+"Личный магазин";
+
+"You don't have enough space in your inventory.";
+"В инвентаре недостаточно места.";
+
+"You don't have enough Yang.";
+"У тебя недостаточно Янг.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Получено %u Вон из выручки магазина.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Получено %lld Янг и %u Вон из выручки магазина.";
+
+"Please wait before another personal shop action.";
+"Подожди немного перед следующим действием с магазином.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Нельзя покупать, пока магазин находится в режиме управления.";
+
+"You cannot open a private shop in this area.";
+"Здесь нельзя открыть магазин.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Подожди немного перед следующим действием с магазином.";
+
+"You cannot open a private shop while another window is open.";
+"Закрой остальные окна торговли, чтобы продолжить.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Подожди немного перед следующим действием с магазином.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Подожди немного перед следующим действием с магазином.";
+
+"You can't use a private shop now.";
+"Сейчас нельзя использовать магазин.";

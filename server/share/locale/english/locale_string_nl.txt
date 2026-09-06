@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "Je verandert over 3 seconden van kanaal";
+
+"You have increased available space on your personal shop.";
+"Je hebt de beschikbare ruimte in je winkel vergroot.";
+
+"Your personal shop is currently unavailable.";
+"Je winkel is momenteel niet beschikbaar.";
+
+"You cannot place any more items in your personal shop.";
+"Je kunt geen voorwerpen meer aan de winkel toevoegen.";
+
+"You cannot move the item to that position.";
+"Je kunt het voorwerp niet naar die positie verplaatsen.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"De winkel moet in de beheermodus staan.";
+
+"There is no money to collect.";
+"Er is geen geld om op te nemen.";
+
+"Refresh your search result to sync price of the item.";
+"Vernieuw de zoekresultaten om de huidige prijs te zien.";
+
+"This item is currently unavailable.";
+"Dit voorwerp is momenteel niet beschikbaar.";
+
+"You do not have an open personal shop.";
+"Je hebt geen open winkel.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Neem je opbrengst op voordat je de winkel sluit.";
+
+"You cannot use a personal shop now.";
+"Je kunt de winkel nu niet gebruiken.";
+
+"You cannot open a personal shop without a Bundle.";
+"Je hebt een bundel nodig om een winkel te openen.";
+
+"You have already opened your personal shop.";
+"Je hebt je winkel al geopend.";
+
+"You cannot open a personal shop in a dungeon.";
+"Je kunt geen winkel in een kerker openen.";
+
+"Please choose another title name for your personal shop.";
+"Kies een andere naam voor je winkel.";
+
+"The entered name is too short.";
+"Kies een langere naam.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Je kunt geen Item-Shop-voorwerpen in je winkel verkopen.";
+
+"You cannot sell equipped items in a personal shop.";
+"Je kunt geen gedragen voorwerpen in je winkel verkopen.";
+
+"You cannot sell locked items in a personal shop.";
+"Je kunt geen vergrendelde voorwerpen in je winkel verkopen.";
+
+"Your personal shop has been closed.";
+"Je winkel is gesloten.";
+
+"Teleport to the private shop has been canceled.";
+"De teleportatie naar de winkel is geannuleerd.";
+
+"%u seconds until teleport.";
+"Teleportatie over %u seconden.";
+
+"Your logout has been canceled.";
+"Je uitloggen is geannuleerd.";
+
+"You have sold x%lld %s for %s Yangs.";
+"Je hebt x%lld %s verkocht voor %s Yang.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s is uit de winkel verwijderd omdat de tijd is verlopen.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Opnemen is niet mogelijk: je zou 2 miljard Yang overschrijden.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Je hebt %lld Yang van je winkelopbrengst opgenomen.";
+
+"You cannot trade while another window is open.";
+"Sluit de andere handelsvensters om door te gaan.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Je hebt de maximale premiumtijd voor je winkel bereikt.";
+
+"You have increased Premium Personal Shop duration.";
+"Je hebt de duur van de premiumwinkel verlengd.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Je hebt de maximale premiumtijd voor je winkel bereikt.";
+
+"You cannot use items while editing your personal shop.";
+"Je kunt geen voorwerpen gebruiken terwijl je je winkel beheert.";
+
+"Please wait a few moments before building your personal shop again.";
+"Wacht even voordat je opnieuw een winkel maakt.";
+
+"You cannot open a personal shop while another window is open.";
+"Sluit de andere handelsvensters om door te gaan.";
+
+"You cannot close a personal shop while another window is open.";
+"Sluit de andere handelsvensters om door te gaan.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Sluit de andere handelsvensters om door te gaan.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Wacht even voordat je opnieuw in een winkel koopt.";
+
+"You cannot buy an item from your own personal shop.";
+"Je kunt niet in je eigen winkel kopen.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Wacht even voordat je opnieuw opbrengst opneemt.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Sluit de andere handelsvensters om door te gaan.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"De totale waarde van de aangeboden voorwerpen overschrijdt de limiet.";
+
+"Please wait a moment before searching other personal shops again.";
+"Wacht even voordat je opnieuw naar winkels zoekt.";
+
+"Close your current personal shop before opening a new one.";
+"Sluit je huidige winkel voordat je een nieuwe opent.";
+
+"You have sold x%d %s for %s Yangs.";
+"Je hebt x%d %s verkocht voor %s Yang.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"Je hebt x%d %s verkocht voor %s Yang en %s Won.";
+
+"You cannot build a personal shop at this moment. ";
+"Je kunt de winkel nu niet gebruiken.";
+
+"You are too far away from your personal shop.";
+"Je bent te ver van je winkel verwijderd.";
+
+"You cannot close a personal shop from a different location.";
+"Je kunt je winkel niet vanaf een andere locatie sluiten.";
+
+"This personal shop item has an invalid price.";
+"Dit winkelvoorwerp heeft een ongeldige prijs.";
+
+"You have bought x%d %s.";
+"Je hebt x%d %s gekocht.";
+
+"You have bought %s.";
+"Je hebt %s gekocht.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"Je kunt geen bundels te koop zetten bij het maken van je winkel.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Je kunt geen Item-Shop-voorwerpen in je winkel verkopen.";
+
+"Equipped items cannot be sold in a private shop.";
+"Je kunt geen gedragen voorwerpen in je winkel verkopen.";
+
+"Items in use cannot be sold in a private shop.";
+"Je kunt geen voorwerpen verkopen die in gebruik zijn.";
+
+"Private Shop";
+"Privéwinkel";
+
+"You don't have enough space in your inventory.";
+"Je hebt niet genoeg ruimte in je inventaris.";
+
+"You don't have enough Yang.";
+"Je hebt niet genoeg Yang.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Je hebt %u Won van je winkelopbrengst opgenomen.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Je hebt %lld Yang en %u Won van je winkelopbrengst opgenomen.";
+
+"Please wait before another personal shop action.";
+"Wacht even voordat je opnieuw een winkelactie uitvoert.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Je kunt niets kopen terwijl de winkel wordt beheerd.";
+
+"You cannot open a private shop in this area.";
+"Je kunt hier geen winkel openen.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Wacht even voordat je opnieuw een winkelactie uitvoert.";
+
+"You cannot open a private shop while another window is open.";
+"Sluit de andere handelsvensters om door te gaan.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Wacht even voordat je opnieuw een winkelactie uitvoert.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Wacht even voordat je opnieuw een winkelactie uitvoert.";
+
+"You can't use a private shop now.";
+"Je kunt de winkel nu niet gebruiken.";

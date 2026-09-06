@@ -208,7 +208,7 @@ static bool FN_check_item_sex(LPCHARACTER ch, LPITEM item)
 /////////////////////////////////////////////////////////////////////////////
 // ITEM HANDLING
 /////////////////////////////////////////////////////////////////////////////
-bool CHARACTER::CanHandleItem(bool bSkipCheckRefine, bool bSkipObserver)
+bool CHARACTER::CanHandleItem(bool bSkipCheckRefine, bool bSkipObserver, bool bSkipPrivateShopCheck)
 {
 	if (!bSkipObserver)
 		if (m_bIsObserver)
@@ -226,6 +226,11 @@ bool CHARACTER::CanHandleItem(bool bSkipCheckRefine, bool bSkipObserver)
 
 	if (IsWarping())
 		return false;
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	if (!bSkipPrivateShopCheck && (IsEditingPrivateShop() || IsShopSearch() || GetMyPrivateShop()))
+		return false;
+#endif
 
 	return true;
 }
@@ -3031,23 +3036,45 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 								item->SetCount(item->GetCount() - 1);
 								break;
 
-							case 50200: // ������
+							case 50200: // Private shop bundle - keep classic flow (sign over player, no NPC) even with Premium Private Shop plugin enabled.
+								if (GetMyShop())
+								{
+									ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Close your current personal shop before opening a new one.", GetLanguage()));
+									return false;
+								}
+
 								if (LC_IsYMIR() == true || LC_IsKorea() == true)
 								{
 									if (IS_BOTARYABLE_ZONE(GetMapIndex()) == true)
-									{
 										__OpenPrivateShop();
-									}
 									else
-									{
 										ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot open a private shop in this area.", GetLanguage()));
-									}
 								}
 								else
-								{
 									__OpenPrivateShop();
-								}
 								break;
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							case 71221:
+								if (IsPrivateShopOwner())
+								{
+									OpenPrivateShopPanel();
+									sys_log(0, "PRIVATESHOP_GAME: bundle_open_existing pid=%u state=%u gold=%lld",
+										GetPlayerID(), GetPrivateShopTable()->bState, GetPrivateShopTable()->llGold);
+									return true;
+								}
+								OpenPrivateShopPanel();
+								ChatPacket(CHAT_TYPE_COMMAND, "SetPrivateShopPremiumBuild");
+								break;
+
+							case 60004:
+								OpenShopSearch(MODE_LOOKING);
+								break;
+
+							case 60005:
+								OpenShopSearch(MODE_TRADING);
+								break;
+#endif
 
 							case fishing::FISH_MIND_PILL_VNUM:
 								AddAffect(AFFECT_FISH_MIND_PILL, POINT_NONE, 0, AFF_FISH_MIND, 20*60, 0, true);
@@ -4899,6 +4926,15 @@ bool CHARACTER::UseItemEx(LPITEM item, TItemPos DestCell)
 
 					case USE_AFFECT :
 						{
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							if (item->GetValue(0) == AFFECT_PREMIUM_PRIVATE_SHOP)
+							{
+								if (SetPremiumPrivateShopBonus(item->GetValue(3)))
+									item->SetCount(item->GetCount() - 1);
+								return true;
+							}
+#endif
+
 							if (FindAffect(item->GetValue(0), aApplyInfo[item->GetValue(1)].bPointType))
 							{
 								ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("This effect is already activated.", GetLanguage()));
@@ -5188,6 +5224,14 @@ bool CHARACTER::UseItem(TItemPos Cell, TItemPos DestCell)
 			return false;
 
 	sys_log(0, "%s: USE_ITEM %s (inven %d, cell: %d)", GetName(), item->GetName(), window_type, wCell);
+
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	if (IsEditingPrivateShop())
+	{
+		ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot use items while editing your personal shop.", GetLanguage()));
+		return false;
+	}
+#endif
 
 	if (item->IsExchanging())
 		return false;
@@ -7297,6 +7341,7 @@ bool CHARACTER::CanDoCube() const
 	if (GetShop())		return false;
 	if (GetMyShop())	return false;
 	if (m_bUnderRefine)	return false;
+
 	if (IsWarping())	return false;
 
 	return true;

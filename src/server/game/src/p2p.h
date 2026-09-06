@@ -45,6 +45,9 @@ class P2P_MANAGER : public singleton<P2P_MANAGER>
 
 		CCI *			Find(const char * c_pszName);
 		CCI *			FindByPID(DWORD pid);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+		LPDESC			GetPeer(DWORD dwP2PPort);
+#endif
 
 		int				GetCount();
 		int				GetEmpireUserCount(int idx);

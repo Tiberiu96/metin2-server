@@ -2305,3 +2305,207 @@
 
 "You will change channel in 3 seconds";
 "You will change channel in 3 seconds";
+
+"You have increased available space on your personal shop.";
+"You have increased available space on your personal shop.";
+
+"Your personal shop is currently unavailable.";
+"Your personal shop is currently unavailable.";
+
+"You cannot place any more items in your personal shop.";
+"You cannot place any more items in your personal shop.";
+
+"You cannot move the item to that position.";
+"You cannot move the item to that position.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"You cannot manage personal shop's content while it is not in a modifying state.";
+
+"There is no money to collect.";
+"There is no money to collect.";
+
+"Refresh your search result to sync price of the item.";
+"Refresh your search result to sync price of the item.";
+
+"This item is currently unavailable.";
+"This item is currently unavailable.";
+
+"You do not have an open personal shop.";
+"You do not have an open personal shop.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"You must withdraw your earnings before you can close your personal shop.";
+
+"You cannot use a personal shop now.";
+"You cannot use a personal shop now.";
+
+"You cannot open a personal shop without a Bundle.";
+"You cannot open a personal shop without a Bundle.";
+
+"You have already opened your personal shop.";
+"You have already opened your personal shop.";
+
+"You cannot open a personal shop in a dungeon.";
+"You cannot open a personal shop in a dungeon.";
+
+"Please choose another title name for your personal shop.";
+"Please choose another title name for your personal shop.";
+
+"The entered name is too short.";
+"The entered name is too short.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"You cannot sell Item-Shop items in a personal shop.";
+
+"You cannot sell equipped items in a personal shop.";
+"You cannot sell equipped items in a personal shop.";
+
+"You cannot sell locked items in a personal shop.";
+"You cannot sell locked items in a personal shop.";
+
+"Your personal shop has been closed.";
+"Your personal shop has been closed.";
+
+"Teleport to the private shop has been canceled.";
+"Teleport to the private shop has been canceled.";
+
+"%u seconds until teleport.";
+"%u seconds until teleport.";
+
+"Your logout has been canceled.";
+"Your logout has been canceled.";
+
+"You have sold x%lld %s for %s Yangs.";
+"You have sold x%lld %s for %s Yangs.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s has been removed from the shop as the time has expired.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"You have withdrawn %lld Yang from your personal shop earnings.";
+
+"You cannot trade while another window is open.";
+"You cannot trade while another window is open.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"You have just recently reached maximum premium time for your personal shop. ";
+
+"You have increased Premium Personal Shop duration.";
+"You have increased Premium Personal Shop duration.";
+
+"You have reached maximum premium time for your personal shop. ";
+"You have reached maximum premium time for your personal shop. ";
+
+"You cannot use items while editing your personal shop.";
+"You cannot use items while editing your personal shop.";
+
+"Please wait a few moments before building your personal shop again.";
+"Please wait a few moments before building your personal shop again.";
+
+"You cannot open a personal shop while another window is open.";
+"You cannot open a personal shop while another window is open.";
+
+"You cannot close a personal shop while another window is open.";
+"You cannot close a personal shop while another window is open.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"You cannot view a personal shop while having other trading windows open.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Please wait a moment before buying from a personal shop again.";
+
+"You cannot buy an item from your own personal shop.";
+"You cannot buy an item from your own personal shop.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Please wait a few moments before withdrawing your personal shop again.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"You cannot modify a personal shop while having other trading windows open.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"The items you put up for sale must not exceed the permitted total value.";
+
+"Please wait a moment before searching other personal shops again.";
+"Please wait a moment before searching other personal shops again.";
+
+"Close your current personal shop before opening a new one.";
+"Close your current personal shop before opening a new one.";
+
+"You have sold x%d %s for %s Yangs.";
+"You have sold x%d %s for %s Yangs.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"You have sold x%d %s for %s Yangs and %s Wons.";
+
+"Private Shop";
+"Private Shop";
+
+"You cannot build a personal shop at this moment. ";
+"You cannot build a personal shop at this moment. ";
+
+"You are too far away from your personal shop.";
+"You are too far away from your personal shop.";
+
+"You cannot close a personal shop from a different location.";
+"You cannot close a personal shop from a different location.";
+
+"This personal shop item has an invalid price.";
+"This personal shop item has an invalid price.";
+
+"You have bought x%d %s.";
+"You have bought x%d %s.";
+
+"You have bought %s.";
+"You have bought %s.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"You cannot put Bundles items in a personal shop when building it.";
+
+"Equipped items cannot be sold in a private shop.";
+"Equipped items cannot be sold in a private shop.";
+
+"Items in use cannot be sold in a private shop.";
+"Items in use cannot be sold in a private shop.";
+
+"You don't have enough space in your inventory.";
+"You don't have enough space in your inventory.";
+
+"You don't have enough Yang.";
+"You don't have enough Yang.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"You have withdrawn %u Won from your personal shop earnings.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+
+"Please wait before another personal shop action.";
+"Please wait before another personal shop action.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"You cannot buy an item while a personal shop is in a modifying state.";
+
+"You can't sell Item-Shop items in a private shop.";
+"You cannot sell Item-Shop items in a personal shop.";
+
+"You cannot open a private shop in this area.";
+"You cannot open a personal shop here.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Please wait before another personal shop action.";
+
+"You cannot open a private shop while another window is open.";
+"You cannot trade while another window is open.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Please wait before another personal shop action.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Please wait before another personal shop action.";
+
+"You can't use a private shop now.";
+"You cannot use a personal shop now.";

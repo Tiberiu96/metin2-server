@@ -2296,3 +2296,216 @@
 
 "You will change channel in 3 seconds";
 "3 saniye sonra kanal deðiþtireceksin";
+
+"You have increased available space on your personal shop.";
+"Pazarýndaki kullanýlabilir alaný artýrdýn.";
+
+"Your personal shop is currently unavailable.";
+"Pazarýn þu anda kullanýlamýyor.";
+
+"You cannot place any more items in your personal shop.";
+"Pazara daha fazla eþya ekleyemezsin.";
+
+"You cannot move the item to that position.";
+"Eþyayý o konuma taþýyamazsýn.";
+
+"You cannot manage personal shop's content while it is not in a modifying state.";
+"Pazar yönetim modunda olmalýdýr.";
+
+"There is no money to collect.";
+"Çekilecek para yok.";
+
+"Refresh your search result to sync price of the item.";
+"Güncel fiyatý görmek için aramayý yenile.";
+
+"This item is currently unavailable.";
+"Bu eþya þu anda kullanýlamýyor.";
+
+"You do not have an open personal shop.";
+"Açýk bir pazarýn yok.";
+
+"You must withdraw your earnings before you can close your personal shop.";
+"Pazarýný kapatmadan önce kazancýný çek.";
+
+"You cannot use a personal shop now.";
+"Þu anda pazarý kullanamazsýn.";
+
+"You cannot open a personal shop without a Bundle.";
+"Pazar açmak için bir bohçaya ihtiyacýn var.";
+
+"You have already opened your personal shop.";
+"Pazarýný zaten açtýn.";
+
+"You cannot open a personal shop in a dungeon.";
+"Zindanda pazar açamazsýn.";
+
+"Please choose another title name for your personal shop.";
+"Pazarýn için baþka bir isim seç.";
+
+"The entered name is too short.";
+"Daha uzun bir isim seç.";
+
+"You cannot sell Item-Shop items in a personal shop.";
+"Nesne Market eþyalarýný pazarda satamazsýn.";
+
+"You cannot sell equipped items in a personal shop.";
+"Kuþanýlmýþ eþyalarý pazarda satamazsýn.";
+
+"You cannot sell locked items in a personal shop.";
+"Kilitli eþyalarý pazarda satamazsýn.";
+
+"Your personal shop has been closed.";
+"Pazarýn kapatýldý.";
+
+"Teleport to the private shop has been canceled.";
+"Pazara ýþýnlanma iptal edildi.";
+
+"%u seconds until teleport.";
+"%u saniye sonra ýþýnlanacaksýn.";
+
+"Your logout has been canceled.";
+"Çýkýþ iþlemin iptal edildi.";
+
+"You have sold x%lld %s for %s Yangs.";
+"x%lld %s eþyasýný %s Yang karþýlýðýnda sattýn.";
+
+"%s has been removed from the shop as the time has expired.";
+"%s, süresi dolduðu için pazardan kaldýrýldý.";
+
+"You cannot collect the money, because you would then have more than 2 billion Yang.";
+"Para çekemezsin: 2 milyar Yang sýnýrýný aþarsýn.";
+
+"You have withdrawn %lld Yang from your personal shop earnings.";
+"Pazar kazancýndan %lld Yang çektin.";
+
+"You cannot trade while another window is open.";
+"Devam etmek için diðer ticaret pencerelerini kapat.";
+
+"You have just recently reached maximum premium time for your personal shop. ";
+"Pazarýn için en yüksek premium süresine ulaþtýn.";
+
+"You have increased Premium Personal Shop duration.";
+"Premium pazarýn süresini uzattýn.";
+
+"You have reached maximum premium time for your personal shop. ";
+"Pazarýn için en yüksek premium süresine ulaþtýn.";
+
+"You cannot use items while editing your personal shop.";
+"Pazarý yönetirken eþya kullanamazsýn.";
+
+"Please wait a few moments before building your personal shop again.";
+"Tekrar pazar kurmadan önce biraz bekle.";
+
+"You cannot open a personal shop while another window is open.";
+"Devam etmek için diðer ticaret pencerelerini kapat.";
+
+"You cannot close a personal shop while another window is open.";
+"Devam etmek için diðer ticaret pencerelerini kapat.";
+
+"You cannot view a personal shop while having other trading windows open.";
+"Devam etmek için diðer ticaret pencerelerini kapat.";
+
+"Please wait a moment before buying from a personal shop again.";
+"Tekrar pazardan alýþveriþ yapmadan önce biraz bekle.";
+
+"You cannot buy an item from your own personal shop.";
+"Kendi pazarýndan alýþveriþ yapamazsýn.";
+
+"Please wait a few moments before withdrawing your personal shop again.";
+"Tekrar kazanç çekmeden önce biraz bekle.";
+
+"You cannot modify a personal shop while having other trading windows open.";
+"Devam etmek için diðer ticaret pencerelerini kapat.";
+
+"The items you put up for sale must not exceed the permitted total value.";
+"Satýþtaki eþyalarýn toplam deðeri izin verilen sýnýrý aþýyor.";
+
+"Please wait a moment before searching other personal shops again.";
+"Tekrar pazar aramadan önce biraz bekle.";
+
+"Close your current personal shop before opening a new one.";
+"Yeni bir pazar açmadan önce mevcut pazarýný kapat.";
+
+"You have sold x%d %s for %s Yangs.";
+"x%d %s eþyasýný %s Yang karþýlýðýnda sattýn.";
+
+"You have sold x%d %s for %s Yangs and %s Wons.";
+"x%d %s eþyasýný %s Yang ve %s Won karþýlýðýnda sattýn.";
+
+"You cannot build a personal shop at this moment. ";
+"Þu anda pazarý kullanamazsýn.";
+
+"You are too far away from your personal shop.";
+"Pazarýndan çok uzaktasýn.";
+
+"You cannot close a personal shop from a different location.";
+"Pazarýný baþka bir konumdan kapatamazsýn.";
+
+"This personal shop item has an invalid price.";
+"Bu pazar eþyasýnýn fiyatý geçersiz.";
+
+"You have bought x%d %s.";
+"x%d %s satýn aldýn.";
+
+"You have bought %s.";
+"%s satýn aldýn.";
+
+"You cannot put Bundles items in a personal shop when building it.";
+"Pazar kurarken bohçalarý satýþa koyamazsýn.";
+
+"You can only open the shop if you take off your armour.";
+"You can only open the shop if you take off your armour.";
+
+"You cannot trade because you are carrying more than 2 billion Yang.";
+"You cannot trade because you are carrying more than 2 billion Yang.";
+
+"You can't give your shop an invalid name.";
+"You can't give your shop an invalid name.";
+
+"You can't sell Item-Shop items in a private shop.";
+"Nesne Market eþyalarýný pazarda satamazsýn.";
+
+"Equipped items cannot be sold in a private shop.";
+"Kuþanýlmýþ eþyalarý pazarda satamazsýn.";
+
+"Items in use cannot be sold in a private shop.";
+"Kullanýmdaki eþyalarý pazarda satamazsýn.";
+
+"Private Shop";
+"Özel pazar";
+
+"You don't have enough space in your inventory.";
+"Envanterinde yeterli yer yok.";
+
+"You don't have enough Yang.";
+"Yeterli Yang'ýn yok.";
+
+"You have withdrawn %u Won from your personal shop earnings.";
+"Pazar kazancýndan %u Won çektin.";
+
+"You have withdrawn %lld Yang and %u Won from your personal shop earnings.";
+"Pazar kazancýndan %lld Yang ve %u Won çektin.";
+
+"Please wait before another personal shop action.";
+"Yeni bir pazar iþlemi yapmadan önce biraz bekle.";
+
+"You cannot buy an item while a personal shop is in a modifying state.";
+"Pazar yönetilirken alýþveriþ yapamazsýn.";
+
+"You cannot open a private shop in this area.";
+"Burada pazar açamazsýn.";
+
+"Please wait a moment before editing your personal shop's content again.";
+"Yeni bir pazar iþlemi yapmadan önce biraz bekle.";
+
+"You cannot open a private shop while another window is open.";
+"Devam etmek için diðer ticaret pencerelerini kapat.";
+
+"Please wait a few moments before closing your personal shop again.";
+"Yeni bir pazar iþlemi yapmadan önce biraz bekle.";
+
+"Please wait a moment before changing state of your personal shop again.";
+"Yeni bir pazar iþlemi yapmadan önce biraz bekle.";
+
+"You can't use a private shop now.";
+"Þu anda pazarý kullanamazsýn.";

@@ -40,6 +40,11 @@ class CLoginData
 	void            SetPremium(int * paiPremiumTimes);
 	int             GetPremium(BYTE type);
 	int *           GetPremiumPtr();
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	void			SetPremium(EPremiumTypes type, int iPremiumDuration);
+	void			SetLastPlayerHandle(DWORD dwHandle) { m_dwLastPlayerHandle = dwHandle; }
+	DWORD			GetLastPlayerHandle() { return m_dwLastPlayerHandle; }
+#endif
 
 	DWORD		GetLastPlayerID() const { return m_dwLastPlayerID; }
 	void		SetLastPlayerID(DWORD id) { m_dwLastPlayerID = id; }
@@ -59,6 +64,9 @@ class CLoginData
 	int		m_aiPremiumTimes[PREMIUM_MAX_NUM];
 
 	DWORD		m_dwLastPlayerID;
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+	DWORD		m_dwLastPlayerHandle;
+#endif
 
 	TAccountTable   m_data;
 };

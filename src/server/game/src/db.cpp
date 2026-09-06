@@ -801,6 +801,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						str_to_number(aiPremiumTimes[PREMIUM_FISH_MIND], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_MARRIAGE_FAST], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_GOLD], row[col++]);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+						str_to_number(aiPremiumTimes[PREMIUM_PRIVATE_SHOP], row[col++]);
+#endif
 					}
 					else
 					{
@@ -811,6 +814,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						str_to_number(aiPremiumTimes[PREMIUM_FISH_MIND], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_MARRIAGE_FAST], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_GOLD], row[col++]);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+						str_to_number(aiPremiumTimes[PREMIUM_PRIVATE_SHOP], row[col++]);
+#endif
 
 						if (LC_IsEurope() || test_server)
 						{
@@ -1027,6 +1033,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						str_to_number(aiPremiumTimes[PREMIUM_FISH_MIND], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_MARRIAGE_FAST], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_GOLD], row[col++]);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+						str_to_number(aiPremiumTimes[PREMIUM_PRIVATE_SHOP], row[col++]);
+#endif
 					}
 					else
 					{
@@ -1037,6 +1046,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 						str_to_number(aiPremiumTimes[PREMIUM_FISH_MIND], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_MARRIAGE_FAST], row[col++]);
 						str_to_number(aiPremiumTimes[PREMIUM_GOLD], row[col++]);
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+						str_to_number(aiPremiumTimes[PREMIUM_PRIVATE_SHOP], row[col++]);
+#endif
 
 						if (LC_IsEurope() || test_server)
 						{
@@ -1462,6 +1474,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 							"UNIX_TIMESTAMP(fish_mind_expire),"
 							"UNIX_TIMESTAMP(marriage_fast_expire),"
 							"UNIX_TIMESTAMP(money_drop_rate_expire),"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							"UNIX_TIMESTAMP(premium_privateshop_expire),"
+#endif
 							"UNIX_TIMESTAMP(create_time)"
 							" FROM account WHERE login='%s'",
 							pinfo->passwd, pinfo->login) ;
@@ -1493,6 +1508,9 @@ void DBManager::AnalyzeReturnQuery(SQLMsg * pMsg)
 							"UNIX_TIMESTAMP(fish_mind_expire),"
 							"UNIX_TIMESTAMP(marriage_fast_expire),"
 							"UNIX_TIMESTAMP(money_drop_rate_expire),"
+#ifdef WJ_PREMIUM_PRIVATE_SHOP
+							"UNIX_TIMESTAMP(premium_privateshop_expire),"
+#endif
 							"UNIX_TIMESTAMP(create_time)"
 							" FROM account WHERE login='%s'",
 							pinfo->passwd, pinfo->login) ;
