@@ -2620,6 +2620,8 @@ typedef struct SPacketGCPrivateShopLoad
 	BYTE bChannel;
 	BYTE bState;
 	BYTE bPageCount;
+	DWORD dwDeadline;
+	DWORD dwLifetimeSeconds;
 } TPacketGCPrivateShopLoad;
 
 typedef struct SPacketGCPrivateShopOpen

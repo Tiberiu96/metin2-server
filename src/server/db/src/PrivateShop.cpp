@@ -28,24 +28,6 @@ CPrivateShop::~CPrivateShop()
 		delete m_pGrid[i];
 }
 
-void CPrivateShop::UpdatePremiumTime(time_t tPremiumTime)
-{
-	SetPremiumTime(tPremiumTime);
-
-	if (auto pShopCache = CClientManager::Instance().GetPrivateShopCache(GetOwner()))
-	{
-		TPrivateShop* pPrivateShopTable = pShopCache->Get();
-		pPrivateShopTable->tPremiumTime = GetPremiumTime();
-		pShopCache->Put(pPrivateShopTable);
-	}
-	else
-	{
-		char szQuery[128];
-		snprintf(szQuery, sizeof(szQuery), "UPDATE private_shop%s SET premium_time=%u WHERE owner_id=%u", GetTablePostfix(), GetPremiumTime(), GetOwner());
-		CDBManager::instance().AsyncQuery(szQuery);
-	}
-}
-
 void CPrivateShop::RemoveAllItem()
 {
 	for (int i = 0; i < PRIVATE_SHOP_PAGE_MAX_NUM; ++i)
@@ -362,4 +344,3 @@ TPrivateShopItemInfo* CPrivateShop::MoveItem(WORD wPos, WORD wChangePos)
 
 	return pItemInfo;
 }
-

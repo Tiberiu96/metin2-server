@@ -1513,6 +1513,7 @@ typedef struct SPrivateShop
 	DWORD	dwCheque;
 	BYTE	bPageCount;
 	time_t	tPremiumTime;
+	DWORD dwLifetimeSeconds;
 } TPrivateShop;
 
 typedef struct SItemPrice

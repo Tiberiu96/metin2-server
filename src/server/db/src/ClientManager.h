@@ -52,7 +52,6 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	typedef std::unordered_map<DWORD, std::unique_ptr<CPrivateShopItemCache> > TPrivateShopItemCacheMap;
 	typedef std::unordered_set<CPrivateShopItemCache *, std::hash<CPrivateShopItemCache*> > TPrivateShopItemCacheSet;
 	typedef std::unordered_map<DWORD, std::unique_ptr<TPrivateShopItemCacheSet> > TPrivateShopItemCacheSetPtrMap;
-	typedef std::list<CPrivateShop*> TPrivateShopPtrList;
 #endif
 	// MYSHOP_PRICE_LIST
 	/// ������ �������� ����Ʈ ��û ����
@@ -467,7 +466,6 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	TPrivateShopMap m_map_privateShop;
 	TPrivateShopItemCacheMap m_map_privateShopItemCache;
 	TPrivateShopItemCacheSetPtrMap m_map_pPrivateShopItemCacheSetPtr;
-	TPrivateShopPtrList m_list_privateShopPremium;
 	std::vector<TItemTable*> m_vec_itemVnumRange;
 #endif
 	struct TPartyInfo
@@ -617,9 +615,7 @@ class CClientManager : public CNetBase, public singleton<CClientManager>
 	void PrivateShopItemExpire(const char* c_szData);
 	void PrivateShopPremiumTimeUpdate(const char* c_szData);
 	void PrivateShopStartPremiumEvent(DWORD dwPID);
-	void PrivateShopEndPremiumEvent(DWORD dwPID);
 	void UpdatePrivateShopPremiumEvent();
-	bool IsPrivateShopPremiumEvent(DWORD dwPID);
 	void PrivateShopDestroy(LPPRIVATE_SHOP pPrivateShop);
 	void PrivateShopGameDespawn(LPPRIVATE_SHOP pPrivateShop);
 	void PrivateShopGameSpawn(LPPRIVATE_SHOP pPrivateShop);

@@ -134,6 +134,7 @@ enum EPrivateShopState
 	STATE_CLOSED,
 	STATE_OPEN,
 	STATE_MODIFY,
+	STATE_RECOVERY,
 };
 #endif
 enum EWearPositions

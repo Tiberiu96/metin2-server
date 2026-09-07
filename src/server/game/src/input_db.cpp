@@ -2770,14 +2770,14 @@ void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
 		case PRIVATE_SHOP_DG_SUBHEADER_NO_SHOP:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You do not have an open personal shop.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
 		case PRIVATE_SHOP_DG_SUBHEADER_CLOSE_RESULT_BALANCE_AVAILABLE:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You must withdraw your earnings before you can close your personal shop.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You must withdraw your earnings before you can close your personal shop.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
@@ -2857,21 +2857,21 @@ void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
 		case PRIVATE_SHOP_DG_SUBHEADER_ITEM_CHECKIN_FALSE_ITEM:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("This item is currently unavailable.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("This item is currently unavailable.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
 		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_FALSE_PRICE:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Refresh your search result to sync price of the item.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Refresh your search result to sync price of the item.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
 		case PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_MODIFY_STATE:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot buy an item while a personal shop is in a modifying state.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot buy an item while a personal shop is in a modifying state.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
@@ -2959,14 +2959,14 @@ void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
 		case PRIVATE_SHOP_DG_SUBHEADER_WITHDRAW_RESULT_NO_BALANCE:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("There is no money to collect.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("There is no money to collect.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
 		case PRIVATE_SHOP_DG_SUBHEADER_NOT_MODIFY_STATE:
 		{
 			if (d && d->GetCharacter())
-				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", GetLanguage()));
+				d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
@@ -3010,7 +3010,7 @@ void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
 			if (!d || !d->GetCharacter())
 				return;
 
-			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot move the item to that position.", GetLanguage()));
+			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot move the item to that position.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
@@ -3054,7 +3054,7 @@ void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
 			if (!d || !d->GetCharacter())
 				return;
 
-			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your personal shop is currently unavailable.", GetLanguage()));
+			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("Your personal shop is currently unavailable.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 
@@ -3084,7 +3084,7 @@ void CInputDB::PrivateShop(LPDESC d, const char* c_pData)
 			if (!d || !d->GetCharacter())
 				return;
 
-			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot place any more items in your personal shop.", GetLanguage()));
+			d->GetCharacter()->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot place any more items in your personal shop.", d->GetCharacter()->GetLanguage()));
 		}
 		break;
 

@@ -64,11 +64,11 @@ void CPrivateShopCache::OnFlush()
 			"REPLACE INTO private_shop%s SET "
 			"owner_id=%u, owner_name='%s', state=%u, title='%s', title_type=%u, "
 			"vnum=%u, x=%ld, y=%ld, map_index=%ld, channel=%u, port=%u, "
-			"gold=%lld, cheque=%u, page_count=%u, premium_time=%u",
+			"gold=%lld, cheque=%u, page_count=%u, premium_time=%u, lifetime_seconds=%u",
 			GetTablePostfix(), m_data.dwOwner, szEscapedOwnerName, m_data.bState, szEscapedTitle,
 			m_data.bTitleType, m_data.dwVnum, m_data.lX, m_data.lY, m_data.lMapIndex,
 			m_data.bChannel, m_data.wPort, m_data.llGold, m_data.dwCheque,
-			m_data.bPageCount, m_data.tPremiumTime);
+			m_data.bPageCount, m_data.tPremiumTime, m_data.dwLifetimeSeconds);
 
 		CDBManager::instance().ReturnQuery(szQuery, QID_PRIVATE_SHOP_SAVE, 0, NULL);
 		m_bNeedQuery = false;

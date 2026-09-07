@@ -7682,6 +7682,8 @@ void CHARACTER::SetPrivateShopTable(const TPrivateShop& rPrivateShopTable)
 		subPacket.bChannel = rPrivateShopTable.bChannel;
 		subPacket.bState = rPrivateShopTable.bState;
 		subPacket.bPageCount = rPrivateShopTable.bPageCount;
+		subPacket.dwDeadline = static_cast<DWORD>(rPrivateShopTable.tPremiumTime);
+		subPacket.dwLifetimeSeconds = rPrivateShopTable.dwLifetimeSeconds;
 
 		GetDesc()->BufferedPacket(&mainPacket, sizeof(TPacketGCPrivateShop));
 		GetDesc()->Packet(&subPacket, sizeof(TPacketGCPrivateShopLoad));

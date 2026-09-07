@@ -46,8 +46,6 @@ class CPrivateShop
 		void						ChangeCheque(DWORD dwCheque) { m_table.dwCheque += dwCheque; }
 		DWORD						GetCheque() { return m_table.dwCheque; }
 
-		void						SetPremiumTime(time_t tPremiumTime) { m_table.tPremiumTime = tPremiumTime; }
-		void						UpdatePremiumTime(time_t tPremiumTime);
 		time_t						GetPremiumTime() { return m_table.tPremiumTime; }
 
 		void						ChangeTitle(const char* c_szTitle);
@@ -81,4 +79,3 @@ class CPrivateShop
 };
 
 typedef CPrivateShop* LPPRIVATE_SHOP;
-

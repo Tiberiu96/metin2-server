@@ -227,7 +227,8 @@ bool CPrivateShopManager::BuildPrivateShop(LPCHARACTER pShopOwner, const char* c
 	t.llGold = 0;
 	t.dwCheque = 0;
 	t.bPageCount = bPageCount;
-	t.tPremiumTime = pShopOwner->GetPremiumRemainSeconds(PREMIUM_PRIVATE_SHOP) + time(0);
+	// DB assigns and persists the lifetime when accepting this build.
+	t.tPremiumTime = 0;
 
 	PendingBuild pending;
 	pending.items = vec_privateShopItem;
@@ -397,6 +398,11 @@ void CPrivateShopManager::ClosePrivateShop(LPCHARACTER pShopOwner)
 
 void CPrivateShopManager::SpawnPrivateShop(TPrivateShop* pPrivateShopTable, const std::vector<TPlayerPrivateShopItem>& c_vec_shopItem)
 {
+	if (pPrivateShopTable->tPremiumTime <= time(0))
+	{
+		pPrivateShopTable->bState = STATE_RECOVERY;
+		sys_log(0, "PRIVATESHOP_GAME: delayed_spawn_expired pid=%u", pPrivateShopTable->dwOwner);
+	}
 	const CMob* pMobTable = CMobManager::Instance().Get(pPrivateShopTable->dwVnum);
 	if (!pMobTable)
 	{
@@ -448,7 +454,13 @@ void CPrivateShopManager::SpawnPrivateShop(TPrivateShop* pPrivateShopTable, cons
 		return;
 	}
 
-	pPrivateShop->Show(pPrivateShopTable->lX, pPrivateShopTable->lY, 0, pPrivateShopTable->lMapIndex);
+	if (pPrivateShopTable->bState != STATE_RECOVERY)
+		pPrivateShop->Show(pPrivateShopTable->lX, pPrivateShopTable->lY, 0, pPrivateShopTable->lMapIndex);
+	else
+	{
+		pPrivateShop->SetState(STATE_RECOVERY);
+		sys_log(0, "PRIVATESHOP_GAME: recovery_loaded_hidden pid=%u", pPrivateShopTable->dwOwner);
+	}
 
 	sys_log(0, "%s PRIVATE_SHOP: SUCCESS Shop entity spawned", pPrivateShopTable->szOwnerName);
 
@@ -1056,4 +1068,3 @@ void CPrivateShopManager::SearchItem(LPDESC pDesc, TPrivateShopSearchFilter& rFi
 		SendData();
 //Darklovers_Fix_Offline_Shop
 }
-

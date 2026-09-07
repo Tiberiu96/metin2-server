@@ -6,6 +6,7 @@
 #include "QID.h"
 #include "PrivateShop.h"
 #include "PrivateShopUtils.h"
+#include "../../common/private_shop_lifetime.h"
 #include "../../libgame/include/grid.h"
 
 extern int g_test_server;
@@ -17,9 +18,11 @@ extern int g_log;
 ///////////////////////////////////////////////////////////////////////////////////////
 void CClientManager::RESULT_PRIVATE_SHOP_LOAD(CPeer* pPeer, MYSQL_RES* pRes, DWORD dwHandle, DWORD dwPID)
 {
+	UpdatePrivateShopPremiumEvent();
 	TPrivateShop TShop {};
 
 	LPPRIVATE_SHOP existing = GetPrivateShop(dwPID);
+	const bool recreateRecovery = existing && existing->GetState() == STATE_CLOSED;
 	CPrivateShopCache* cache = GetPrivateShopCache(dwPID);
 	if (existing)
 		TShop = existing->GetTable();
@@ -50,9 +53,9 @@ void CClientManager::RESULT_PRIVATE_SHOP_LOAD(CPeer* pPeer, MYSQL_RES* pRes, DWO
 	// Closed/expired stock is restored for recovery, never directly for sale.
 	if (!items.empty() && (TShop.bState == STATE_CLOSED || TShop.tPremiumTime <= time(0)))
 	{
-		TShop.bState = STATE_MODIFY;
+		TShop.bState = STATE_RECOVERY;
 		if (existing)
-			existing->ChangeState(STATE_MODIFY);
+			existing->ChangeState(STATE_RECOVERY);
 		sys_log(0, "PRIVATESHOP_DB: recovery_load pid=%u items=%u", dwPID, static_cast<unsigned>(items.size()));
 	}
 	WORD itemCount = items.size();
@@ -88,8 +91,7 @@ void CClientManager::RESULT_PRIVATE_SHOP_LOAD(CPeer* pPeer, MYSQL_RES* pRes, DWO
 	{
 		shop->SetOwnerHandle(dwHandle);
 		shop->BindOwnerPeerHandle(pPeer->GetHandle());
-		PrivateShopEndPremiumEvent(dwPID);
-		if (shop->GetState() != STATE_CLOSED && (!existing || !GetPeer(shop->GetShopPeerHandle()) || TShop.bState == STATE_MODIFY))
+		if (shop->GetState() != STATE_CLOSED && (!existing || recreateRecovery || !GetPeer(shop->GetShopPeerHandle())))
 			PrivateShopSpawn(dwPID);
 		sys_log(0, "PRIVATESHOP_DB: owner_rebound pid=%u peer=%u handle=%u", dwPID, pPeer->GetHandle(), dwHandle);
 	}
@@ -440,7 +442,6 @@ LPPRIVATE_SHOP CClientManager::CreatePrivateShop(DWORD dwPID)
 
 bool CClientManager::DeletePrivateShop(DWORD dwPID)
 {
-	PrivateShopEndPremiumEvent(dwPID);
 	auto it = m_map_privateShop.find(dwPID);
 
 	if (it == m_map_privateShop.end())
@@ -669,6 +670,9 @@ void CClientManager::PrivateShopBuild(CPeer* pPeer, DWORD dwHandle, const char* 
 {
 	TPrivateShop* pTable = (TPrivateShop*)c_szData;
 	c_szData += sizeof(TPrivateShop);
+	pTable->dwLifetimeSeconds = PRIVATE_SHOP_LIFETIME_SECONDS;
+	pTable->tPremiumTime = time(0) + pTable->dwLifetimeSeconds;
+	sys_log(0, "PRIVATESHOP_DB: lifetime_assigned pid=%u seconds=%u deadline=%u", pTable->dwOwner, pTable->dwLifetimeSeconds, static_cast<unsigned>(pTable->tPremiumTime));
 
 	BYTE bSubHeader = PRIVATE_SHOP_DG_SUBHEADER_CREATE_RESULT;
 
@@ -807,6 +811,7 @@ void CClientManager::PrivateShopBuild(CPeer* pPeer, DWORD dwHandle, const char* 
 	// Setup cache
 	sys_log(0, "PRIVATESHOP_DB: build_cache_begin owner=%u", pTable->dwOwner);
 	PutPrivateShopCache(pTable);
+	GetPrivateShopCache(pTable->dwOwner)->Flush();
 	CreatePrivateShopItemCacheSet(pPrivateShop->GetOwner());
 	sys_log(0, "PRIVATESHOP_DB: build_cache_ok owner=%u", pTable->dwOwner);
 
@@ -853,6 +858,14 @@ void CClientManager::PrivateShopClose(CPeer* pPeer, DWORD dwHandle, const char* 
 		return;
 	}
 
+	for (const auto& item : pPrivateShop->GetItemContainer())
+	{
+		if (!item.bAvailable)
+		{
+			sys_log(0, "PRIVATESHOP_DB: close_wait_reservation pid=%u", dwPID);
+			return;
+		}
+	}
 	if (pPrivateShop->GetGold() || pPrivateShop->GetCheque())
 	{
 		bSubHeader = PRIVATE_SHOP_DG_SUBHEADER_CLOSE_RESULT_BALANCE_AVAILABLE;
@@ -912,9 +925,6 @@ void CClientManager::PrivateShopDespawn(CPeer* pPeer, DWORD dwHandle, const char
 		sys_err("Cannot find private shop %u", dwPID);
 		return;
 	}
-
-	if (IsPrivateShopPremiumEvent(dwPID))
-		PrivateShopEndPremiumEvent(dwPID);
 
 	DeletePrivateShop(dwPID);
 
@@ -1133,6 +1143,11 @@ void CClientManager::PrivateShopModifyRequest(CPeer* pPeer, DWORD dwHandle, cons
 		}
 	}
 	BYTE bState = pPrivateShop->GetState();
+	if (pPrivateShop->GetPremiumTime() <= time(0) || bState == STATE_RECOVERY)
+	{
+		sys_log(0, "PRIVATESHOP_DB: reopen_denied_expired pid=%u", dwPID);
+		return;
+	}
 	if (bState == STATE_OPEN)
 	{
 		pPrivateShop->ChangeState(STATE_MODIFY);
@@ -1195,7 +1210,7 @@ void CClientManager::PrivateShopBuyRequest(CPeer* pPeer, DWORD dwHandle, const c
 	}
 
 	// Player cannot buy an item from the private shop while it is being modified
-	if (pPrivateShop->GetState() != STATE_OPEN)
+	if (pPrivateShop->GetState() != STATE_OPEN || pPrivateShop->GetPremiumTime() <= time(0))
 	{
 		bSubHeader = PRIVATE_SHOP_DG_SUBHEADER_BUY_RESULT_MODIFY_STATE;
 
@@ -1565,7 +1580,7 @@ void CClientManager::PrivateShopItemCheckoutRequest(CPeer* pPeer, DWORD dwHandle
 	}
 
 	// Player cannot edit shop's content if its not set to modify state
-	if (pPrivateShop->GetState() != STATE_MODIFY)
+	if (pPrivateShop->GetState() != STATE_MODIFY && pPrivateShop->GetState() != STATE_RECOVERY)
 	{
 		bSubHeader = PRIVATE_SHOP_DG_SUBHEADER_NOT_MODIFY_STATE;
 
@@ -1588,7 +1603,7 @@ void CClientManager::PrivateShopItemCheckoutRequest(CPeer* pPeer, DWORD dwHandle
 
 	// Check if the item exists 
 	TPrivateShopItemInfo* pItemInfo = pPrivateShop->GetItem(p->wSrcPos);
-	if (!pItemInfo)
+	if (!pItemInfo || !pItemInfo->bAvailable)
 	{
 		sys_err("Could not find item info on pos %u shop %u", p->wSrcPos, p->dwPID);
 
@@ -1902,8 +1917,7 @@ void CClientManager::PrivateShopPremiumTimeUpdate(const char* c_szData)
 		LPPRIVATE_SHOP pPrivateShop = GetPrivateShop(dwPID);
 		if (pPrivateShop)
 		{
-			pPrivateShop->UpdatePremiumTime(tNewPremiumTime);
-			sys_log(0, "PRIVATE_SHOP: Updating premium time for private shop %u -> %u", p->dwPID, tNewPremiumTime);
+			sys_log(0, "PRIVATESHOP_DB: account_bonus_keeps_shop_deadline pid=%u", dwPID);
 		}
 	}
 
@@ -1924,16 +1938,6 @@ void CClientManager::PrivateShopStartPremiumEvent(DWORD dwPID)
 		return;
 	}
 
-	// Return if the private shop has already been listed for the premium time privilege
-	for (auto it = m_list_privateShopPremium.begin(); it != m_list_privateShopPremium.end(); ++it)
-	{
-		LPPRIVATE_SHOP pPrivateShop = *it;
-
-		if (pPrivateShop && pPrivateShop->GetOwner() == dwPID)
-			return;
-	}
-
-	// TESTING MODE: 5 min for premium shop. Production target: 24h (86400) non-premium, premium uses account expire.
 	if (pPrivateShop->GetState() == STATE_CLOSED)
 	{
 		pPrivateShop->BindOwnerPeerHandle(0);
@@ -1941,8 +1945,7 @@ void CClientManager::PrivateShopStartPremiumEvent(DWORD dwPID)
 		sys_log(0, "PRIVATESHOP_DB: logout_closed pid=%u", dwPID);
 		return;
 	}
-	if (pPrivateShop->GetPremiumTime() <= time(0))
-		pPrivateShop->UpdatePremiumTime(time(0) + 300);
+	// Logout never grants additional lifetime.
 	if (auto cache = GetPrivateShopCache(dwPID))
 		cache->Flush();
 	sys_log(0, "PRIVATESHOP_DB: offline_deadline_saved pid=%u deadline=%u", dwPID, static_cast<unsigned>(pPrivateShop->GetPremiumTime()));
@@ -1951,24 +1954,7 @@ void CClientManager::PrivateShopStartPremiumEvent(DWORD dwPID)
 	pPrivateShop->BindOwnerPeerHandle(0);
 	pPrivateShop->SetOwnerHandle(0);
 
-	m_list_privateShopPremium.emplace_back(pPrivateShop);
-
-	sys_log(0, "PRIVATE_SHOP: Starting premium time event on private shop %u", dwPID);
-}
-
-void CClientManager::PrivateShopEndPremiumEvent(DWORD dwPID)
-{
-	for (auto it = m_list_privateShopPremium.begin(); it != m_list_privateShopPremium.end(); ++it)
-	{
-		LPPRIVATE_SHOP pPrivateShop = *it;
-
-		if (pPrivateShop && pPrivateShop->GetOwner() == dwPID)
-		{
-			m_list_privateShopPremium.erase(it);
-			sys_log(0, "PRIVATE_SHOP: Ending premium time event on private shop %u", dwPID);
-			return;
-		}
-	}
+	sys_log(0, "PRIVATESHOP_DB: owner_detached_deadline_unchanged pid=%u", dwPID);
 }
 
 void CClientManager::UpdatePrivateShopPremiumEvent()
@@ -1998,50 +1984,43 @@ void CClientManager::UpdatePrivateShopPremiumEvent()
 			sys_log(0, "PRIVATESHOP_DB: reservation_timeout_cancel shop=%u item=%u token=%u", entry.first, item.TItem.dwID, item.dwReservation);
 		}
 	}
-	for (auto it = m_list_privateShopPremium.begin(); it != m_list_privateShopPremium.end(); )
+	std::vector<DWORD> expired;
+	for (const auto& entry : m_map_privateShop)
+		if (entry.second->GetState() != STATE_CLOSED && PrivateShopDeadlinePassed(entry.second->GetPremiumTime(), time(0)))
+			expired.push_back(entry.first);
+	for (DWORD pid : expired)
 	{
-		LPPRIVATE_SHOP shop = *it;
-		if (!shop)
+		LPPRIVATE_SHOP shop = GetPrivateShop(pid);
+		if (!shop) continue;
+		if (shop->GetState() != STATE_RECOVERY)
 		{
-			it = m_list_privateShopPremium.erase(it);
-			continue;
+			shop->ChangeState(STATE_RECOVERY);
+			BYTE header = PRIVATE_SHOP_DG_SUBHEADER_STATE_UPDATE;
+			TPacketDGPrivateShopStateUpdate packet{};
+			packet.dwPID = pid;
+			packet.bState = STATE_RECOVERY;
+			CPeer* owner = GetPeer(shop->GetOwnerPeerHandle());
+			CPeer* host = GetPeer(shop->GetShopPeerHandle());
+			for (CPeer* peer : {owner, host == owner ? nullptr : host})
+			{
+				if (!peer) continue;
+				peer->EncodeHeader(HEADER_DG_PRIVATE_SHOP, peer == owner ? shop->GetOwnerHandle() : 0, sizeof(header) + sizeof(packet));
+				peer->Encode(&header, sizeof(header));
+				peer->Encode(&packet, sizeof(packet));
+			}
+			UpdatePrivateShopItemCacheSet(pid);
+			sys_log(0, "PRIVATESHOP_DB: expired_recovery_retained pid=%u items=%u gold=%lld", pid, shop->GetItemCount(), shop->GetGold());
 		}
-		if (shop->GetPremiumTime() > time(0))
-		{
-			++it;
-			continue;
-		}
-		const DWORD pid = shop->GetOwner();
 		bool reserved = false;
 		for (const auto& item : shop->GetItemContainer())
 			reserved = reserved || !item.bAvailable;
 		if (reserved)
 		{
-			++it;
 			continue;
 		}
-		it = m_list_privateShopPremium.erase(it);
-		// Preserve the source records; owner recovery uses normal checkout/withdrawal.
-		PrivateShopGameDespawn(shop);
-		sys_log(0, "PRIVATESHOP_DB: expired_recovery_retained pid=%u items=%u gold=%lld", pid, shop->GetItemCount(), shop->GetGold());
 		if (!shop->GetItemCount() && !shop->GetGold() && !shop->GetCheque())
 			PrivateShopDestroy(shop);
 	}
-}
-
-bool CClientManager::IsPrivateShopPremiumEvent(DWORD dwPID)
-{
-	for (auto it = m_list_privateShopPremium.begin(); it != m_list_privateShopPremium.end(); ++it)
-	{
-		LPPRIVATE_SHOP pPrivateShop = *it;
-
-		if (pPrivateShop && pPrivateShop->GetOwner() == dwPID)
-		{
-			return true;
-		}
-	}
-
-	return false;
 }
 
 // Called upon last item checkout / stash withdrawal
@@ -2089,9 +2068,6 @@ void CClientManager::PrivateShopDestroy(LPPRIVATE_SHOP pPrivateShop)
 
 	// @note: Shouldn't happen as we already despawn the private shop by PrivateShopGameDespawn
 	{
-		if (IsPrivateShopPremiumEvent(dwShopID))
-			PrivateShopEndPremiumEvent(dwShopID);
-
 		if (GetPrivateShop(dwPID))
 			DeletePrivateShop(dwShopID);
 	}
@@ -2122,7 +2098,6 @@ void CClientManager::PrivateShopGameDespawn(LPPRIVATE_SHOP pPrivateShop)
 		sys_log(0, "PRIVATE_SHOP: Sending despawn update to owner %u", subPacket.dwPID);
 	}
 	// Despawn only changes visibility. Final destruction belongs to the caller.
-	PrivateShopEndPremiumEvent(subPacket.dwPID);
 	UpdatePrivateShopItemCacheSet(subPacket.dwPID);
 	sys_log(0, "PRIVATESHOP_DB: despawn_retained pid=%u items=%u gold=%lld", subPacket.dwPID, pPrivateShop->GetItemCount(), pPrivateShop->GetGold());
 
@@ -2136,6 +2111,11 @@ void CClientManager::PrivateShopGameDespawn(LPPRIVATE_SHOP pPrivateShop)
 
 void CClientManager::PrivateShopGameSpawn(LPPRIVATE_SHOP pPrivateShop)
 {
+	if (pPrivateShop->GetState() != STATE_CLOSED && pPrivateShop->GetPremiumTime() <= time(0))
+	{
+		pPrivateShop->ChangeState(STATE_RECOVERY);
+		sys_log(0, "PRIVATESHOP_DB: spawn_expired_recovery pid=%u", pPrivateShop->GetOwner());
+	}
 	if (pPrivateShop->GetState() == STATE_CLOSED)
 	{
 		sys_log(0, "PRIVATESHOP_DB: spawn_skip_closed pid=%u", pPrivateShop->GetOwner());
@@ -2203,6 +2183,16 @@ void CClientManager::PrivateShopPeerSpawn(CPeer* pPeer)
 		{
 			LPPRIVATE_SHOP pPrivateShop = it->second.get();
 
+			if (pPrivateShop->GetState() == STATE_RECOVERY &&
+				pPrivateShop->GetTable().wPort == pPeer->GetListenPort() &&
+				pPrivateShop->GetTable().bChannel == pPeer->GetChannel() &&
+				!GetPeer(pPrivateShop->GetShopPeerHandle()))
+			{
+				pPrivateShop->BindShopPeerHandle(pPeer->GetHandle());
+				PrivateShopGameSpawn(pPrivateShop);
+				sys_log(0, "PRIVATESHOP_DB: recovery_host_rebound pid=%u", pPrivateShop->GetOwner());
+			}
+
 			if (pPrivateShop->GetState() != STATE_UNAVAILABLE)
 			{
 				++it;
@@ -2222,7 +2212,7 @@ void CClientManager::PrivateShopPeerSpawn(CPeer* pPeer)
 
 						if (pPrivateShop->GetItemCount())
 						{
-							pPrivateShop->ChangeState(STATE_OPEN);
+							pPrivateShop->ChangeState(pPrivateShop->GetPremiumTime() <= time(0) ? STATE_RECOVERY : STATE_OPEN);
 							pPrivateShop->BindShopPeerHandle(pPeer->GetHandle());
 							PrivateShopGameSpawn(pPrivateShop);
 						}
@@ -2234,7 +2224,6 @@ void CClientManager::PrivateShopPeerSpawn(CPeer* pPeer)
 //Darklovers_Fix_Offline_Shop
 			if (bDeleteShop)
 			{
-				PrivateShopEndPremiumEvent(pPrivateShop->GetOwner());
 				it = m_map_privateShop.erase(it);
 			}
 			else
@@ -2328,4 +2317,3 @@ TItemTable* CClientManager::GetItemTable(DWORD dwVnum)
 
 	return nullptr;
 }
-

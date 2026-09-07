@@ -9,6 +9,7 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include "../src/server/common/private_shop_lifetime.h"
 using BYTE = uint8_t;
 using WORD = uint16_t;
 using DWORD = uint32_t;
@@ -18,7 +19,7 @@ static time_t test_time(int) { return now; }
 #define sys_log(...) ((void)0)
 #define sys_err(...) ((void)0)
 static void strlcpy(char* dst, const char* src, size_t count) { std::snprintf(dst, count, "%s", src); }
-enum { STATE_UNAVAILABLE, STATE_CLOSED, STATE_OPEN, STATE_MODIFY };
+enum { STATE_UNAVAILABLE, STATE_CLOSED, STATE_OPEN, STATE_MODIFY, STATE_RECOVERY };
 enum { HEADER_DG_PRIVATE_SHOP, PRIVATE_SHOP_DG_SUBHEADER_STATE_UPDATE,
     PRIVATE_SHOP_DG_SUBHEADER_CANCEL_BUY, PRIVATE_SHOP_DG_SUBHEADER_SALE_UPDATE,
     PRIVATE_SHOP_DG_SUBHEADER_REMOVE_ITEM };
@@ -66,7 +67,6 @@ struct CPrivateShop {
 using LPPRIVATE_SHOP = CPrivateShop*;
 struct CClientManager {
     std::unordered_map<DWORD, std::unique_ptr<CPrivateShop>> m_map_privateShop;
-    std::list<LPPRIVATE_SHOP> m_list_privateShopPremium;
     CPeer peer; Cache cache; int destroyed = 0, itemFlushes = 0;
     LPPRIVATE_SHOP Add(DWORD pid = 1) { auto p = std::make_unique<CPrivateShop>(); p->pid = pid; auto ptr = p.get(); m_map_privateShop.emplace(pid, std::move(p)); return ptr; }
     LPPRIVATE_SHOP GetPrivateShop(DWORD pid) { auto it = m_map_privateShop.find(pid); return it == m_map_privateShop.end() ? nullptr : it->second.get(); }
@@ -77,8 +77,6 @@ struct CClientManager {
     bool DeletePrivateShop(DWORD);
     void PrivateShopGameDespawn(LPPRIVATE_SHOP);
     void PrivateShopStartPremiumEvent(DWORD);
-    void PrivateShopEndPremiumEvent(DWORD);
-    bool IsPrivateShopPremiumEvent(DWORD);
     void UpdatePrivateShopPremiumEvent();
     void PrivateShopFailedBuy(const char*);
     void PrivateShopBuy(CPeer*, DWORD, const char*);
@@ -88,26 +86,26 @@ struct CClientManager {
 
 int main() {
     {
-        CClientManager m; auto shop = m.Add(); shop->gold = 100;
+        CClientManager m; auto shop = m.Add(); shop->gold = 100; shop->premium = now + 120;
         m.PrivateShopStartPremiumEvent(1);
-        assert(shop->premium == now + 300 && shop->persistedPremium == shop->premium && m.cache.flushes == 1);
+        assert(shop->premium == now + 120 && m.cache.flushes == 1);
         m.PrivateShopGameDespawn(shop);
         assert(m.GetPrivateShop(1) == shop && shop->gold == 100 && shop->state == STATE_CLOSED);
-        assert(!m.IsPrivateShopPremiumEvent(1) && m.destroyed == 0);
+        assert(m.destroyed == 0);
     }
     {
         CClientManager m; auto shop = m.Add(); shop->gold = 500; shop->items.push_back({});
         m.PrivateShopStartPremiumEvent(1); now += 301;
         m.UpdatePrivateShopPremiumEvent();
         assert(m.GetPrivateShop(1) == shop && shop->gold == 500 && shop->items.size() == 1);
-        assert(shop->state == STATE_CLOSED && !m.IsPrivateShopPremiumEvent(1));
+        assert(shop->state == STATE_RECOVERY);
     }
     {
         CClientManager m; auto shop = m.Add(); Item item;
         item.bAvailable = false; item.dwReservation = 17; item.dwBuyerPeer = 2;
         item.TItem.TPrice.llGold = 90; shop->items.push_back(item);
         m.UpdatePrivateShopPremiumEvent();
-        assert(!shop->items[0].bAvailable && m.peer.packets == 1);
+        assert(!shop->items[0].bAvailable && m.peer.packets >= 1);
         TPacketGDPrivateShopFailedBuy cancel{16, 1, 0};
         m.PrivateShopFailedBuy(reinterpret_cast<const char*>(&cancel));
         assert(!shop->items[0].bAvailable);
@@ -124,11 +122,11 @@ int main() {
         shop->items.push_back(item);
         m.PrivateShopStartPremiumEvent(1); now += 301;
         m.UpdatePrivateShopPremiumEvent();
-        assert(shop->state == STATE_OPEN && !shop->items[0].bAvailable);
+        assert(shop->state == STATE_RECOVERY && !shop->items[0].bAvailable);
         TPacketGDPrivateShopFailedBuy cancel{9, 1, 0};
         m.PrivateShopFailedBuy(reinterpret_cast<const char*>(&cancel));
         m.UpdatePrivateShopPremiumEvent();
-        assert(shop->state == STATE_CLOSED && shop->items[0].bAvailable);
+        assert(shop->state == STATE_RECOVERY && shop->items[0].bAvailable);
     }
     {
         CClientManager m; auto shop = m.Add(); shop->gold = 5000000000LL;
@@ -143,7 +141,22 @@ int main() {
         CClientManager m; auto shop = m.Add();
         m.PrivateShopStartPremiumEvent(1); now += 301;
         m.UpdatePrivateShopPremiumEvent();
-        assert(!m.GetPrivateShop(1) && m.destroyed == 1 && m.m_list_privateShopPremium.empty());
+        assert(!m.GetPrivateShop(1) && m.destroyed == 1);
+    }
+    {
+        CClientManager m; auto shop = m.Add(); shop->gold = 7;
+        shop->ownerPeer = 2; shop->ownerHandle = 10;
+        shop->premium = now + PRIVATE_SHOP_LIFETIME_SECONDS;
+        now += PRIVATE_SHOP_LIFETIME_SECONDS - 1;
+        m.UpdatePrivateShopPremiumEvent();
+        assert(shop->state == STATE_OPEN);
+        ++now;
+        m.UpdatePrivateShopPremiumEvent();
+        assert(shop->state == STATE_RECOVERY && shop->gold == 7);
+        m.PrivateShopStartPremiumEvent(1);
+        assert(shop->premium == now && shop->ownerHandle == 0);
+        m.UpdatePrivateShopPremiumEvent();
+        assert(shop->state == STATE_RECOVERY);
     }
     std::puts("PASS: offline deadline, non-owning despawn, retained expiry, reservation ordering, sold-out earnings, partial withdrawal, empty cleanup");
 }

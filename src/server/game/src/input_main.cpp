@@ -3760,7 +3760,7 @@ int CInputMain::PrivateShopItemCheckout(LPCHARACTER ch, const char* c_pData, siz
 		return iExtraLen;
 	}
 
-	if (!ch->CanModifyPrivateShop())
+	if (!ch->CanModifyPrivateShop() && ch->GetPrivateShopTable()->bState != STATE_RECOVERY)
 	{
 		ch->ChatPacket(CHAT_TYPE_INFO, LC_TEXT_LANG("You cannot manage personal shop's content while it is not in a modifying state.", ch->GetLanguage()));
 		return iExtraLen;

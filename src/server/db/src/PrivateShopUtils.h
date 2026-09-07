@@ -7,7 +7,7 @@ static const char* GetPrivateShopQuery(DWORD dwOwner)
 {
 	static char szQuery[512 + 1]{};
 	snprintf(szQuery, sizeof(szQuery),
-		"SELECT owner_id, owner_name, state+0, title, title_type, vnum, x, y, map_index, channel, port, gold, cheque, page_count, premium_time "
+		"SELECT owner_id, owner_name, state+0, title, title_type, vnum, x, y, map_index, channel, port, gold, cheque, page_count, premium_time, lifetime_seconds "
 		"FROM private_shop%s "
 		"WHERE owner_id = %u ",
 		GetTablePostfix(), dwOwner);
@@ -63,6 +63,7 @@ inline bool CreatePrivateShopTableFromRes(MYSQL_RES* pRes, TPrivateShop& rTable)
 	str_to_number(rTable.dwCheque, row[col++]);
 	str_to_number(rTable.bPageCount, row[col++]);
 	str_to_number(rTable.tPremiumTime, row[col++]);
+	str_to_number(rTable.dwLifetimeSeconds, row[col++]);
 
 	return true;
 }
@@ -113,4 +114,3 @@ inline bool CreatePrivateShopItemTableFromRes(MYSQL_RES* pRes, std::vector<TPlay
 
 	return true;
 }
-

@@ -607,6 +607,20 @@ void CPrivateShop::SetState(BYTE bState)
 	sys_log(0, "%s PRIVATE_SHOP: STATE CHANGE %u -> %u", GetOwnerName().c_str(), GetState(), bState);
 
 	m_bState = bState;
+	if (bState == STATE_RECOVERY)
+	{
+		CleanShopViewers();
+		ViewCleanup();
+		if (GetSectree())
+		{
+			GetSectree()->RemoveEntity(this);
+			SetSectree(nullptr);
+		}
+		for (const auto& item : m_map_shopItem)
+			CPrivateShopManager::Instance().RemoveSearchItem(item.second);
+		sys_log(0, "PRIVATESHOP_GAME: recovery_hidden pid=%u", GetID());
+		return;
+	}
 	if (m_set_shopViewer.size())
 	{
 		for (const auto& pShopViewer : m_set_shopViewer)
